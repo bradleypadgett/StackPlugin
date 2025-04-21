@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Details Panel Customization",
+	"Description": "Tool for extending Details Panel customization functions into Blueprint. ex: 'IDetailCustomization' in PropertyEditor module.",
+	"Category": "UI",
+	"CreatedBy": "Bradley Padgett",
+	"CreatedByURL": "https://www.bradleypadgett.com/",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+ 			"Name": "DetailsPanelCustomization",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
