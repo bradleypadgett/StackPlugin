@@ -24,10 +24,15 @@ void FCustomizeToolActorDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBu
     for (TFieldIterator<FProperty> PropIt(TargetClass); PropIt; ++PropIt)
     {
         const FProperty* Prop = *PropIt;
-        if (Prop)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("  • Property: %s"), *Prop->GetName());
-        }
+        if (!Prop) continue;
+
+        // Only keep properties declared directly in this class (not inherited ones)
+        if (Prop->GetOwner<UClass>() != TargetClass) continue;
+
+        // Only keep properties that are editable in the editor
+        if (!(Prop->HasAnyPropertyFlags(CPF_Edit))) continue;
+
+        UE_LOG(LogTemp, Warning, TEXT("  • Property: %s"), *Prop->GetName());
     }
 }
 
@@ -35,4 +40,3 @@ TSharedRef<IDetailCustomization> FCustomizeToolActorDetails::MakeInstance()
 {
     return MakeShared<FCustomizeToolActorDetails>();
 }
-
