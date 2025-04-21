@@ -16,7 +16,12 @@
 	"Installed": false,
 	"Modules": [
 		{
- 			"Name": "DetailsPanelCustomization",
+ 			"Name": "DetailsPanelCustomizationEditor",
+			"Type": "Editor",
+ 			"LoadingPhase": "PostEngineInit"
+		},
+		{
+ 			"Name": "DetailsPanelCustomizationRuntime",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
