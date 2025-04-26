@@ -7,18 +7,19 @@ IMPLEMENT_MODULE(FDetailsPanelCustomizationEditorModule, DetailsPanelCustomizati
 
 void FDetailsPanelCustomizationEditorModule::StartupModule()
 {
-    FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+//    FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
 
-    PropertyModule.RegisterCustomClassLayout("ToolBaseActor",
-        FOnGetDetailCustomizationInstance::CreateStatic(&FCustomizeToolActorDetails::MakeInstance));
+//    PropertyModule.RegisterCustomClassLayout("ToolBaseActor",
+//        FOnGetDetailCustomizationInstance::CreateStatic(&FCustomizeToolActorDetails::MakeInstance));
 }
 
 void FDetailsPanelCustomizationEditorModule::ShutdownModule()
 {
-    if (FModuleManager::Get().IsModuleLoaded("PropertyEditor"))
-    {
-        FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-        PropertyModule.UnregisterCustomClassLayout("ToolBaseActor");
-    }
+//    if (FModuleManager::Get().IsModuleLoaded("PropertyEditor"))
+//    {
+//        FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
+//        PropertyModule.UnregisterCustomClassLayout("ToolBaseActor");
+//    }
 }
+
 

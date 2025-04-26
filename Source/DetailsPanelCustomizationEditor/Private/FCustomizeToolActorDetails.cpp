@@ -1,42 +1,35 @@
 #include "FCustomizeToolActorDetails.h"
 #include "DetailLayoutBuilder.h"
+//#include "ToolBaseActor.h"
 #include "PropertyHandle.h"
 
-
+/*
 void FCustomizeToolActorDetails::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder)
 {
+
     UE_LOG(LogTemp, Warning, TEXT("CustomizeDetails active!"));
 
-    /* 1. Get whichever object(s) the Details panel is showing */
+    // Get customized objects
     TArray<TWeakObjectPtr<UObject>> CustomizedObjects;
     DetailBuilder.GetObjectsBeingCustomized(CustomizedObjects);
 
-    if (CustomizedObjects.Num() == 0 || !CustomizedObjects[0].IsValid())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("No valid objects being customized."));
-        return;
-    }
+    UE_LOG(LogTemp, Warning, TEXT("CustomizeObject ?"));
+    if (CustomizedObjects.Num() == 0 || !CustomizedObjects[0].IsValid()) return;
+    UE_LOG(LogTemp, Warning, TEXT("CustomizeObject!!!"));
 
-    UObject* Target = CustomizedObjects[0].Get();
-    UClass* TargetClass = Target->GetClass();
+    UE_LOG(LogTemp, Warning, TEXT("ToolActor ?"));
+    // Try to cast to ToolBaseActor
+    AToolBaseActor* ToolActor = Cast<AToolBaseActor>(CustomizedObjects[0].Get());
+    if (!ToolActor) return;
+    UE_LOG(LogTemp, Warning, TEXT("ToolActor!!!"));
 
-    /* 2. Reflect over every FProperty on that class */
-    for (TFieldIterator<FProperty> PropIt(TargetClass); PropIt; ++PropIt)
-    {
-        const FProperty* Prop = *PropIt;
-        if (!Prop) continue;
-
-        // Only keep properties declared directly in this class (not inherited ones)
-        if (Prop->GetOwner<UClass>() != TargetClass) continue;
-
-        // Only keep properties that are editable in the editor
-        if (!(Prop->HasAnyPropertyFlags(CPF_Edit))) continue;
-
-        UE_LOG(LogTemp, Warning, TEXT("  • Property: %s"), *Prop->GetName());
-    }
+    // Example call to CanEditPropertyByName
+    const bool bCanEditTest = ToolActor->CanEditPropertyByName(FName("TestProperty"));
+    UE_LOG(LogTemp, Warning, TEXT("CanEdit TestProperty: %s"), bCanEditTest ? TEXT("TRUE") : TEXT("FALSE"));
 }
 
 TSharedRef<IDetailCustomization> FCustomizeToolActorDetails::MakeInstance()
 {
     return MakeShared<FCustomizeToolActorDetails>();
 }
+*/

@@ -13,8 +13,12 @@ class FCustomizeToolActorDetails : public IDetailCustomization
 {
 public:
 	// Factory function Unreal calls when using this customization
-	static TSharedRef<IDetailCustomization> MakeInstance();
+//	static TSharedRef<IDetailCustomization> MakeInstance();
 
 	// This is where we override the Details panel layout
-	virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
+//	virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
+
+//	IDetailLayoutBuilder* DetailBuilderRaw = nullptr;
+//	AActor* TargetActor = nullptr;
+
 };

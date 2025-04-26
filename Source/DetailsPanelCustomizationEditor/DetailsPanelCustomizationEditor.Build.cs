@@ -6,28 +6,28 @@ public class DetailsPanelCustomizationEditor : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PrivateDependencyModuleNames.AddRange(new string[]
+        PublicIncludePaths.AddRange(new string[] {
+            "DetailsPanelCustomizationEditor/Public"
+        });
+
+        PrivateIncludePaths.AddRange(new string[] {
+            "DetailsPanelCustomizationEditor/Private"
+        });
+
+        PublicDependencyModuleNames.AddRange(new string[]
         {
             "Core",
             "CoreUObject",
             "Engine",
-            "UnrealEd",
+            "InputCore",
             "Slate",
             "SlateCore",
             "PropertyEditor",
-            "EditorStyle",
-            "InputCore",
-            "DetailsPanelCustomizationRuntime"
+            "UnrealEd"
         });
 
-        PrivateIncludePaths.AddRange(new string[]
-        {
-            "DetailsPanelCustomizationEditor/Private"
-        });
+        PrivateDependencyModuleNames.AddRange(new string[] { });
 
-        PublicIncludePaths.AddRange(new string[]
-        {
-            "DetailsPanelCustomizationEditor/Public"
-        });
+        PublicDefinitions.Add("DETAILSCUSTOMIZATIONEDITOR_API=__declspec(dllexport)");
     }
 }
