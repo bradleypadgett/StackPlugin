@@ -8,12 +8,29 @@
 
 namespace DetailCustomizationHelpers
 {
-    void RegisterDetailCustomization(FPropertyEditorModule& PropertyModule, const FString& ClassName, TSharedRef<IDetailCustomization> CustomizationInstance)
+    TArray<FDetailCustomizationEntry>& GetCustomizationRegistry()
     {
-        PropertyModule.RegisterCustomClassLayout(*ClassName, FOnGetDetailCustomizationInstance::CreateLambda([CustomizationInstance]() { return CustomizationInstance; }));
+        static TArray<FDetailCustomizationEntry> Registry;
+        return Registry;
     }
 
-    void AddCenteredButton(IDetailCategoryBuilder& Category, const FString& ButtonText, TFunction<FReply()> OnClick)
+    void RegisterCustomization(const FString& ClassName, TFunction<TSharedRef<IDetailCustomization>()> Factory)
+    {
+        GetCustomizationRegistry().Add(FDetailCustomizationEntry(ClassName, Factory));
+    }
+
+    void RegisterAllCustomizations(FPropertyEditorModule& PropertyModule)
+    {
+        for (const FDetailCustomizationEntry& Entry : GetCustomizationRegistry())
+        {
+            PropertyModule.RegisterCustomClassLayout(
+                *Entry.ClassName,
+                FOnGetDetailCustomizationInstance::CreateLambda(Entry.CustomizationFactory)
+            );
+        }
+    }
+
+    void AddCenteredButton(IDetailCategoryBuilder& Category, const FString& ButtonText, TFunction<FReply()> OnClick, TFunction<bool()> IsEnabled)
     {
         Category.AddCustomRow(FText::FromString(ButtonText))
             .WholeRowContent()
@@ -21,43 +38,18 @@ namespace DetailCustomizationHelpers
                 SNew(SHorizontalBox)
                     + SHorizontalBox::Slot()
                     .HAlign(HAlign_Center)
-                    .VAlign(VAlign_Center)
-                    .FillWidth(1.0f)
                     [
                         SNew(SButton)
-                            .ContentPadding(FMargin(20.0f, 10.0f))
-                            .HAlign(HAlign_Center)
-                            .VAlign(VAlign_Center)
                             .Text(FText::FromString(ButtonText))
-                            .OnClicked_Lambda(OnClick)
-                    ]
-            ];
-    }
-
-    void AddCenteredButton(IDetailCategoryBuilder& Category, const FString& ButtonText, UObject* Object, UFunction* Function)
-    {
-        Category.AddCustomRow(FText::FromString(ButtonText))
-            .WholeRowContent()
-            [
-                SNew(SHorizontalBox)
-                    + SHorizontalBox::Slot()
-                    .HAlign(HAlign_Center)
-                    .VAlign(VAlign_Center)
-                    .FillWidth(1.0f)
-                    [
-                        SNew(SButton)
-                            .ContentPadding(FMargin(20.0f, 10.0f))
-                            .HAlign(HAlign_Center)
-                            .VAlign(VAlign_Center)
-                            .Text(FText::FromString(ButtonText))
-                            .OnClicked_Lambda([Object, Function]()
-                            {
-                                if (Object && Function)
+                            .OnClicked_Lambda([OnClick]() { return OnClick(); })
+                            .IsEnabled_Lambda([IsEnabled]()
                                 {
-                                    Object->ProcessEvent(Function, nullptr);
-                                }
-                                return FReply::Handled();
-                            })
+                                    if (IsEnabled)
+                                    {
+                                        return IsEnabled();
+                                    }
+                                    return true; // Default to enabled if no function provided
+                                })
                     ]
             ];
     }
