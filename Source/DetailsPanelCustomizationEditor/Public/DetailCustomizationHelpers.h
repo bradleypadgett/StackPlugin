@@ -6,6 +6,9 @@
 class IDetailCategoryBuilder;
 class FPropertyEditorModule;
 
+#ifndef DETAILCUSTOMIZATIONHELPERS_API
+#define DETAILCUSTOMIZATIONHELPERS_API DETAILSPANELCUSTOMIZATIONEDITOR_API
+#endif
 
 namespace DetailCustomizationHelpers
 {
@@ -21,17 +24,17 @@ namespace DetailCustomizationHelpers
         }
     };
 
-    DETAILSCUSTOMIZATIONEDITOR_API TArray<FDetailCustomizationEntry>& GetCustomizationRegistry();
+    DETAILSPANELCUSTOMIZATIONEDITOR_API TArray<FDetailCustomizationEntry>& GetCustomizationRegistry();
 
-    DETAILSCUSTOMIZATIONEDITOR_API void RegisterCustomization(const FString& ClassName, TFunction<TSharedRef<IDetailCustomization>()> Factory);
+    DETAILSPANELCUSTOMIZATIONEDITOR_API void RegisterCustomization(const FString& ClassName, TFunction<TSharedRef<IDetailCustomization>()> Factory);
 
-    DETAILSCUSTOMIZATIONEDITOR_API void RegisterAllCustomizations(FPropertyEditorModule& PropertyModule);
+    DETAILSPANELCUSTOMIZATIONEDITOR_API void RegisterAllCustomizations(FPropertyEditorModule& PropertyModule);
 
-    DETAILSCUSTOMIZATIONEDITOR_API void AddCenteredButton(IDetailCategoryBuilder& Category, const FString& ButtonText, TFunction<FReply()> OnClick, TFunction<bool()> IsEnabled = nullptr);
+    DETAILSPANELCUSTOMIZATIONEDITOR_API void AddCenteredButton(IDetailCategoryBuilder& Category, const FString& ButtonText, TFunction<FReply()> OnClick, TFunction<bool()> IsEnabled = nullptr);
 
 }
 
-//Auto-register macro
+// Auto-register macro
 #define REGISTER_DETAIL_CUSTOMIZATION(ClassType, CustomizationType) \
 namespace DetailCustomizationHelpers_Internal \
 { \

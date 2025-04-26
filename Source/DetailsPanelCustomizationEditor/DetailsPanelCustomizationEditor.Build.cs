@@ -6,28 +6,35 @@ public class DetailsPanelCustomizationEditor : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicIncludePaths.AddRange(new string[] {
-            "DetailsPanelCustomizationEditor/Public"
-        });
-
-        PrivateIncludePaths.AddRange(new string[] {
-            "DetailsPanelCustomizationEditor/Private"
-        });
-
         PublicDependencyModuleNames.AddRange(new string[]
         {
             "Core",
             "CoreUObject",
             "Engine",
-            "InputCore",
             "Slate",
             "SlateCore",
+            "InputCore",
             "PropertyEditor",
-            "UnrealEd"
+            "KismetCompiler",
+            "BlueprintGraph",
+            "GraphEditor"
         });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { });
+        PrivateDependencyModuleNames.AddRange(new string[]
+        {
+            "EditorStyle",
+            "Projects"
+        });
 
-        PublicDefinitions.Add("DETAILSCUSTOMIZATIONEDITOR_API=__declspec(dllexport)");
+        if (Target.bBuildEditor)
+        {
+            PublicDependencyModuleNames.AddRange(new string[]
+            {
+                "UnrealEd",
+                "EditorSubsystem",
+                "ToolMenus",
+                "AssetTools"
+            });
+        }
     }
 }
