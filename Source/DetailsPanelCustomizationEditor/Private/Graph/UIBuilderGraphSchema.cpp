@@ -1,16 +1,16 @@
-#include "Graph/ToolUIGraphSchema.h"
-#include "Nodes/ToolUIGraphNode_AddButton.h"
+#include "Graph/UIBuilderGraphSchema.h"
+#include "Nodes/UIBuilderGraphNode_AddButton.h"
 #include "BlueprintNodeSpawner.h"
 
 
-void UToolUIGraphSchema::GetGraphContextActions(FGraphContextMenuBuilder& ContextMenuBuilder) const
+void UUIBuilderGraphSchema::GetGraphContextActions(FGraphContextMenuBuilder& ContextMenuBuilder) const
 {
     if (!ContextMenuBuilder.CurrentGraph)
     {
         return;
     }
 
-    UBlueprintNodeSpawner* NodeSpawner = UBlueprintNodeSpawner::Create(UToolUIGraphNode_AddButton::StaticClass());
+    UBlueprintNodeSpawner* NodeSpawner = UBlueprintNodeSpawner::Create(UUIBuilderGraphNode_AddButton::StaticClass());
 
     if (NodeSpawner)
     {
@@ -27,14 +27,14 @@ void UToolUIGraphSchema::GetGraphContextActions(FGraphContextMenuBuilder& Contex
     }
 }
 
-UEdGraphNode* UToolUIGraphSchema::FToolUI_NewNodeAction::PerformAction(UEdGraph* ParentGraph, UEdGraphPin* FromPin, const FVector2D Location, bool bSelectNewNode)
+UEdGraphNode* UUIBuilderGraphSchema::FToolUI_NewNodeAction::PerformAction(UEdGraph* ParentGraph, UEdGraphPin* FromPin, const FVector2D Location, bool bSelectNewNode)
 {
     if (!NodeSpawner || !ParentGraph)
     {
         return nullptr;
     }
 
-    UToolUIGraphNode_AddButton* NewNode = NewObject<UToolUIGraphNode_AddButton>(ParentGraph);
+    UUIBuilderGraphNode_AddButton* NewNode = NewObject<UUIBuilderGraphNode_AddButton>(ParentGraph);
     ParentGraph->AddNode(NewNode, true, false);
 
     NewNode->NodePosX = Location.X;

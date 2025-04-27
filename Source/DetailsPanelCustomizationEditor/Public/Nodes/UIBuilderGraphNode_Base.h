@@ -2,13 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "EdGraph/EdGraphNode.h"
-#include "ToolUIGraphNode_Base.generated.h"
+#include "UIBuilderGraphNode_Base.generated.h"
 
 /**
  * Base class for all UI Builder Graph Nodes
  */
 UCLASS(Abstract)
-class DETAILSPANELCUSTOMIZATIONEDITOR_API UToolUIGraphNode_Base : public UEdGraphNode
+class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraphNode_Base : public UEdGraphNode
 {
     GENERATED_BODY()
 

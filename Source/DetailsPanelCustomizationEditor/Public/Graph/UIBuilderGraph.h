@@ -2,20 +2,20 @@
 
 #include "CoreMinimal.h"
 #include "EdGraph/EdGraph.h"
-#include "ToolUIGraph.generated.h"
+#include "UIBuilderGraph.generated.h"
 
 /**
  * Custom UI Builder Graph - holds nodes like AddButton, AddSlider, etc.
  */
 UCLASS()
-class DETAILSPANELCUSTOMIZATIONEDITOR_API UToolUIGraph : public UEdGraph
+class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraph : public UEdGraph
 {
     GENERATED_BODY()
 
 public:
 
     // Constructor
-    UToolUIGraph();
+    UUIBuilderGraph();
 
     // Override PostLoad
     virtual void PostLoad() override;

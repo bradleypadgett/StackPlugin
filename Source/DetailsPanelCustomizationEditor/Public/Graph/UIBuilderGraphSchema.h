@@ -3,14 +3,14 @@
 #include "CoreMinimal.h"
 #include "EdGraph/EdGraphSchema.h"
 #include "BlueprintNodeSpawner.h"
-#include "ToolUIGraphSchema.generated.h"
+#include "UIBuilderGraphSchema.generated.h"
 
 
 /**
  * Defines allowed connections, context menus, and rules for the UI Builder Graph
  */
 UCLASS()
-class DETAILSPANELCUSTOMIZATIONEDITOR_API UToolUIGraphSchema : public UEdGraphSchema
+class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraphSchema : public UEdGraphSchema
 {
     GENERATED_BODY()
 
