@@ -1,9 +1,9 @@
 #pragma once
-
 #include "CoreMinimal.h"
 #include "EdGraph/EdGraphSchema.h"
 #include "BlueprintNodeSpawner.h"
 #include "UIBuilderGraphSchema.generated.h"
+
 
 
 /**
@@ -17,10 +17,8 @@ class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraphSchema : public UEdGrap
 public:
 
     virtual void GetGraphContextActions(FGraphContextMenuBuilder& ContextMenuBuilder) const override;
-
-    /**
-     * Custom Action to spawn nodes inside the UI Builder Graph
-     */
+ 
+    // Custom Action to spawn nodes inside the UI Builder Graph
     struct FToolUI_NewNodeAction : public FEdGraphSchemaAction
     {
         UBlueprintNodeSpawner* NodeSpawner;
@@ -33,6 +31,5 @@ public:
         virtual UEdGraphNode* PerformAction(UEdGraph* ParentGraph, UEdGraphPin* FromPin, const FVector2D Location, bool bSelectNewNode) override;
     };
 
-
-    // Customize things like connection rules, menu actions, etc.
+    virtual FText GetGraphCategory(const UEdGraph* Graph) const override;
 };

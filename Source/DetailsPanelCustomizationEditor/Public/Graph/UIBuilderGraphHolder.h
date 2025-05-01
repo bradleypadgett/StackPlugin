@@ -1,13 +1,14 @@
 #pragma once
-
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
 #include "UIBuilderGraphHolder.generated.h"
 
+
+
 class UUIBuilderGraph;
 
 /**
- * Lightweight holder that stores a Tool UI Graph inside an Actor
+ * Lightweight holder that stores a UIBuilderGraph inside an Actor
  */
 UCLASS(BlueprintType)
 class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraphHolder : public UObject
@@ -16,7 +17,11 @@ class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraphHolder : public UObject
 
 public:
 
-    /** The Tool UI Graph assigned to this Actor */
+    //The UIBuilderGraph assigned to this Actor
     UPROPERTY(EditAnywhere, Instanced, Category="UIBuilder")
     UUIBuilderGraph* UIBuilderGraph;
+
+    // UObject override to auto-create Graph when needed
+    virtual void PostInitProperties() override;
+
 };

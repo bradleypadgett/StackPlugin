@@ -1,5 +1,6 @@
 # DetailsPanelCustomization
- Tool for extending Details Panel customization functions into Blueprint.
+ Tool for extending Slate into a node-based editor!
 
+Currently designed for AActors's details panels (editor-time usage)
 
 hi (:

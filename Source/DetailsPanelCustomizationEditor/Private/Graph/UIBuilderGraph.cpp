@@ -1,13 +1,19 @@
 #include "Graph/UIBuilderGraph.h"
 #include "Graph/UIBuilderGraphSchema.h"
 
-// Assign Schema
+
+
 UUIBuilderGraph::UUIBuilderGraph()
 {
     Schema = UUIBuilderGraphSchema::StaticClass();
+
+    bAllowDeletion = false;
+    bAllowRenaming = false;
+    bEditable = true;
+
 }
 
-// Douuuble checkin'
+// Double-check after loading
 void UUIBuilderGraph::PostLoad()
 {
     Super::PostLoad();
@@ -16,5 +22,10 @@ void UUIBuilderGraph::PostLoad()
     {
         Schema = UUIBuilderGraphSchema::StaticClass();
     }
+
+    // Ensure settings persist after loading
+    bAllowDeletion = false;
+    bAllowRenaming = false;
+    bEditable = true;
 }
 

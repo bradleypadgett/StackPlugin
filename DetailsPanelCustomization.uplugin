@@ -3,7 +3,7 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "Details Panel Customization",
-	"Description": "Tool for extending Details Panel customization functions into Blueprint. ex: 'IDetailCustomization' in PropertyEditor module.",
+	"Description": "Editor for extending Slate into a node-based system for editing panels, i.e. Details Panel",
 	"Category": "UI",
 	"CreatedBy": "Bradley Padgett",
 	"CreatedByURL": "https://www.bradleypadgett.com/",

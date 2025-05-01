@@ -1,11 +1,12 @@
 #pragma once
-
 #include "CoreMinimal.h"
 #include "EdGraph/EdGraph.h"
 #include "UIBuilderGraph.generated.h"
 
-/**
- * Custom UI Builder Graph - holds nodes like AddButton, AddSlider, etc.
+
+
+/*
+ * Underlying data asset storing nodes. Holds nodes like AddButton, AddSlider, etc.
  */
 UCLASS()
 class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraph : public UEdGraph
@@ -19,6 +20,4 @@ public:
 
     // Override PostLoad
     virtual void PostLoad() override;
-
-    // Later: Custom graph utility functions can go here
 };

@@ -1,6 +1,7 @@
 #pragma once
-
 #include "Modules/ModuleManager.h"
+
+
 
 class FDetailsPanelCustomizationRuntimeModule : public IModuleInterface
 {

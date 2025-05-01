@@ -1,5 +1,4 @@
 using UnrealBuildTool;
-
 public class DetailsPanelCustomizationEditor : ModuleRules
 {
     public DetailsPanelCustomizationEditor(ReadOnlyTargetRules Target) : base(Target)
@@ -11,23 +10,30 @@ public class DetailsPanelCustomizationEditor : ModuleRules
             "Core",
             "CoreUObject",
             "Engine",
+            "InputCore",
             "Slate",
             "SlateCore",
-            "InputCore",
             "PropertyEditor",
+            "UnrealEd",
             "KismetCompiler",
             "BlueprintGraph",
-            "GraphEditor"
+            "GraphEditor",
+            "Kismet",
+            "BlueprintEditorLibrary"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[]
         {
-            "EditorStyle",
-            "Projects"
+        
         });
 
         if (Target.bBuildEditor)
         {
+            PrivateDependencyModuleNames.AddRange(new string[] 
+            {
+
+            });
+
             PublicDependencyModuleNames.AddRange(new string[]
             {
                 "UnrealEd",

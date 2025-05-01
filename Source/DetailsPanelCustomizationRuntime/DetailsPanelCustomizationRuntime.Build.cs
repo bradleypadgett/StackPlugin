@@ -1,5 +1,4 @@
 using UnrealBuildTool;
-
 public class DetailsPanelCustomizationRuntime : ModuleRules
 {
     public DetailsPanelCustomizationRuntime(ReadOnlyTargetRules Target) : base(Target)

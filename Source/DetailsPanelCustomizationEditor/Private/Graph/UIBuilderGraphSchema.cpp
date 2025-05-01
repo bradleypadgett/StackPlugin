@@ -3,6 +3,12 @@
 #include "BlueprintNodeSpawner.h"
 
 
+
+FText UUIBuilderGraphSchema::GetGraphCategory(const UEdGraph* Graph) const
+{
+    return NSLOCTEXT("UIBuilder", "GraphCategory", "Details UI Builder");
+}
+
 void UUIBuilderGraphSchema::GetGraphContextActions(FGraphContextMenuBuilder& ContextMenuBuilder) const
 {
     if (!ContextMenuBuilder.CurrentGraph)
