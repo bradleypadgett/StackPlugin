@@ -1,33 +1,21 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Toolkits/AssetEditorToolkit.h"
+#include "UObject/Object.h"
+#include "UObject/ObjectMacros.h"
+#include "Blueprint/BlueprintExtension.h"
+#include "UIBuilderGraphHolder.h"
+#include "UIBuilderBlueprintExtension.generated.h"
 
-
-
-class FUIBuilderEditor;
-
-/*
- * Extends the Blueprint Editor to add a custom "UI Builder Graph" tab.
- */
-class FUIBuilderBlueprintExtension : public TSharedFromThis<FUIBuilderBlueprintExtension>
+UCLASS()
+class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderBlueprintExtension : public UBlueprintExtension
 {
+    GENERATED_BODY()
+
 public:
 
-    FUIBuilderBlueprintExtension() = default;
+    //bool InjectGraphHolderInstance(UBlueprint* BlueprintAsset);
 
-    FUIBuilderBlueprintExtension(class FBlueprintEditor* InBlueprintEditor);
-    ~FUIBuilderBlueprintExtension();
-
-    // Actually attach the extension to the Blueprint Editor
-    void ExtendBlueprintEditor();
-
-    static TSharedRef<FUIBuilderBlueprintExtension> Create(FBlueprintEditor* InBlueprintEditor);
-
-private:
-
-    class FBlueprintEditor* BlueprintEditor = nullptr;
-
-    TSharedPtr<FUIBuilderEditor> OwnedEditor;
-
-    TSharedRef<class SDockTab> SpawnUIBuilderGraphTab(const class FSpawnTabArgs& Args);
+    // The actual graph holder object that stores the UI Builder graph
+    UPROPERTY()
+    UUIBuilderGraphHolder* GraphHolder = nullptr;
 };
