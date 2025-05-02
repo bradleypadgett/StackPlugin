@@ -14,10 +14,10 @@ class UUIBuilderGraph;
 * 
 * Can add runtime previews here
 */
-class SUIBuilderGraphEditor : public SCompoundWidget
+class SUIBuilderGraphWidget : public SCompoundWidget
 {
 public:
-    SLATE_BEGIN_ARGS(SUIBuilderGraphEditor) : _GraphToEdit(nullptr) {} // Optional default
+    SLATE_BEGIN_ARGS(SUIBuilderGraphWidget) : _GraphToEdit(nullptr) {} // Optional default
         SLATE_ARGUMENT(UUIBuilderGraph*, GraphToEdit)
     SLATE_END_ARGS()
 

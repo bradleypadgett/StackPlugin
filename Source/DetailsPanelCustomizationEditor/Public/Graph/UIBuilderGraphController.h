@@ -12,10 +12,10 @@ class SGraphEditor;
 /*
  * Main editor controller / window, manages tab layouts, undo/redo
  */
-class FUIBuilderEditor : public TSharedFromThis<FUIBuilderEditor>
+class FUIBuilderGraphController : public TSharedFromThis<FUIBuilderGraphController>
 {
 public:
-    FUIBuilderEditor();
+    FUIBuilderGraphController();
 
     void Init(FBlueprintEditor* InEditor, UUIBuilderGraph* InGraph);
 

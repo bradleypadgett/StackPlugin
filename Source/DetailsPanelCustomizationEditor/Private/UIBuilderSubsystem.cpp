@@ -2,10 +2,10 @@
 #include "Graph/UIBuilderGraph.h"
 #include "Graph/UIBuilderGraph.h"
 #include "Graph/UIBuilderGraphSchema.h"
-#include "Graph/UIBuilderGraphEditor.h"
-#include "Graph/UIBuilderEditor.h"
-#include "Graph/UIBuilderEditorExtension.h"
-#include "Graph/UIBuilderBlueprintExtension.h"
+#include "Graph/UIBuilderGraphWidget.h"
+#include "Graph/UIBuilderGraphController.h"
+#include "UIBuilderTabRegistrar.h"
+#include "UIBuilderBlueprintExtension.h"
 #include "BlueprintEditorTabs.h"
 #include "Kismet2/BlueprintEditorUtils.h"
 #include "Subsystems/AssetEditorSubsystem.h"
@@ -71,7 +71,7 @@ void UUIBuilderSubsystem::OnBlueprintEditorOpened(UObject* Asset)
             {
                 if (!Editor) return false;
 
-                TSharedRef<FUIBuilderEditorExtension> Extension = FUIBuilderEditorExtension::CreateEditorExtension(Editor);
+                TSharedRef<FUIBuilderTabRegistrar> Extension = FUIBuilderTabRegistrar::CreateEditorExtension(Editor);
                 Extension->InitializeBlueprintEditorTabs();
 
                 return false;

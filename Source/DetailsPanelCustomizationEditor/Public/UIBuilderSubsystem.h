@@ -2,14 +2,14 @@
 #include "CoreMinimal.h"
 #include "EditorSubsystem.h"
 #include "Widgets/Docking/SDockTab.h"
-#include "Graph/UIBuilderEditorExtension.h"
+#include "UIBuilderTabRegistrar.h"
 #include "UIBuilderSubsystem.generated.h"
 
 
 
 class UUIBuilderGraph;
 class FBlueprintEditor;
-class FUIBuilderEditor;
+class FUIBuilderGraphController;
 
 /*
  * Editor-only subsystem that automatically manages injecting

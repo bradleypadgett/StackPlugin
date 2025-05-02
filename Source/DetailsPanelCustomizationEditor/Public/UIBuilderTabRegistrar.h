@@ -4,24 +4,24 @@
 
 
 
-class FUIBuilderEditor;
+class FUIBuilderGraphController;
 class UUIBuilderBlueprintExtension;
 class UUIBuilderGraph;
 
 /*
  * Extends the Blueprint Editor to add a custom "UI Builder Graph" tab.
  */
-class FUIBuilderEditorExtension : public TSharedFromThis<FUIBuilderEditorExtension>
+class FUIBuilderTabRegistrar : public TSharedFromThis<FUIBuilderTabRegistrar>
 {
 public:
 
-    FUIBuilderEditorExtension() = default;
+    FUIBuilderTabRegistrar() = default;
 
-    FUIBuilderEditorExtension(class FBlueprintEditor* InBlueprintEditor);
-    ~FUIBuilderEditorExtension();
+    FUIBuilderTabRegistrar(class FBlueprintEditor* InBlueprintEditor);
+    ~FUIBuilderTabRegistrar();
 
     // First Subsystem asks this to spawn in an extension
-    static TSharedRef<FUIBuilderEditorExtension> CreateEditorExtension(FBlueprintEditor* InBlueprintEditor);
+    static TSharedRef<FUIBuilderTabRegistrar> CreateEditorExtension(FBlueprintEditor* InBlueprintEditor);
 
     // Subsystem immediately asks to attach the extension to the Blueprint Editor
     void InitializeBlueprintEditorTabs();
@@ -39,7 +39,7 @@ private:
 
     class FBlueprintEditor* BlueprintEditor = nullptr;
 
-    TSharedPtr<FUIBuilderEditor> OwnedEditor;
+    TSharedPtr<FUIBuilderGraphController> OwnedEditor;
 
     UPROPERTY(Instanced)
     UUIBuilderGraph* UIBuilderGraph;

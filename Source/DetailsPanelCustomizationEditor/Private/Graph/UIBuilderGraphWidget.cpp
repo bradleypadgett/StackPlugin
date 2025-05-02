@@ -1,4 +1,4 @@
-﻿#include "Graph/UIBuilderGraphEditor.h"
+﻿#include "Graph/UIBuilderGraphWidget.h"
 #include "Graph/UIBuilderGraph.h"
 #include "GraphEditorModule.h"
 #include "GraphEditorActions.h"
@@ -6,11 +6,11 @@
 
 
 
-void SUIBuilderGraphEditor::Construct(const FArguments& InArgs)
+void SUIBuilderGraphWidget::Construct(const FArguments& InArgs)
 {
     GraphBeingEdited = InArgs._GraphToEdit;
 
-    UE_LOG(LogTemp, Warning, TEXT("✅ SUIBuilderGraphEditor::Construct fired."));
+    UE_LOG(LogTemp, Warning, TEXT("✅ SUIBuilderGraphWidget::Construct fired."));
 
     FGraphAppearanceInfo AppearanceInfo;
     AppearanceInfo.CornerText = FText::FromString("UI Builder");

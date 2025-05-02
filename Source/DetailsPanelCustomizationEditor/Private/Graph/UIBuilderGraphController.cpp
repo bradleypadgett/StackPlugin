@@ -1,19 +1,19 @@
-#include "Graph/UIBuilderEditor.h"
+#include "Graph/UIBuilderGraphController.h"
 #include "EdGraph/EdGraph.h"
 #include "GraphEditor.h"
 
 
 
-FUIBuilderEditor::FUIBuilderEditor() {}
+FUIBuilderGraphController::FUIBuilderGraphController() {}
 
-void FUIBuilderEditor::Init(FBlueprintEditor* InEditor, UUIBuilderGraph* InGraph)
+void FUIBuilderGraphController::Init(FBlueprintEditor* InEditor, UUIBuilderGraph* InGraph)
 {
     BlueprintEditor = InEditor;
     Graph = InGraph;
     BindCommands();
 }
 
-TSharedRef<SWidget> FUIBuilderEditor::BuildGraphWidget()
+TSharedRef<SWidget> FUIBuilderGraphController::BuildGraphWidget()
 {
     FGraphAppearanceInfo Appearance;
     Appearance.CornerText = FText::FromString("UI Builder");
@@ -26,7 +26,7 @@ TSharedRef<SWidget> FUIBuilderEditor::BuildGraphWidget()
     return GraphEditorWidget.ToSharedRef();
 }
 
-void FUIBuilderEditor::BindCommands()
+void FUIBuilderGraphController::BindCommands()
 {
     // Bind keyboard shortcuts later
 }

@@ -1,10 +1,10 @@
-﻿#include "Graph/UIBuilderEditorExtension.h"
-#include "Graph/UIBuilderBlueprintExtension.h"
+﻿#include "UIBuilderTabRegistrar.h"
+#include "UIBuilderBlueprintExtension.h"
 #include "Graph/UIBuilderGraphSchema.h"
 #include "Graph/UIBuilderGraphSidebarAction.h"
 #include "Framework/Docking/TabManager.h"
 #include "Graph/UIBuilderGraph.h"
-#include "Graph/UIBuilderEditor.h"
+#include "Graph/UIBuilderGraphController.h"
 #include "Graph/UIBuilderGraph.h"
 #include "UIBuilderSubsystem.h"
 #include "GraphEditor.h" //weeeee
@@ -17,24 +17,24 @@
 
 
 
-FUIBuilderEditorExtension::FUIBuilderEditorExtension(FBlueprintEditor* InBlueprintEditor)
+FUIBuilderTabRegistrar::FUIBuilderTabRegistrar(FBlueprintEditor* InBlueprintEditor)
 {
     BlueprintEditor = InBlueprintEditor;
 }
 
-FUIBuilderEditorExtension::~FUIBuilderEditorExtension()
+FUIBuilderTabRegistrar::~FUIBuilderTabRegistrar()
 {
 }
 
-TSharedRef<FUIBuilderEditorExtension> FUIBuilderEditorExtension::CreateEditorExtension(FBlueprintEditor* InBlueprintEditor)
+TSharedRef<FUIBuilderTabRegistrar> FUIBuilderTabRegistrar::CreateEditorExtension(FBlueprintEditor* InBlueprintEditor)
 {
-    TSharedRef<FUIBuilderEditorExtension> NewExtension = MakeShared<FUIBuilderEditorExtension>(InBlueprintEditor);
+    TSharedRef<FUIBuilderTabRegistrar> NewExtension = MakeShared<FUIBuilderTabRegistrar>(InBlueprintEditor);
     NewExtension->InitializeBlueprintEditorTabs();
     return NewExtension;
 }
 
 // Called from OnBlueprintEditorOpened. 
-void FUIBuilderEditorExtension::InitializeBlueprintEditorTabs()
+void FUIBuilderTabRegistrar::InitializeBlueprintEditorTabs()
 {
     if (!BlueprintEditor)
     {
@@ -61,7 +61,7 @@ void FUIBuilderEditorExtension::InitializeBlueprintEditorTabs()
 }
 
 // Registers Graph into tab manager if it doesn't exist.
-void FUIBuilderEditorExtension::RegisterGraphTab()
+void FUIBuilderTabRegistrar::RegisterGraphTab()
 {
     const FName TabID = "UIBuilderGraph";
     TSharedPtr<FTabManager> TabManager = BlueprintEditor->GetTabManager();
@@ -78,7 +78,7 @@ void FUIBuilderEditorExtension::RegisterGraphTab()
             NSLOCTEXT("UIBuilder", "WorkspaceCategory", "UI Builder")
         );
 
-        TabManager->RegisterTabSpawner(TabID, FOnSpawnTab::CreateSP(SharedThis(this), &FUIBuilderEditorExtension::CreateGraphTab))
+        TabManager->RegisterTabSpawner(TabID, FOnSpawnTab::CreateSP(SharedThis(this), &FUIBuilderTabRegistrar::CreateGraphTab))
             .SetDisplayName(NSLOCTEXT("UIBuilderGraph", "TabTitle", "UI Builder Graph"))
             .SetIcon(FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.Tabs.Details"))
             .SetGroup(UIBuilderCategory);
@@ -92,7 +92,7 @@ void FUIBuilderEditorExtension::RegisterGraphTab()
 }
 
 // Constructs and returns the actual UI content for the tab (Slate).
-TSharedRef<SDockTab> FUIBuilderEditorExtension::CreateGraphTab(const FSpawnTabArgs& Args)
+TSharedRef<SDockTab> FUIBuilderTabRegistrar::CreateGraphTab(const FSpawnTabArgs& Args)
 {
     if (!BlueprintEditor)
     {
@@ -115,7 +115,7 @@ TSharedRef<SDockTab> FUIBuilderEditorExtension::CreateGraphTab(const FSpawnTabAr
 
     if (UUIBuilderGraph* Graph = GetOrCreateGraph(Blueprint))
     {
-        TSharedRef<FUIBuilderEditor> UIEditor = MakeShared<FUIBuilderEditor>();
+        TSharedRef<FUIBuilderGraphController> UIEditor = MakeShared<FUIBuilderGraphController>();
         UIEditor->Init(BlueprintEditor, Graph);
         OwnedEditor = UIEditor;
 
@@ -136,7 +136,7 @@ TSharedRef<SDockTab> FUIBuilderEditorExtension::CreateGraphTab(const FSpawnTabAr
 }
 
 // Ensures the UUIBuilderGraph exists and returns it — responsible for persistent graph data.
-UUIBuilderGraph* FUIBuilderEditorExtension::GetOrCreateGraph(UBlueprint* Blueprint) const
+UUIBuilderGraph* FUIBuilderTabRegistrar::GetOrCreateGraph(UBlueprint* Blueprint) const
 {
     UUIBuilderBlueprintExtension* Extension = GetOrCreateBlueprintExtension(Blueprint);
     if (!Extension) return nullptr;
@@ -157,7 +157,7 @@ UUIBuilderGraph* FUIBuilderEditorExtension::GetOrCreateGraph(UBlueprint* Bluepri
 }
 
 // Actually hooks up the Blueprint to store the UI Builder
-UUIBuilderBlueprintExtension* FUIBuilderEditorExtension::GetOrCreateBlueprintExtension(UBlueprint* Blueprint) const
+UUIBuilderBlueprintExtension* FUIBuilderTabRegistrar::GetOrCreateBlueprintExtension(UBlueprint* Blueprint) const
 {
     if (!Blueprint) return nullptr;
 

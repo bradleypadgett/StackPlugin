@@ -3,7 +3,7 @@
 #include "UObject/Object.h"
 #include "UObject/ObjectMacros.h"
 #include "Blueprint/BlueprintExtension.h"
-#include "UIBuilderGraph.h"
+#include "Graph/UIBuilderGraph.h"
 #include "UIBuilderBlueprintExtension.generated.h"
 
 UCLASS()
