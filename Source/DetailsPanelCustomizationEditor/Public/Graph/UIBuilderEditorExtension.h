@@ -20,10 +20,12 @@ public:
     FUIBuilderEditorExtension(class FBlueprintEditor* InBlueprintEditor);
     ~FUIBuilderEditorExtension();
 
-    // Actually attach the extension to the Blueprint Editor
-    void ExtendBlueprintEditor();
-
+    // First Subsystem asks this to spawn in an extension
     static TSharedRef<FUIBuilderEditorExtension> CreateEditorExtension(FBlueprintEditor* InBlueprintEditor);
+
+    // Subsystem immediately asks to attach the extension to the Blueprint Editor
+    void InitializeBlueprintEditorTabs();
+
 
 private:
 
@@ -32,11 +34,14 @@ private:
     UUIBuilderBlueprintExtension* GetOrCreateBlueprintExtension(UBlueprint* Blueprint) const;
 
     UUIBuilderGraph* GetOrCreateGraph(UBlueprint* Blueprint) const;
-
+  
+    TSharedRef<class SDockTab> CreateGraphTab(const class FSpawnTabArgs& Args);
 
     class FBlueprintEditor* BlueprintEditor = nullptr;
 
     TSharedPtr<FUIBuilderEditor> OwnedEditor;
 
-    TSharedRef<class SDockTab> CreateUIBuilderGraphTab(const class FSpawnTabArgs& Args);
+    UPROPERTY(Instanced)
+    UUIBuilderGraph* UIBuilderGraph;
+
 };

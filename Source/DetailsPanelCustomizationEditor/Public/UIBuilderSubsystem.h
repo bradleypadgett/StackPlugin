@@ -11,19 +11,10 @@ class UUIBuilderGraph;
 class FBlueprintEditor;
 class FUIBuilderEditor;
 
-/**
- * UIBuilderSubsystem
- *
+/*
  * Editor-only subsystem that automatically manages injecting
- * a UIBuilderGraphHolder into Blueprints when opened in editor,
+ * a UIBuilderGraph into Blueprints when opened in editor,
  * and extends the Blueprint Editor with the UI Builder tab.
- *
- * - When a Blueprint is opened:
- *   [AssetEditorOpened -> OnBlueprintEditorOpened() -> InjectGraphHolder() -> (Ensure/Add Variable + Ensure/Create Instance)]
- *   [If needed, retries occur using FTSTicker]
- *
- * - After injection:
- *   ExtendBlueprintEditor() sets up custom UI Builder graph tab.
  */
 UCLASS()
 class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderSubsystem : public UEditorSubsystem

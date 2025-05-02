@@ -1,5 +1,5 @@
 ﻿#include "UIBuilderSubsystem.h"
-#include "Graph/UIBuilderGraphHolder.h"
+#include "Graph/UIBuilderGraph.h"
 #include "Graph/UIBuilderGraph.h"
 #include "Graph/UIBuilderGraphSchema.h"
 #include "Graph/UIBuilderGraphEditor.h"
@@ -72,7 +72,7 @@ void UUIBuilderSubsystem::OnBlueprintEditorOpened(UObject* Asset)
                 if (!Editor) return false;
 
                 TSharedRef<FUIBuilderEditorExtension> Extension = FUIBuilderEditorExtension::CreateEditorExtension(Editor);
-                Extension->ExtendBlueprintEditor();
+                Extension->InitializeBlueprintEditorTabs();
 
                 return false;
             }

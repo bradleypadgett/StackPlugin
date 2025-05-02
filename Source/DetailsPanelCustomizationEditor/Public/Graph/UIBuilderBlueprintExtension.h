@@ -3,7 +3,7 @@
 #include "UObject/Object.h"
 #include "UObject/ObjectMacros.h"
 #include "Blueprint/BlueprintExtension.h"
-#include "UIBuilderGraphHolder.h"
+#include "UIBuilderGraph.h"
 #include "UIBuilderBlueprintExtension.generated.h"
 
 UCLASS()
@@ -13,9 +13,6 @@ class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderBlueprintExtension : public 
 
 public:
 
-    //bool InjectGraphHolderInstance(UBlueprint* BlueprintAsset);
-
-    // The actual graph holder object that stores the UI Builder graph
     UPROPERTY()
-    UUIBuilderGraphHolder* GraphHolder = nullptr;
+    UUIBuilderGraph* UIBuilderGraph = nullptr;
 };

@@ -8,6 +8,11 @@ class UUIBuilderGraph;
 
 /*
 * Slate widget that renders the editable graph itself
+* Useful for Adding toolbars, dropdowns, or buttons above graph.
+* Can swap between graph views/layouts
+* Can control padding/layout
+* 
+* Can add runtime previews here
 */
 class SUIBuilderGraphEditor : public SCompoundWidget
 {

@@ -3,7 +3,7 @@
 #include "Graph/UIBuilderGraphSchema.h"
 #include "Graph/UIBuilderGraphSidebarAction.h"
 #include "Framework/Docking/TabManager.h"
-#include "Graph/UIBuilderGraphHolder.h"
+#include "Graph/UIBuilderGraph.h"
 #include "Graph/UIBuilderEditor.h"
 #include "Graph/UIBuilderGraph.h"
 #include "UIBuilderSubsystem.h"
@@ -29,12 +29,12 @@ FUIBuilderEditorExtension::~FUIBuilderEditorExtension()
 TSharedRef<FUIBuilderEditorExtension> FUIBuilderEditorExtension::CreateEditorExtension(FBlueprintEditor* InBlueprintEditor)
 {
     TSharedRef<FUIBuilderEditorExtension> NewExtension = MakeShared<FUIBuilderEditorExtension>(InBlueprintEditor);
-    NewExtension->ExtendBlueprintEditor();
+    NewExtension->InitializeBlueprintEditorTabs();
     return NewExtension;
 }
 
 // Called from OnBlueprintEditorOpened. 
-void FUIBuilderEditorExtension::ExtendBlueprintEditor()
+void FUIBuilderEditorExtension::InitializeBlueprintEditorTabs()
 {
     if (!BlueprintEditor)
     {
@@ -78,7 +78,7 @@ void FUIBuilderEditorExtension::RegisterGraphTab()
             NSLOCTEXT("UIBuilder", "WorkspaceCategory", "UI Builder")
         );
 
-        TabManager->RegisterTabSpawner(TabID, FOnSpawnTab::CreateSP(SharedThis(this), &FUIBuilderEditorExtension::CreateUIBuilderGraphTab))
+        TabManager->RegisterTabSpawner(TabID, FOnSpawnTab::CreateSP(SharedThis(this), &FUIBuilderEditorExtension::CreateGraphTab))
             .SetDisplayName(NSLOCTEXT("UIBuilderGraph", "TabTitle", "UI Builder Graph"))
             .SetIcon(FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.Tabs.Details"))
             .SetGroup(UIBuilderCategory);
@@ -91,8 +91,8 @@ void FUIBuilderEditorExtension::RegisterGraphTab()
     }
 }
 
-// Creates the Graph tab after registering, lives inside tab manager. 
-TSharedRef<SDockTab> FUIBuilderEditorExtension::CreateUIBuilderGraphTab(const FSpawnTabArgs& Args)
+// Constructs and returns the actual UI content for the tab (Slate).
+TSharedRef<SDockTab> FUIBuilderEditorExtension::CreateGraphTab(const FSpawnTabArgs& Args)
 {
     if (!BlueprintEditor)
     {
@@ -135,30 +135,25 @@ TSharedRef<SDockTab> FUIBuilderEditorExtension::CreateUIBuilderGraphTab(const FS
         ];
 }
 
-// Creates the actual Graph
+// Ensures the UUIBuilderGraph exists and returns it — responsible for persistent graph data.
 UUIBuilderGraph* FUIBuilderEditorExtension::GetOrCreateGraph(UBlueprint* Blueprint) const
 {
     UUIBuilderBlueprintExtension* Extension = GetOrCreateBlueprintExtension(Blueprint);
     if (!Extension) return nullptr;
 
-    if (!Extension->GraphHolder)
+    if (!Extension->UIBuilderGraph)
     {
-        Extension->GraphHolder = NewObject<UUIBuilderGraphHolder>(Extension, TEXT("UIBuilderGraph_Holder"), RF_Public | RF_Transactional);
-    }
-
-    if (!Extension->GraphHolder->UIBuilderGraph)
-    {
-        Extension->GraphHolder->UIBuilderGraph = NewObject<UUIBuilderGraph>(
-            Extension->GraphHolder,
+        Extension->UIBuilderGraph = NewObject<UUIBuilderGraph>(
+            Extension,
             TEXT("UIBuilderGraph"),
             RF_Transactional
         );
 
-        Extension->GraphHolder->UIBuilderGraph->Schema = UUIBuilderGraphSchema::StaticClass();
-        UE_LOG(LogTemp, Warning, TEXT("✅ Created UIBuilderGraph inside new/existing holder."));
+        Extension->UIBuilderGraph->Schema = UUIBuilderGraphSchema::StaticClass();
+        UE_LOG(LogTemp, Warning, TEXT("✅ UIBuilder is initialized inside Blueprint"));
     }
 
-    return Extension->GraphHolder->UIBuilderGraph;
+    return Extension->UIBuilderGraph;
 }
 
 // Actually hooks up the Blueprint to store the UI Builder
