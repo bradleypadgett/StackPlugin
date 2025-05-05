@@ -20,12 +20,10 @@ public:
     FUIBuilderTabRegistrar(class FBlueprintEditor* InBlueprintEditor);
     ~FUIBuilderTabRegistrar();
 
-    // First Subsystem asks this to spawn in an extension
-    static TSharedRef<FUIBuilderTabRegistrar> CreateEditorExtension(FBlueprintEditor* InBlueprintEditor);
-
     // Subsystem immediately asks to attach the extension to the Blueprint Editor
     void InitializeBlueprintEditorTabs();
 
+    void AddToolbarButtons(FToolBarBuilder& ToolbarBuilder);
 
 private:
 

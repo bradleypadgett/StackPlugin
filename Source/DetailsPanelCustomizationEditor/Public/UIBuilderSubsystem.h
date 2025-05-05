@@ -26,11 +26,14 @@ public:
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
     virtual void Deinitialize() override;
 
+    void OnEditorPreWidgets(const TArray<UObject*>& Assets, IAssetEditorInstance* Instance);
+
     /** Called when any asset editor is opened */
     void OnBlueprintEditorOpened(UObject* Asset);
 
 private:
 
-    TSet<FBlueprintEditor*> ActiveEditors;
+    TMap<FBlueprintEditor*, TSharedPtr<FUIBuilderTabRegistrar>> TabRegistrars;
+
 
 };

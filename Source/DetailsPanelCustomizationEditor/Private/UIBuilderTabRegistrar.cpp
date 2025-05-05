@@ -5,10 +5,10 @@
 #include "Framework/Docking/TabManager.h"
 #include "Graph/UIBuilderGraph.h"
 #include "Graph/UIBuilderGraphController.h"
-#include "Graph/UIBuilderGraph.h"
 #include "UIBuilderSubsystem.h"
 #include "GraphEditor.h" //weeeee
 #include "BlueprintEditor.h"
+#include "BlueprintEditorModes.h"
 #include "BlueprintEditorModule.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Widgets/Docking/SDockTab.h"
@@ -24,13 +24,6 @@ FUIBuilderTabRegistrar::FUIBuilderTabRegistrar(FBlueprintEditor* InBlueprintEdit
 
 FUIBuilderTabRegistrar::~FUIBuilderTabRegistrar()
 {
-}
-
-TSharedRef<FUIBuilderTabRegistrar> FUIBuilderTabRegistrar::CreateEditorExtension(FBlueprintEditor* InBlueprintEditor)
-{
-    TSharedRef<FUIBuilderTabRegistrar> NewExtension = MakeShared<FUIBuilderTabRegistrar>(InBlueprintEditor);
-    NewExtension->InitializeBlueprintEditorTabs();
-    return NewExtension;
 }
 
 // Called from OnBlueprintEditorOpened. 
@@ -175,3 +168,7 @@ UUIBuilderBlueprintExtension* FUIBuilderTabRegistrar::GetOrCreateBlueprintExtens
     return NewExt;
 }
 
+void FUIBuilderTabRegistrar::AddToolbarButtons(FToolBarBuilder& ToolbarBuilder)
+{
+
+}
