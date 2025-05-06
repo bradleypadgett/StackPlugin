@@ -1,7 +1,7 @@
 using UnrealBuildTool;
-public class DetailsPanelCustomizationEditor : ModuleRules
+public class UIBuilder : ModuleRules
 {
-    public DetailsPanelCustomizationEditor(ReadOnlyTargetRules Target) : base(Target)
+    public UIBuilder(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 

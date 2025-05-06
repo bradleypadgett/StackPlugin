@@ -9,7 +9,7 @@
  * Base class for all UI Builder Graph Nodes
  */
 UCLASS(Abstract)
-class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraphNode_Base : public UEdGraphNode
+class UIBUILDER_API UUIBuilderGraphNode_Base : public UEdGraphNode
 {
     GENERATED_BODY()
 

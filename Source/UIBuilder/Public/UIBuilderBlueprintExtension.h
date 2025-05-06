@@ -7,7 +7,7 @@
 #include "UIBuilderBlueprintExtension.generated.h"
 
 UCLASS()
-class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderBlueprintExtension : public UBlueprintExtension
+class UIBUILDER_API UUIBuilderBlueprintExtension : public UBlueprintExtension
 {
     GENERATED_BODY()
 

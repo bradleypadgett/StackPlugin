@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "Details Panel Customization",
+	"FriendlyName": "UI Builder",
 	"Description": "Editor for extending Slate into a node-based system for editing panels, i.e. Details Panel",
 	"Category": "UI",
 	"CreatedBy": "Bradley Padgett",
@@ -16,12 +16,12 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "DetailsPanelCustomizationEditor",
+			"Name": "UIBuilder",
 			"Type": "Editor",
 			"LoadingPhase": "Default"
 		},
 		{
- 			"Name": "DetailsPanelCustomizationRuntime",
+ 			"Name": "UIBuilderRuntime",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}

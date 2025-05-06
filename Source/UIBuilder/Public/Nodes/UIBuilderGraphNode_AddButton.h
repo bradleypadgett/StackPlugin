@@ -9,7 +9,7 @@
  * Node that represents adding a Button to the UI
  */
 UCLASS()
-class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraphNode_AddButton : public UUIBuilderGraphNode_Base
+class UIBUILDER_API UUIBuilderGraphNode_AddButton : public UUIBuilderGraphNode_Base
 {
     GENERATED_BODY()
 

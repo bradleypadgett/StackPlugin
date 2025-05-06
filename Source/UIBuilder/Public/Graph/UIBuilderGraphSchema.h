@@ -10,7 +10,7 @@
  * Defines allowed connections, context menus, and rules for the UI Builder Graph
  */
 UCLASS()
-class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraphSchema : public UEdGraphSchema
+class UIBUILDER_API UUIBuilderGraphSchema : public UEdGraphSchema
 {
     GENERATED_BODY()
 

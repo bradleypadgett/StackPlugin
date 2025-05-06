@@ -9,7 +9,7 @@
  * Underlying data asset storing nodes. Holds nodes like AddButton, AddSlider, etc.
  */
 UCLASS()
-class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderGraph : public UEdGraph
+class UIBUILDER_API UUIBuilderGraph : public UEdGraph
 {
     GENERATED_BODY()
 

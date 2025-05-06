@@ -17,7 +17,7 @@ class FUIBuilderGraphController;
  * and extends the Blueprint Editor with the UI Builder tab.
  */
 UCLASS()
-class DETAILSPANELCUSTOMIZATIONEDITOR_API UUIBuilderSubsystem : public UEditorSubsystem
+class UIBUILDER_API UUIBuilderSubsystem : public UEditorSubsystem
 {
     GENERATED_BODY()
 

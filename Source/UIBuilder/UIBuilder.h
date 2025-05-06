@@ -3,7 +3,7 @@
 
 
 
-class FDetailsPanelCustomizationRuntimeModule : public IModuleInterface
+class FUIBuilderModule : public IModuleInterface
 {
 public:
     virtual void StartupModule() override;
