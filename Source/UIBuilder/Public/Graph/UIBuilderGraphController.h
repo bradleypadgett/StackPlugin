@@ -6,18 +6,17 @@
 
 class FBlueprintEditor;
 class SGraphEditor;
-
-// If I ever want to switch to having a standalone .uasset, switch over to FAssetEditorToolkit
+class UUIBuilderBlueprintExtension;
 
 /*
- * Main editor controller / window, manages tab layouts, undo/redo
+ * Manages tab layout, mode switching, and UI logic.
  */
 class FUIBuilderGraphController : public TSharedFromThis<FUIBuilderGraphController>
 {
 public:
     FUIBuilderGraphController();
 
-    void Init(FBlueprintEditor* InEditor, UUIBuilderGraph* InGraph);
+    void Init(FBlueprintEditor* InEditor, UUIBuilderBlueprintExtension* InExtension, UUIBuilderGraph* InGraph);
 
     TSharedRef<SWidget> BuildGraphWidget();
 
@@ -29,6 +28,8 @@ private:
     UUIBuilderGraph* Graph = nullptr;
 
     TSharedPtr<SGraphEditor> GraphEditorWidget;
+
+    UUIBuilderBlueprintExtension* Extension = nullptr;
 
     void BindCommands();
 };

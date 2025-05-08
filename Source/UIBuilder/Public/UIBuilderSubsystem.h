@@ -12,9 +12,7 @@ class FBlueprintEditor;
 class FUIBuilderGraphController;
 
 /*
- * Editor-only subsystem that automatically manages injecting
- * a UIBuilderGraph into Blueprints when opened in editor,
- * and extends the Blueprint Editor with the UI Builder tab.
+ * Injects the BlueprintExtension and toolbar buttons on blueprint open (pre-widgets).
  */
 UCLASS()
 class UIBUILDER_API UUIBuilderSubsystem : public UEditorSubsystem
@@ -26,14 +24,7 @@ public:
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
     virtual void Deinitialize() override;
 
-    void OnEditorPreWidgets(const TArray<UObject*>& Assets, IAssetEditorInstance* Instance);
-
-    /** Called when any asset editor is opened */
-    void OnBlueprintEditorOpened(UObject* Asset);
-
 private:
 
-    TMap<FBlueprintEditor*, TSharedPtr<FUIBuilderTabRegistrar>> TabRegistrars;
-
-
+    void OnEditorPreWidgets(const TArray<UObject*>& Assets, IAssetEditorInstance* Instance);
 };

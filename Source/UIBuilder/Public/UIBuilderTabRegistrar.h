@@ -6,7 +6,9 @@
 
 class FUIBuilderGraphController;
 class UUIBuilderBlueprintExtension;
-class UUIBuilderGraph;
+class UUIBuilderGraph; 
+class FSpawnTabArgs;
+class FBlueprintEditor;
 
 /*
  * Extends the Blueprint Editor to add a custom "UI Builder Graph" tab.
@@ -15,31 +17,22 @@ class FUIBuilderTabRegistrar : public TSharedFromThis<FUIBuilderTabRegistrar>
 {
 public:
 
-    FUIBuilderTabRegistrar() = default;
+    //FUIBuilderTabRegistrar() = default;
 
-    FUIBuilderTabRegistrar(class FBlueprintEditor* InBlueprintEditor);
+    FUIBuilderTabRegistrar();
     ~FUIBuilderTabRegistrar();
 
-    // Subsystem immediately asks to attach the extension to the Blueprint Editor
-    void InitializeBlueprintEditorTabs();
+    static void InitializeBlueprintEditorTabs(FBlueprintEditor* InBlueprint);
 
-    void AddToolbarButtons(FToolBarBuilder& ToolbarBuilder);
+    static void InjectModeSwitcherToolbar(FBlueprintEditor* InBlueprint, UUIBuilderBlueprintExtension* InExtension);
 
 private:
 
-    void RegisterGraphTab();
+    static void RegisterGraphTab(FBlueprintEditor* InBlueprint);
 
-    UUIBuilderBlueprintExtension* GetOrCreateBlueprintExtension(UBlueprint* Blueprint) const;
-
-    UUIBuilderGraph* GetOrCreateGraph(UBlueprint* Blueprint) const;
+    UUIBuilderGraph* GetOrCreateGraph(FBlueprintEditor* InBlueprint);
   
-    TSharedRef<class SDockTab> CreateGraphTab(const class FSpawnTabArgs& Args);
+    TSharedRef<class SDockTab> CreateGraphTab(FBlueprintEditor* InBlueprint, FSpawnTabArgs* InSpawnTabArgs);
 
-    class FBlueprintEditor* BlueprintEditor = nullptr;
-
-    TSharedPtr<FUIBuilderGraphController> OwnedEditor;
-
-    UPROPERTY(Instanced)
-    UUIBuilderGraph* UIBuilderGraph;
 
 };

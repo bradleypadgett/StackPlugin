@@ -6,7 +6,7 @@
 
 
 /*
- * Underlying data asset storing nodes. Holds nodes like AddButton, AddSlider, etc.
+ * The actual graph data structure; added to `FunctionGraphs` for saving.
  */
 UCLASS()
 class UIBUILDER_API UUIBuilderGraph : public UEdGraph

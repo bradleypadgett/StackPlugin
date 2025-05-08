@@ -14,29 +14,35 @@
 #include "Widgets/Docking/SDockTab.h"
 #include "Kismet2/BlueprintEditorUtils.h"
 #include "Framework/Docking/LayoutExtender.h"
+#include "Containers/Ticker.h"
+#include "Widgets/SBoxPanel.h"
+#include "Widgets/Layout/SBox.h"
+#include "Framework/Application/SlateApplication.h"
+#include "WorkflowOrientedApp/SModeWidget.h"
 
 
 
-FUIBuilderTabRegistrar::FUIBuilderTabRegistrar(FBlueprintEditor* InBlueprintEditor)
+FUIBuilderTabRegistrar::FUIBuilderTabRegistrar()
 {
-    BlueprintEditor = InBlueprintEditor;
+
 }
 
 FUIBuilderTabRegistrar::~FUIBuilderTabRegistrar()
 {
+
 }
 
 // Called from OnBlueprintEditorOpened. 
-void FUIBuilderTabRegistrar::InitializeBlueprintEditorTabs()
+void FUIBuilderTabRegistrar::InitializeBlueprintEditorTabs(FBlueprintEditor* InBlueprintEditor)
 {
-    if (!BlueprintEditor)
+    if (!InBlueprintEditor)
     {
         UE_LOG(LogTemp, Error, TEXT("⚠️ UIBuilder: BlueprintEditor is null!"));
         return;
     }
 
     const FName TabID = "UIBuilderGraph";
-    TSharedPtr<FTabManager> TabManager = BlueprintEditor->GetTabManager();
+    TSharedPtr<FTabManager> TabManager = InBlueprintEditor->GetTabManager();
 
     if (!TabManager.IsValid())
     {
@@ -47,128 +53,291 @@ void FUIBuilderTabRegistrar::InitializeBlueprintEditorTabs()
     // Only register if needed
     if (!TabManager->HasTabSpawner(TabID))
     {
-        RegisterGraphTab();
+        RegisterGraphTab(InBlueprintEditor);
     }
 
     TabManager->TryInvokeTab(TabID);
 }
 
 // Registers Graph into tab manager if it doesn't exist.
-void FUIBuilderTabRegistrar::RegisterGraphTab()
+void FUIBuilderTabRegistrar::RegisterGraphTab(FBlueprintEditor* InBlueprintEditor)
 {
-    const FName TabID = "UIBuilderGraph";
-    TSharedPtr<FTabManager> TabManager = BlueprintEditor->GetTabManager();
 
-    if (!TabManager.IsValid())
-    {
-        UE_LOG(LogTemp, Error, TEXT("UIBuilder: TabManager is invalid"));
-        return;
-    }
-
-    if (!TabManager->HasTabSpawner(TabID))
-    {
-        static TSharedRef<FWorkspaceItem> UIBuilderCategory = FWorkspaceItem::NewGroup(
-            NSLOCTEXT("UIBuilder", "WorkspaceCategory", "UI Builder")
-        );
-
-        TabManager->RegisterTabSpawner(TabID, FOnSpawnTab::CreateSP(SharedThis(this), &FUIBuilderTabRegistrar::CreateGraphTab))
-            .SetDisplayName(NSLOCTEXT("UIBuilderGraph", "TabTitle", "UI Builder Graph"))
-            .SetIcon(FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.Tabs.Details"))
-            .SetGroup(UIBuilderCategory);
-
-        UE_LOG(LogTemp, Warning, TEXT("UIBuilder: Registered TabSpawner!"));
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("⚠️ UIBuilder: TabSpawner already registered. Skipping re-registration."));
-    }
 }
 
-// Constructs and returns the actual UI content for the tab (Slate).
-TSharedRef<SDockTab> FUIBuilderTabRegistrar::CreateGraphTab(const FSpawnTabArgs& Args)
+// Inject buttons into the SHorizontalBox inside SStandaloneAssetEditorToolkitHost toolbar — delayed via timer to ensure full layout
+void FUIBuilderTabRegistrar::InjectModeSwitcherToolbar(FBlueprintEditor* InBlueprintEditor, UUIBuilderBlueprintExtension* InExtension)
 {
-    if (!BlueprintEditor)
-    {
-        UE_LOG(LogTemp, Error, TEXT("UIBuilder: BlueprintEditor pointer is null during tab spawn!"));
-        return SNew(SDockTab)
-            [
-                SNew(STextBlock).Text(FText::FromString("Invalid Blueprint Editor!"))
-            ];
-    }
-
-    UBlueprint* Blueprint = BlueprintEditor->GetBlueprintObj();
-    if (!Blueprint || !Blueprint->GeneratedClass)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("UIBuilder: Invalid or uncompiled Blueprint."));
-        return SNew(SDockTab)
-            [
-                SNew(STextBlock).Text(FText::FromString("Invalid Blueprint"))
-            ];
-    }
-
-    if (UUIBuilderGraph* Graph = GetOrCreateGraph(Blueprint))
-    {
-        TSharedRef<FUIBuilderGraphController> UIEditor = MakeShared<FUIBuilderGraphController>();
-        UIEditor->Init(BlueprintEditor, Graph);
-        OwnedEditor = UIEditor;
-
-        return SNew(SDockTab)
-            .TabRole(ETabRole::DocumentTab)
-            .Label(FText::FromString("UI Builder"))
-            .ToolTipText(FText::FromString("UI Builder Graph Editor"))
-            [
-                UIEditor->BuildGraphWidget()
-            ];
-    }
-
-    UE_LOG(LogTemp, Error, TEXT("UIBuilder: Graph was null even after injection."));
-    return SNew(SDockTab)
-        [
-            SNew(STextBlock).Text(FText::FromString("No UIBuilderGraph found"))
-        ];
-}
-
-// Ensures the UUIBuilderGraph exists and returns it — responsible for persistent graph data.
-UUIBuilderGraph* FUIBuilderTabRegistrar::GetOrCreateGraph(UBlueprint* Blueprint) const
-{
-    UUIBuilderBlueprintExtension* Extension = GetOrCreateBlueprintExtension(Blueprint);
-    if (!Extension) return nullptr;
-
-    if (!Extension->UIBuilderGraph)
-    {
-        Extension->UIBuilderGraph = NewObject<UUIBuilderGraph>(
-            Extension,
-            TEXT("UIBuilderGraph"),
-            RF_Transactional
-        );
-
-        Extension->UIBuilderGraph->Schema = UUIBuilderGraphSchema::StaticClass();
-        UE_LOG(LogTemp, Warning, TEXT("✅ UIBuilder is initialized inside Blueprint"));
-    }
-
-    return Extension->UIBuilderGraph;
-}
-
-// Actually hooks up the Blueprint to store the UI Builder
-UUIBuilderBlueprintExtension* FUIBuilderTabRegistrar::GetOrCreateBlueprintExtension(UBlueprint* Blueprint) const
-{
-    if (!Blueprint) return nullptr;
-
-    for (UBlueprintExtension* Ext : Blueprint->GetExtensions())
-    {
-        if (UUIBuilderBlueprintExtension* Found = Cast<UUIBuilderBlueprintExtension>(Ext))
+    // Delay actual logic to allow layout to complete
+    FTimerHandle DummyHandle;
+    GEditor->GetTimerManager()->SetTimer(DummyHandle, FTimerDelegate::CreateLambda([InBlueprintEditor, InExtension]()
         {
-            return Found;
-        }
-    }
 
-    // Create if missing
-    UUIBuilderBlueprintExtension* NewExt = NewObject<UUIBuilderBlueprintExtension>(Blueprint);
-    Blueprint->AddExtension(NewExt);
-    return NewExt;
+            TSharedPtr<IToolkitHost> ToolkitHost = InBlueprintEditor->GetToolkitHost();
+            if (!ToolkitHost.IsValid())
+            {
+                UE_LOG(LogTemp, Error, TEXT("❌ Invalid toolkit host after delay"));
+                return;
+            }
+
+            TSharedPtr<SWindow> Window = FSlateApplication::Get().FindWidgetWindow(ToolkitHost->GetParentWidget());
+            if (!Window.IsValid())
+            {
+                UE_LOG(LogTemp, Error, TEXT("❌ Could not find SWindow after delay"));
+                return;
+            }
+
+            TSharedPtr<SHorizontalBox> TargetBox;
+
+            TFunction<void(const TSharedRef<SWidget>&)> FindFirstBoxInEditorHost;
+            FindFirstBoxInEditorHost = [&FindFirstBoxInEditorHost, &TargetBox](const TSharedRef<SWidget>& Widget)
+                {
+                    if (Widget->GetTypeAsString() == "SHorizontalBox")
+                    {
+                        TargetBox = StaticCastSharedRef<SHorizontalBox>(Widget);
+                        UE_LOG(LogTemp, Warning, TEXT("🎯 Found SHorizontalBox inside editor host!"));
+                        return;
+                    }
+
+                    const FChildren* Children = Widget->GetChildren();
+                    if (Children)
+                    {
+                        for (int32 i = 0; i < Children->Num(); ++i)
+                        {
+                            const TSharedRef<const SWidget> ChildConst = Children->GetChildAt(i);
+                            const TSharedRef<SWidget> Child = StaticCastSharedRef<SWidget>(ConstCastSharedRef<SWidget>(ChildConst));
+                            FindFirstBoxInEditorHost(Child);
+                            if (TargetBox.IsValid()) return;
+                        }
+                    }
+                };
+
+            TFunction<void(const TSharedRef<SWidget>&)> FindEditorHost;
+            FindEditorHost = [&FindEditorHost, &FindFirstBoxInEditorHost](const TSharedRef<SWidget>& Widget)
+                {
+                    if (Widget->GetTypeAsString().Contains("SStandaloneAssetEditorToolkitHost"))
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("🔍 Found SStandaloneAssetEditorToolkitHost — taking first SHorizontalBox inside"));
+                        FindFirstBoxInEditorHost(Widget);
+                        return;
+                    }
+
+                    const FChildren* Children = Widget->GetChildren();
+                    if (Children)
+                    {
+                        for (int32 i = 0; i < Children->Num(); ++i)
+                        {
+                            const TSharedRef<const SWidget> ChildConst = Children->GetChildAt(i);
+                            const TSharedRef<SWidget> Child = StaticCastSharedRef<SWidget>(ConstCastSharedRef<SWidget>(ChildConst));
+                            FindEditorHost(Child);
+                        }
+                    }
+                };
+
+            FindEditorHost(Window.ToSharedRef());
+
+            if (!TargetBox.IsValid())
+            {
+                UE_LOG(LogTemp, Error, TEXT("❌ Could not find SHorizontalBox inside SStandaloneAssetEditorToolkitHost (after delay)"));
+                return;
+            }
+
+            TWeakObjectPtr<UUIBuilderBlueprintExtension> WeakExt = InExtension;
+
+            TSharedRef<SWidget> InjectedButtons =
+                SNew(SBorder)
+                .BorderImage(FAppStyle::Get().GetBrush("ToolPanel.GroupBorder"))
+                .HAlign(HAlign_Fill)
+                .VAlign(VAlign_Fill)
+                .Padding(FMargin(0.f, 0.f, 0.f, 0.f))
+                [
+                    SNew(SHorizontalBox)
+
+                        + SHorizontalBox::Slot()
+                        .AutoWidth()
+                        .Padding(FMargin(4.f, 0.f, 8.f, 0.f))
+                        .VAlign(VAlign_Center)
+                        [
+                            SNew(SBox)
+                                .HeightOverride(24)
+                                [
+                                    SNew(SModeWidget, FText::FromString("Designer"), "Designer")
+                                        .OnGetActiveMode_Lambda([WeakExt]() -> FName {
+                                        return WeakExt.IsValid() ? WeakExt->GetCurrentMode() : FName();
+                                            })
+                                        .OnSetActiveMode_Lambda([WeakExt](FName InMode) {
+                                        if (WeakExt.IsValid()) { WeakExt->SetCurrentMode(InMode); }
+                                            })
+                                        .IconImage(FAppStyle::GetBrush("UMGEditor.SwitchToDesigner"))
+                                ]
+                        ]
+
+                        + SHorizontalBox::Slot()
+                        .AutoWidth()
+                        .Padding(FMargin(2.f, 0.f, 10.f, 0.f))
+                        .VAlign(VAlign_Center)
+                        [
+                            SNew(SBox)
+                                .HeightOverride(24)
+                                [
+                                    SNew(SModeWidget, FText::FromString("Graph"), "Graph")
+                                        .OnGetActiveMode_Lambda([WeakExt]() -> FName {
+                                        return WeakExt.IsValid() ? WeakExt->GetCurrentMode() : FName();
+                                            })
+                                        .OnSetActiveMode_Lambda([WeakExt](FName InMode) {
+                                        if (WeakExt.IsValid()) { WeakExt->SetCurrentMode(InMode); }
+                                            })
+                                        .IconImage(FAppStyle::GetBrush("FullBlueprintEditor.SwitchToScriptingMode"))
+                                ]
+                        ]
+                ];
+            // Inject into the toolbar
+            TargetBox->AddSlot()
+                .AutoWidth()
+                .VAlign(VAlign_Fill)
+                [
+                    InjectedButtons
+                ];
+
+            UE_LOG(LogTemp, Warning, TEXT("✅ Buttons injected into SHorizontalBox inside SStandaloneAssetEditorToolkitHost (after delay)!"));
+        }),
+        0.05f, false);
 }
 
-void FUIBuilderTabRegistrar::AddToolbarButtons(FToolBarBuilder& ToolbarBuilder)
+
+/*
+void FUIBuilderTabRegistrar::InjectModeSwitcherToolbar(FBlueprintEditor* InBlueprintEditor)
 {
+    // Delay actual logic to allow layout to complete
+    FTimerHandle DummyHandle;
+    GEditor->GetTimerManager()->SetTimer(DummyHandle, FTimerDelegate::CreateLambda([InBlueprintEditor]()
+        {
+            
+            TSharedPtr<IToolkitHost> ToolkitHost = InBlueprintEditor->GetToolkitHost();
+            if (!ToolkitHost.IsValid())
+            {
+                UE_LOG(LogTemp, Error, TEXT("❌ Invalid toolkit host after delay"));
+                return;
+            }
 
+            TSharedPtr<SWindow> Window = FSlateApplication::Get().FindWidgetWindow(ToolkitHost->GetParentWidget());
+            if (!Window.IsValid())
+            {
+                UE_LOG(LogTemp, Error, TEXT("❌ Could not find SWindow after delay"));
+                return;
+            }
+
+            TSharedPtr<SHorizontalBox> TargetBox;
+
+            TFunction<void(const TSharedRef<SWidget>&)> FindFirstBoxInEditorHost;
+            FindFirstBoxInEditorHost = [&FindFirstBoxInEditorHost, &TargetBox](const TSharedRef<SWidget>& Widget)
+                {
+                    if (Widget->GetTypeAsString() == "SHorizontalBox")
+                    {
+                        TargetBox = StaticCastSharedRef<SHorizontalBox>(Widget);
+                        UE_LOG(LogTemp, Warning, TEXT("🎯 Found SHorizontalBox inside editor host!"));
+                        return;
+                    }
+
+                    const FChildren* Children = Widget->GetChildren();
+                    if (Children)
+                    {
+                        for (int32 i = 0; i < Children->Num(); ++i)
+                        {
+                            const TSharedRef<const SWidget> ChildConst = Children->GetChildAt(i);
+                            const TSharedRef<SWidget> Child = StaticCastSharedRef<SWidget>(ConstCastSharedRef<SWidget>(ChildConst));
+                            FindFirstBoxInEditorHost(Child);
+                            if (TargetBox.IsValid()) return;
+                        }
+                    }
+                };
+
+            TFunction<void(const TSharedRef<SWidget>&)> FindEditorHost;
+            FindEditorHost = [&FindEditorHost, &FindFirstBoxInEditorHost](const TSharedRef<SWidget>& Widget)
+                {
+                    if (Widget->GetTypeAsString().Contains("SStandaloneAssetEditorToolkitHost"))
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("🔍 Found SStandaloneAssetEditorToolkitHost — taking first SHorizontalBox inside"));
+                        FindFirstBoxInEditorHost(Widget);
+                        return;
+                    }
+
+                    const FChildren* Children = Widget->GetChildren();
+                    if (Children)
+                    {
+                        for (int32 i = 0; i < Children->Num(); ++i)
+                        {
+                            const TSharedRef<const SWidget> ChildConst = Children->GetChildAt(i);
+                            const TSharedRef<SWidget> Child = StaticCastSharedRef<SWidget>(ConstCastSharedRef<SWidget>(ChildConst));
+                            FindEditorHost(Child);
+                        }
+                    }
+                };
+
+            FindEditorHost(Window.ToSharedRef());
+
+            if (!TargetBox.IsValid())
+            {
+                UE_LOG(LogTemp, Error, TEXT("❌ Could not find SHorizontalBox inside SStandaloneAssetEditorToolkitHost (after delay)"));
+                return;
+            }
+
+            TSharedRef<SWidget> InjectedButtons =
+                SNew(SBorder)
+                .BorderImage(FAppStyle::Get().GetBrush("ToolPanel.GroupBorder"))
+                .HAlign(HAlign_Fill)
+                .VAlign(VAlign_Fill)
+                .Padding(FMargin(0.f, 0.f, 0.f, 0.f))
+                [
+                    SNew(SHorizontalBox)
+                        + SHorizontalBox::Slot()
+                        .AutoWidth()
+                        .Padding(FMargin(4.f, 0.f, 8.f, 0.f))
+                        .VAlign(VAlign_Center)
+                        [
+                            SNew(SBox)
+                                .HeightOverride(24)
+                                [
+                                    SNew(SModeWidget, FText::FromString("Designer"), "UIBuilderDesigner")
+                                        .OnGetActiveMode_Lambda([InBlueprintEditor]() {
+                                        return InBlueprintEditor->GetCurrentMode();
+                                            })
+                                        .OnSetActiveMode_Lambda([InBlueprintEditor](FName InMode) {
+                                        InBlueprintEditor->SetCurrentMode(InMode);
+                                            })
+                                        .IconImage(FAppStyle::GetBrush("UMGEditor.SwitchToDesigner"))
+                                ]
+                        ]
+                        + SHorizontalBox::Slot()
+                        .AutoWidth()
+                        .Padding(FMargin(2.f, 0.f, 10.f, 0.f))
+                        .VAlign(VAlign_Center)
+                        [
+                            SNew(SBox)
+                                .HeightOverride(24)
+                                [
+                                    SNew(SModeWidget, FText::FromString("Graph"), FBlueprintEditorApplicationModes::StandardBlueprintEditorMode)
+                                        .OnGetActiveMode_Lambda([InBlueprintEditor]() {
+                                        return InBlueprintEditor->GetCurrentMode();
+                                            })
+                                        .OnSetActiveMode_Lambda([InBlueprintEditor](FName InMode) {
+                                        InBlueprintEditor->SetCurrentMode(InMode);
+                                            })
+                                        .IconImage(FAppStyle::GetBrush("FullBlueprintEditor.SwitchToScriptingMode"))
+                                ]
+                        ]
+                ];
+
+            // Inject into the toolbar
+            TargetBox->AddSlot()
+                .AutoWidth()
+                .VAlign(VAlign_Fill)
+                [
+                    InjectedButtons
+                ];
+
+            UE_LOG(LogTemp, Warning, TEXT("✅ Buttons injected into SHorizontalBox inside SStandaloneAssetEditorToolkitHost (after delay)!"));
+        }),
+        0.05f, false);
 }
+*/

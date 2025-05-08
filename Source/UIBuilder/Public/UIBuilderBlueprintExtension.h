@@ -1,11 +1,16 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "UObject/Object.h"
-#include "UObject/ObjectMacros.h"
 #include "Blueprint/BlueprintExtension.h"
 #include "Graph/UIBuilderGraph.h"
 #include "UIBuilderBlueprintExtension.generated.h"
 
+
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnUIBuilderModeChanged, FName);
+
+/*
+ * Stores per-blueprint state like mode and graph pointer (transient).
+ */
 UCLASS()
 class UIBUILDER_API UUIBuilderBlueprintExtension : public UBlueprintExtension
 {
@@ -13,6 +18,27 @@ class UIBUILDER_API UUIBuilderBlueprintExtension : public UBlueprintExtension
 
 public:
 
-    UPROPERTY()
-    UUIBuilderGraph* UIBuilderGraph = nullptr;
+    virtual void PostInitProperties() override;
+
+    FName GetCurrentMode() const { return CurrentMode; }
+    void SetCurrentMode(FName InMode);
+
+    FOnUIBuilderModeChanged& OnModeChanged() { return ModeChangedDelegate; }
+
+private:
+
+    UFUNCTION()
+    void EnsureUIBuilderGraph();
+
+    UPROPERTY(Transient)
+    UBlueprint* OwningBlueprint;
+
+    UPROPERTY(Transient)
+    UUIBuilderGraph* UIBuilderGraph;
+
+    UPROPERTY(Transient)
+    FName CurrentMode = "Graph";
+
+    FOnUIBuilderModeChanged ModeChangedDelegate;
+
 };

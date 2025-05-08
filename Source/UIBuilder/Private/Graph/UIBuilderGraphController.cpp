@@ -1,4 +1,5 @@
-#include "Graph/UIBuilderGraphController.h"
+﻿#include "Graph/UIBuilderGraphController.h"
+#include "UIBuilderBlueprintExtension.h"
 #include "EdGraph/EdGraph.h"
 #include "GraphEditor.h"
 
@@ -6,10 +7,20 @@
 
 FUIBuilderGraphController::FUIBuilderGraphController() {}
 
-void FUIBuilderGraphController::Init(FBlueprintEditor* InEditor, UUIBuilderGraph* InGraph)
+void FUIBuilderGraphController::Init(FBlueprintEditor* InEditor, UUIBuilderBlueprintExtension* InExtension, UUIBuilderGraph* InGraph)
 {
     BlueprintEditor = InEditor;
     Graph = InGraph;
+    Extension = InExtension;
+
+    if (Extension)
+    {
+        Extension->OnModeChanged().AddLambda([this](FName NewMode)
+        {
+            // Later: trigger layout switch
+            UE_LOG(LogTemp, Log, TEXT("🌀 Mode changed to: %s"), *NewMode.ToString());
+        });
+    }
     BindCommands();
 }
 
