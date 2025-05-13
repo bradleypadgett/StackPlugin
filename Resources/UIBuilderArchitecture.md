@@ -1,123 +1,136 @@
-# 🧠 UIBuilder Plugin Architecture Guide
+# 🏗️ UIBuilder Plugin Architecture Guide
 
 This document outlines the architecture of the UIBuilder plugin, which integrates with the Unreal Blueprint Editor to create a custom graph-based UI editing system.
 
 ---
 
-## 🔁 Editor-Only Ownership & Lifecycle
+## ♻️ Editor-Only Ownership & Lifecycle
 
 ```
 UUIBuilderSubsystem (global singleton)
 └── injects →
-    UUIBuilderBlueprintExtension (per open Blueprint, not saved)
-    ├── holds →
-    │   UUIBuilderGraph* (pointer only; not serialized)
-    │
-    ├── ensures →
-    │   - Graph is created if missing
-    │   - Graph is outered to the Blueprint
-    │   - Graph is added to Blueprint->FunctionGraphs (or similar)
-    │
-    └── tracks →
-        - Current tab mode (Designer/Graph)
-        - Pinned tab (optional)
-        - Other transient settings (non-persistent)
+    UUIBuilderBlueprintExtension (per open Blueprint)
+    ├── stores →
+    │   - CurrentMode (e.g., "Designer" or "Graph")
+    │   - Pointer to UUIBuilderGraph (created if missing)
+    └── ensures →
+        - Graph is created if not found in FunctionGraphs
+        - Graph is outered to the Blueprint
+        - Graph is added to Blueprint->FunctionGraphs for persistence
 ```
 
 ---
 
-## 🧱 Graph Data Saved in Blueprint Asset
+## 🌊 Tab Management Flow
+
+```
+UUIBuilderBlueprintExtension (per Blueprint)
+└── manages →
+    ├── CurrentTabMode (FName)
+    ├── Tab layout state (active tab, pinned tab, etc.)
+    ├── Reference to UUIBuilderGraph (stored inside Blueprint)
+    └── Broadcasts OnModeChanged()
+
+FUIBuilderTabRegistrar (global helper class)
+└── registers →
+    ├── Tabs with the Blueprint Editor (graph, preview, variables)
+    └── Spawner delegates call into the system to build tab content
+
+SUIBuilderGraphEditor
+└── builds →
+    ├── Graph tab’s SGraphEditor
+    └── Custom UIBuilder graph visuals (via mvvm stack)
+
+SUIBuilderSelectionPanel
+└── builds →
+    └── Mirrors Niagara's property display with selected stack data
+
+SUIBuilderPreviewPanel (optional)
+└── builds →
+    └── Preview layout based on current graph
+
+SUIBuilderVariablePanel (optional)
+└── builds →
+    └── Stripped down version of "My Blueprint"
+```
+
+---
+
+## 💾 Graph Data Saved (Serialized / Transient)
 
 ```
 UBlueprint (owning asset)
-└── owns →
-    UUIBuilderGraph (must be outered to Blueprint)
-    └── owns →
-        UUIBuilderGraphNode_* (one per node; saved with graph)
+└── stores →
+    └── UUIBuilderGraph (outered to Blueprint)
+        └── stores → 
+            └── UUIBuilderStackSection (section block)
+
+UUIBuilderBlueprintExtension (transient per Blueprint)
+└── stores →
+    ├── Graph* pointer (serialized to UBlueprint)
+    ├── CurrentTabMode ("Designer", "Graph")
+    └── Editor-only toggle flags (panel visibility, UI state, etc.)
 ```
 
 ---
 
-## 🎛️ Tab + UI Layer (Per-Tab Flow)
+## 🎨 UIBuilder Graph Rendering Flow
 
 ```
-FUIBuilderTabRegistrar (global)
-└── registers →
-    Custom tabs (Graph, Designer, etc.)
-    └── spawns →
-        FUIBuilderGraphController (per tab)
-        ├── builds →
-        │   - SUIBuilderGraphWidget
-        │   - SUIBuilderPreviewPanel (optional)
-        │   - SUIBuilderVariablePanel (optional)
-        │
-        └── accesses →
-            UUIBuilderBlueprintExtension → to read graph, mode
+UIBuilderTabManager (per Blueprint) (behavior)
+└── builds →
+    └── SUIBuilderGraphEditor (layout)
 
-        uses →
-            FUIBuilderNodeFactory (global) → custom SGraphNode widgets
+SUIBuilderGraphEditor
+└── creates →
+    ├── SGraphEditor (layout + behavior)
+    ├── GraphToEdit = UUIBuilderGraph* (data)
+    └── Appearance = FGraphAppearanceInfo (behavior)
+         configures zooming, overlays, etc.
 ```
 
 ---
 
 ## 📚 Class Summaries
 
-### Graph System
+#### Blueprint Integration
 
+- **UUIBuilderSubsystem** (`UEditorSubsystem`) — Injects the BlueprintExtension on Blueprint open.
+- **UUIBuilderBlueprintExtension** — Stores tab layout state (current mode, toggle flags, graph pointer) 
+
+#### Graph System
+
+- **SUIBuilderGraphEditor** — Tab container for rendering the Graph tab’s graph.
 - **UUIBuilderGraph** (`UEdGraph`) — The actual graph data structure; added to `FunctionGraphs` for saving.
-- **UUIBuilderGraphNode_Base** (`UEdGraphNode`) — Serialized node types inside the graph.
-- **UUIBuilderGraphSchema** — Defines node wiring rules, pin types, and context actions.
-- **FUIBuilderGraphSidebarAction** — Enables node creation via context menu/drag-drop.
-- **FUIBuilderNodeFactory** — Creates `SGraphNode_*` widgets to render each node visually.
+- **UUIBuilderGraphSchema** — Defines connnection rules, context actions, and drag/drop validation.
+- **FUIBuilderGraphSidebarAction** — Registers palette items, group stack types, handles drag/drop.
 
-### Tab System / UI
+#### Tab System / UI
 
 - **FUIBuilderTabRegistrar** — Registers tabs with the Blueprint Editor.
-- **FUIBuilderGraphController** — Manages tab layout, mode switching, and UI logic.
-- **SUIBuilderGraphWidget** — Container for rendering the Graph tab’s graph.
+- **FUIBuilderTabManager** — Manages tab layout, mode switching, and UI logic.
+- **SUIBuilderSelectionPanel** — Reflects selected stack data in a contextual panel
 - **SUIBuilderPreviewPanel** — Optional preview of layout, using Slate.
 - **SUIBuilderVariablePanel** — Optional variable list/editor panel.
 
-### Blueprint Integration
-
-- **UUIBuilderSubsystem** (`UEditorSubsystem`) — Injects the BlueprintExtension on Blueprint open.
-- **UUIBuilderBlueprintExtension** — Stores per-blueprint state like mode and graph pointer (not saved).
-
 ---
 
-## 🔑 Integration Reminders
+## 🔌 Integration Reminders
 
 - `UUIBuilderBlueprintExtension` is not saved — use it only for transient state.
-- The graph must be outered to the Blueprint and added to a serializable list like `FunctionGraphs`.
-- Graph nodes (`UUIBuilderGraphNode_*`) are saved automatically inside the graph.
+- The graph must be outered to the Blueprint and serialized in `FunctionGraphs`.
 - Inject custom widgets (sliders, curves, etc.) into the Details panel using `IDetailCustomization`.
 - Use `CreateDetailView()` and `SetObject()` to show the Details panel inside custom tabs.
+- Switching between `Graph` and `Designer` modes controls which tabs are visible. When in `Designer` mode, only the plugin's custom tabs are shown. When in `Graph` mode, the default Blueprint tabs (e.g. Event Graph) are shown.
+- Tab registration and management aren't instanced, they're only helper classes.
 
 ---
 
-## ✅ UX Reminders
+## 🤳 UX Reminders
 
-- Reuse native systems (Details panel, Graph, etc.) whenever possible.
+- Reuse native systems (Details panel, My Blueprint, etc.) whenever possible.
 - Only create custom widgets where they improve clarity or workflow.
 - Use one `BlueprintExtension` per Blueprint and one `Subsystem` globally.
-- Custom tabs shouldn't have an `FApplicationMode` for non-sublassing integration.
+- Custom tabs won't use an `FApplicationMode` for non-sublassing integration.
 
 ---
-
-## 🧱 Runtime Descriptor Pattern (UMG Compatibility)
-
-```
-UUIBuilderGraphNode_* (Editor-only)
-└── Inherits from UEdGraphNode
-└── Used in the Blueprint Editor graph tab
-└── Converts to → UUIBuilderNodeDescriptor_* for runtime use
-
-UUIBuilderNodeDescriptor_* (Runtime-safe)
-└── Lightweight config object (UObject or UStruct)
-└── Lives in UIBuilderRuntime module
-└── Holds widget settings (e.g., Min/Max, Label)
-└── Used to spawn UMG widgets at runtime
-```
-
-> Editor nodes expose a `ToDescriptor()` method that returns the runtime-safe version.  
-> This pattern keeps runtime builds clean while reusing node logic in both the editor and UMG menus.

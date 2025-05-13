@@ -1,6 +1,11 @@
 ﻿#include "UIBuilderBlueprintExtension.h"
+#include "UIBuilderTabManager.h"
 #include "Graph/UIBuilderGraph.h"
 #include "EdGraph/EdGraph.h"
+#include "EditorSubsystem.h"
+#include "Subsystems/AssetEditorSubsystem.h"
+#include "BlueprintEditor.h"
+#include "GraphEditor.h"
 
 
 
@@ -38,9 +43,22 @@ void UUIBuilderBlueprintExtension::EnsureUIBuilderGraph()
 
 void UUIBuilderBlueprintExtension::SetCurrentMode(FName InMode)
 {
+    UE_LOG(LogTemp, Warning, TEXT("📣 SetCurrentMode called with: %s"), *InMode.ToString());
     if (CurrentMode != InMode)
     {
-        CurrentMode = InMode;
-        ModeChangedDelegate.Broadcast(CurrentMode);
+        FBlueprintEditor* Editor = static_cast<FBlueprintEditor*>(
+            GEditor->GetEditorSubsystem<UAssetEditorSubsystem>()->FindEditorForAsset(OwningBlueprint, false));
+
+        if (Editor) {
+            CurrentMode = InMode;
+            if (CurrentMode == "Designer")
+            {
+                FUIBuilderTabManager::HandleDesignerMode(Editor, this, CurrentMode);
+            }
+            else if (CurrentMode == "Graph")
+            {
+                FUIBuilderTabManager::HandleGraphMode(Editor, this, CurrentMode);
+            }
+        }
     }
 }

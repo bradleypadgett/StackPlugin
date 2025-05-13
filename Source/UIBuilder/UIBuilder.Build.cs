@@ -19,28 +19,14 @@ public class UIBuilder : ModuleRules
             "BlueprintGraph",
             "GraphEditor",
             "Kismet",
-            "BlueprintEditorLibrary"
+            "BlueprintEditorLibrary",
+            "EditorSubsystem",
+            "UIBuilderRuntime"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[]
         {
-        
+            "WorkspaceMenuStructure"
         });
-
-        if (Target.bBuildEditor)
-        {
-            PrivateDependencyModuleNames.AddRange(new string[] 
-            {
-
-            });
-
-            PublicDependencyModuleNames.AddRange(new string[]
-            {
-                "UnrealEd",
-                "EditorSubsystem",
-                "ToolMenus",
-                "AssetTools"
-            });
-        }
     }
 }

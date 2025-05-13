@@ -6,8 +6,6 @@
 
 
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnUIBuilderModeChanged, FName);
-
 /*
  * Stores per-blueprint state like mode and graph pointer (transient).
  */
@@ -23,8 +21,16 @@ public:
     FName GetCurrentMode() const { return CurrentMode; }
     void SetCurrentMode(FName InMode);
 
-    FOnUIBuilderModeChanged& OnModeChanged() { return ModeChangedDelegate; }
+    UPROPERTY(Transient)
+    TSet<FName> PreviouslyOpenTabs;
 
+    TSharedPtr<FTabManager::FLayout> CapturedGraphLayout;
+
+    int32 DesignerLayoutRestoreCount = 0;
+    int32 GraphLayoutRestoreCount = 0;
+
+    FString CapturedGraphLayoutString;
+    FString CapturedDesignerLayoutString;
 private:
 
     UFUNCTION()
@@ -38,7 +44,5 @@ private:
 
     UPROPERTY(Transient)
     FName CurrentMode = "Graph";
-
-    FOnUIBuilderModeChanged ModeChangedDelegate;
 
 };

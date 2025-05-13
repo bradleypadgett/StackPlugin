@@ -9,7 +9,7 @@
 
 class UUIBuilderGraph;
 class FBlueprintEditor;
-class FUIBuilderGraphController;
+class FUIBuilderTabManager;
 
 /*
  * Injects the BlueprintExtension and toolbar buttons on blueprint open (pre-widgets).
@@ -27,4 +27,5 @@ public:
 private:
 
     void OnEditorPreWidgets(const TArray<UObject*>& Assets, IAssetEditorInstance* Instance);
+    void OnEditorBlueprintOpened(UObject* Asset);
 };

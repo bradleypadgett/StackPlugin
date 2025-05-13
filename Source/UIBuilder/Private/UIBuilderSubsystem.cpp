@@ -17,6 +17,7 @@ void UUIBuilderSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     {
         // Injects blueprint extension if it doesn't exist and adds [Designer]/[Graph] toolbar buttons before layout is finalized
         AssetEditorSubsystem->OnEditorOpeningPreWidgets().AddUObject(this, &UUIBuilderSubsystem::OnEditorPreWidgets);
+        AssetEditorSubsystem->OnAssetEditorOpened().AddUObject(this, &UUIBuilderSubsystem::OnEditorBlueprintOpened);
 
         FBlueprintEditorModule& BlueprintEditorModule = FModuleManager::LoadModuleChecked<FBlueprintEditorModule>("Kismet");
     }
@@ -59,6 +60,18 @@ void UUIBuilderSubsystem::OnEditorPreWidgets(const TArray<UObject*>& Assets, IAs
                 // Then injects the [Designer]/[Graph] toolbar buttons into the AActor!
                 FUIBuilderTabRegistrar::InjectModeSwitcherToolbar(BlueprintEditor, Extension);
             }
+        }
+    }
+}
+
+void UUIBuilderSubsystem::OnEditorBlueprintOpened(UObject* Asset)
+{
+    if (UBlueprint* Blueprint = Cast<UBlueprint>(Asset))
+    {
+        if (FBlueprintEditor* BlueprintEditor = static_cast<FBlueprintEditor*>(
+            GEditor->GetEditorSubsystem<UAssetEditorSubsystem>()->FindEditorForAsset(Blueprint, false)))
+        {
+            FUIBuilderTabRegistrar::InitializeUIBuilderTabs(BlueprintEditor);
         }
     }
 }
