@@ -2,14 +2,10 @@
 #include "CoreMinimal.h"
 #include "EditorSubsystem.h"
 #include "Widgets/Docking/SDockTab.h"
-#include "UIBuilderTabRegistrar.h"
+#include "UIDesignerTabs.h"
 #include "UIBuilderSubsystem.generated.h"
 
 
-
-class UUIBuilderGraph;
-class FBlueprintEditor;
-class FUIBuilderTabManager;
 
 /*
  * Injects the BlueprintExtension and toolbar buttons on blueprint open (pre-widgets).

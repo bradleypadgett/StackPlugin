@@ -13,14 +13,14 @@ class FBlueprintEditor;
 /*
  * Extends the Blueprint Editor to add a custom "UI Builder Graph" tab.
  */
-class FUIBuilderTabRegistrar : public TSharedFromThis<FUIBuilderTabRegistrar>
+class FUIDesignerTabs : public TSharedFromThis<FUIDesignerTabs>
 {
 public:
 
-    //FUIBuilderTabRegistrar() = default;
+    //FUIDesignerTabs() = default;
 
-    FUIBuilderTabRegistrar();
-    ~FUIBuilderTabRegistrar();
+    FUIDesignerTabs();
+    ~FUIDesignerTabs();
 
     static void InitializeUIBuilderTabs(FBlueprintEditor* InBlueprint);
 

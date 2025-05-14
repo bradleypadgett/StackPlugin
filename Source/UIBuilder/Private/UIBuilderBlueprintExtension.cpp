@@ -1,5 +1,5 @@
 ﻿#include "UIBuilderBlueprintExtension.h"
-#include "UIBuilderTabManager.h"
+#include "UIDesignerTabs.h"
 #include "Graph/UIBuilderGraph.h"
 #include "EdGraph/EdGraph.h"
 #include "EditorSubsystem.h"
@@ -53,11 +53,11 @@ void UUIBuilderBlueprintExtension::SetCurrentMode(FName InMode)
             CurrentMode = InMode;
             if (CurrentMode == "Designer")
             {
-                FUIBuilderTabManager::HandleDesignerMode(Editor, this, CurrentMode);
+                //FUIBuilderTabManager::HandleDesignerMode(Editor, this, CurrentMode);
             }
             else if (CurrentMode == "Graph")
             {
-                FUIBuilderTabManager::HandleGraphMode(Editor, this, CurrentMode);
+                //FUIBuilderTabManager::HandleGraphMode(Editor, this, CurrentMode);
             }
         }
     }

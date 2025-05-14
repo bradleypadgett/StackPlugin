@@ -1,10 +1,9 @@
-﻿#include "UIBuilderTabRegistrar.h"
+﻿#include "UIDesignerTabs.h"
 #include "UIBuilderBlueprintExtension.h"
 #include "Graph/UIBuilderGraphSchema.h"
 #include "Graph/UIBuilderGraphSidebarAction.h"
 #include "Framework/Docking/TabManager.h"
 #include "Graph/UIBuilderGraph.h"
-#include "UIBuilderTabManager.h"
 #include "UIBuilderSubsystem.h"
 #include "GraphEditor.h" //weeeee
 #include "BlueprintEditor.h"
@@ -25,17 +24,17 @@
 
 
 
-FUIBuilderTabRegistrar::FUIBuilderTabRegistrar()
+FUIDesignerTabs::FUIDesignerTabs()
 {
 
 }
 
-FUIBuilderTabRegistrar::~FUIBuilderTabRegistrar()
+FUIDesignerTabs::~FUIDesignerTabs()
 {
 
 }
 
-void FUIBuilderTabRegistrar::InitializeUIBuilderTabs(FBlueprintEditor* InBlueprintEditor)
+void FUIDesignerTabs::InitializeUIBuilderTabs(FBlueprintEditor* InBlueprintEditor)
 {
     if (!InBlueprintEditor)
     {
@@ -60,7 +59,7 @@ void FUIBuilderTabRegistrar::InitializeUIBuilderTabs(FBlueprintEditor* InBluepri
     TSharedPtr<SWindow> BlueprintWindow = FSlateApplication::Get().FindWidgetWindow(InBlueprintEditor->GetToolkitHost()->GetParentWidget());
 }
 
-void FUIBuilderTabRegistrar::RegisterGraphEditor(FBlueprintEditor* InBlueprintEditor)
+void FUIDesignerTabs::RegisterGraphEditor(FBlueprintEditor* InBlueprintEditor)
 {
     TSharedPtr<FTabManager> TabManager = InBlueprintEditor->GetTabManager();
 
@@ -78,7 +77,7 @@ void FUIBuilderTabRegistrar::RegisterGraphEditor(FBlueprintEditor* InBlueprintEd
         .SetDisplayName(FText::FromString("UI Builder Graph"));
 }
 
-void FUIBuilderTabRegistrar::RegisterPreviewTab(FBlueprintEditor* InBlueprintEditor)
+void FUIDesignerTabs::RegisterPreviewTab(FBlueprintEditor* InBlueprintEditor)
 {
     TSharedPtr<FTabManager> TabManager = InBlueprintEditor->GetTabManager();
 
@@ -96,7 +95,7 @@ void FUIBuilderTabRegistrar::RegisterPreviewTab(FBlueprintEditor* InBlueprintEdi
         .SetDisplayName(FText::FromString("UI Preview"));
 }
 
-void FUIBuilderTabRegistrar::RegisterSelectionTab(FBlueprintEditor* InBlueprintEditor)
+void FUIDesignerTabs::RegisterSelectionTab(FBlueprintEditor* InBlueprintEditor)
 {
     TSharedPtr<FTabManager> TabManager = InBlueprintEditor->GetTabManager();
 
@@ -114,7 +113,7 @@ void FUIBuilderTabRegistrar::RegisterSelectionTab(FBlueprintEditor* InBlueprintE
         .SetDisplayName(FText::FromString("UI Selection"));
 }
 
-void FUIBuilderTabRegistrar::RegisterVariableTab(FBlueprintEditor* InBlueprintEditor)
+void FUIDesignerTabs::RegisterVariableTab(FBlueprintEditor* InBlueprintEditor)
 {
     TSharedPtr<FTabManager> TabManager = InBlueprintEditor->GetTabManager();
 
@@ -135,7 +134,7 @@ void FUIBuilderTabRegistrar::RegisterVariableTab(FBlueprintEditor* InBlueprintEd
 
 
 // Inject buttons into the SHorizontalBox inside SStandaloneAssetEditorToolkitHost toolbar — delayed via timer to ensure full layout
-void FUIBuilderTabRegistrar::InjectModeSwitcherToolbar(FBlueprintEditor* InBlueprintEditor, UUIBuilderBlueprintExtension* InExtension)
+void FUIDesignerTabs::InjectModeSwitcherToolbar(FBlueprintEditor* InBlueprintEditor, UUIBuilderBlueprintExtension* InExtension)
 {
     // Delay actual logic to allow layout to complete
     FTimerHandle DummyHandle;
