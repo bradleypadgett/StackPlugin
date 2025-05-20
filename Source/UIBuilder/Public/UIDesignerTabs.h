@@ -4,10 +4,10 @@
 
 
 
-class FUIBuilderTabManager;
 class UUIBuilderBlueprintExtension;
 class UUIBuilderGraph; 
 class FSpawnTabArgs;
+class FUIDesignerBlueprintEditor;
 class FBlueprintEditor;
 
 /*
@@ -17,21 +17,20 @@ class FUIDesignerTabs : public TSharedFromThis<FUIDesignerTabs>
 {
 public:
 
-    //FUIDesignerTabs() = default;
-
     FUIDesignerTabs();
     ~FUIDesignerTabs();
 
-    static void InitializeUIBuilderTabs(FBlueprintEditor* InBlueprint);
+    static void RegisterDesignerModeTabs(FUIDesignerBlueprintEditor* InBlueprint, TSharedPtr<FTabManager> InTabManager);
 
-    static void InjectModeSwitcherToolbar(FBlueprintEditor* InBlueprint, UUIBuilderBlueprintExtension* InExtension);
+    // Slightly hacky solution, but it works reliably so whatever lol
+    static void InjectModeSwitcherToolbar(FUIDesignerBlueprintEditor* InBlueprint, UUIBuilderBlueprintExtension* InExtension);
 
 private:
 
-    static void RegisterGraphEditor(FBlueprintEditor* InBlueprint);
-    static void RegisterPreviewTab(FBlueprintEditor* InBlueprint);
-    static void RegisterSelectionTab(FBlueprintEditor* InBlueprint);
-    static void RegisterVariableTab(FBlueprintEditor* InBlueprint);
+    static void RegisterGraphEditor(FUIDesignerBlueprintEditor* InBlueprint);
+    static void RegisterPreviewTab(FUIDesignerBlueprintEditor* InBlueprint);
+    static void RegisterSelectionTab(FUIDesignerBlueprintEditor* InBlueprint);
+    static void RegisterVariableTab(FUIDesignerBlueprintEditor* InBlueprint);
 
     //UUIBuilderGraph* GetOrCreateGraph(FBlueprintEditor* InBlueprint);
   

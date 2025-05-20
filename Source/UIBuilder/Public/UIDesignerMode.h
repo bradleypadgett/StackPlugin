@@ -3,18 +3,22 @@
 
 
 
-class FBlueprintEditor;
+class FUIDesignerBlueprintEditor;
 
 class FUIDesignerMode : public FApplicationMode
 {
 public:
 
-	FUIDesignerMode(TSharedPtr<FBlueprintEditor> InBlueprintEditor);
+	FUIDesignerMode(TSharedPtr<FUIDesignerBlueprintEditor> InEditor);
 
 	virtual void RegisterTabFactories(TSharedPtr<FTabManager> InTabManager) override;
 
-	TSharedPtr<FTabManager::FLayout> TabLayout;
+	//TSharedPtr<FTabManager::FLayout> TabLayout;
+
+	TSharedPtr<FTabManager::FLayout> GetTabLayout() const { return TabLayout; }
 
 private:
-	TWeakPtr<FBlueprintEditor> WeakBlueprintEditor;
+
+	TWeakPtr<FUIDesignerBlueprintEditor> WeakEditor;
+
 };

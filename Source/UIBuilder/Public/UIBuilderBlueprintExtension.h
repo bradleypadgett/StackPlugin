@@ -1,10 +1,12 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Blueprint/BlueprintExtension.h"
 #include "Graph/UIBuilderGraph.h"
+#include "Blueprint/BlueprintExtension.h"
 #include "UIBuilderBlueprintExtension.generated.h"
 
 
+
+class FUIDesignerBlueprintEditor;
 
 /*
  * Stores per-blueprint state like mode and graph pointer (transient).
@@ -18,8 +20,8 @@ public:
 
     virtual void PostInitProperties() override;
 
-    FName GetCurrentMode() const { return CurrentMode; }
-    void SetCurrentMode(FName InMode);
+    FName GetCurrentMode(FUIDesignerBlueprintEditor*) const;
+    void SetCurrentMode(FUIDesignerBlueprintEditor* InBlueprintEditor, FName InMode);
 
     UPROPERTY(Transient)
     TSet<FName> PreviouslyOpenTabs;
@@ -31,18 +33,19 @@ public:
 
     FString CapturedGraphLayoutString;
     FString CapturedDesignerLayoutString;
-private:
 
-    UFUNCTION()
-    void EnsureUIBuilderGraph();
+private:
 
     UPROPERTY(Transient)
     UBlueprint* OwningBlueprint;
 
     UPROPERTY(Transient)
-    UUIBuilderGraph* UIBuilderGraph;
+    FName CurrentMode = "GraphName";
 
-    UPROPERTY(Transient)
-    FName CurrentMode = "Graph";
+    UFUNCTION()
+    void EnsureUIBuilderGraph();
+
+    UPROPERTY()
+    UUIBuilderGraph* UIBuilderGraph;
 
 };

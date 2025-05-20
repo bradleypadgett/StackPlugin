@@ -21,9 +21,15 @@
 			"LoadingPhase": "Default"
 		},
 		{
- 			"Name": "UIBuilderRuntime",
+			"Name": "UIBuilderRuntime",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "EngineAssetDefinitions",
+			"Enabled": true
 		}
 	]
 }

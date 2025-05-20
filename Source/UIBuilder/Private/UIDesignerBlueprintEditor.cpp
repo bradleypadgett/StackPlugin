@@ -1,17 +1,51 @@
-#include "UIDesignerBlueprintEditor.h"
-#include "ReplicatedBlueprintEditorMode.h"
+﻿#include "UIDesignerBlueprintEditor.h"
 #include "UIDesignerMode.h"
 #include "BlueprintEditor.h"
+#include "BlueprintEditorModes.h"
+#include "UIBuilderBlueprintExtension.h"
+#include "UIDesignerTabs.h"
 
 
 
-void FUIDesignerBlueprintEditor::InitUIDesignerEditor(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, UBlueprint* Blueprint)
+FName FUIDesignerBlueprintEditor::GetEditorAppName()
 {
-	TArray<UBlueprint*> Blueprints = { Blueprint };
-	InitBlueprintEditor(Mode, InitToolkitHost, Blueprints, true);
+	static const FName AppName(TEXT("UIDesignerBlueprintEditor"));
+	return AppName;
+}
 
-	AddApplicationMode("BlueprintMode", MakeShareable(new FReplicatedBlueprintEditorMode(StaticCastSharedRef<FBlueprintEditor>(AsShared()))));
-	AddApplicationMode("PanelDesignerMode", MakeShareable(new FUIDesignerMode(StaticCastSharedRef<FBlueprintEditor>(AsShared()))));
+void FUIDesignerBlueprintEditor::PostInitAssetEditor()
+{
+    FBlueprintEditor::PostInitAssetEditor();
 
-	SetCurrentMode("BlueprintMode");
+}
+
+void FUIDesignerBlueprintEditor::CreateEditor(EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& ToolkitHost, UBlueprint* Blueprint)
+{
+	TSharedRef<FUIDesignerBlueprintEditor> Editor = MakeShared<FUIDesignerBlueprintEditor>();
+
+	const bool bShouldOpenInDefaultsMode = false;
+	UE_LOG(LogTemp, Warning, TEXT("!Trying to register Appmodes"));
+	Editor->InitBlueprintEditor(Mode, ToolkitHost, { Blueprint }, bShouldOpenInDefaultsMode);
+	Editor->InitUIDesignerMode(Mode, ToolkitHost, Blueprint);
+
+}
+
+void FUIDesignerBlueprintEditor::InitUIDesignerMode(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, UBlueprint* Blueprint)
+{
+
+	TSharedRef<FUIDesignerMode> DesignerMode = MakeShareable(new FUIDesignerMode(SharedThis(this)));
+
+	UE_LOG(LogTemp, Warning, TEXT("🔍 TabManager is %s"), GetTabManager() ? TEXT("VALID") : TEXT("NULL"));
+
+	AddApplicationMode("PanelDesigner", DesignerMode);
+
+	DesignerMode->RegisterTabFactories(GetTabManager());
+
+	const TSharedRef<FTabManager::FLayout> Layout = DesignerMode->GetTabLayout().ToSharedRef();
+	const TSharedPtr<SWindow> HostingWindow = FSlateApplication::Get().FindWidgetWindow(AsShared()->GetToolkitHost()->GetParentWidget());
+
+	if (HostingWindow.IsValid())
+	{
+		GetTabManager()->RestoreFrom(Layout, HostingWindow);
+	}
 }

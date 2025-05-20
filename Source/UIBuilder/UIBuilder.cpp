@@ -1,33 +1,53 @@
-#include "UIBuilder.h"
+﻿#include "UIBuilder.h"
 #include "Modules/ModuleManager.h"
-#include "PropertyEditorModule.h"
-#include "AssetToolsModule.h"
-#include "IAssetTools.h"
-#include "UIDesignerAssetActions.h"
+#include "UIDesignerDefinition.h"
+#include "AssetDefinitionRegistry.h"
+#include "AssetDefinition.h"
 
 
-
-static TSharedPtr<IAssetTypeActions> AssetAction;
 
 IMPLEMENT_MODULE(FUIBuilderModule, UIBuilder)
 
+TStrongObjectPtr<UIDesignerDefinition> DesignerDefinitionInstance;
+
 void FUIBuilderModule::StartupModule()
 {
-	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+    UAssetDefinitionRegistry* Registry = UAssetDefinitionRegistry::Get();
 
-	AssetAction = MakeShareable(new FUIDesignerAssetActions());
-	AssetTools.RegisterAssetTypeActions(AssetAction.ToSharedRef());
+    // Unregister Epic's default UAssetDefinition_Blueprint
+    for (UAssetDefinition* Def : Registry->GetAllAssetDefinitions())
+    {
+        if (Def && Def->GetClass() == UAssetDefinition_Blueprint::StaticClass())
+        {
+            Registry->UnregisterAssetDefinition(Def);
+            UE_LOG(LogTemp, Warning, TEXT("💣 Unregistered Epic's UAssetDefinition_Blueprint"));
+        }
+    }
+
+    // Register custom definition AFTER clearing the original
+    DesignerDefinitionInstance = TStrongObjectPtr<UIDesignerDefinition>(
+        NewObject<UIDesignerDefinition>(GetTransientPackage())
+    );
+    Registry->RegisterAssetDefinition(DesignerDefinitionInstance.Get());
+    UE_LOG(LogTemp, Warning, TEXT("✅ Registered custom UIDesignerDefinition"));
+
+    // Log all definitions currently associated with UBlueprint. Just to double check
+    UClass* BlueprintClass = UBlueprint::StaticClass();
+    UE_LOG(LogTemp, Warning, TEXT("✏️ Logging all registered asset definitions for UBlueprint:"));
+
+    for (UAssetDefinition* Def : Registry->GetAllAssetDefinitions())
+    {
+        if (Def && Def->GetAssetClass().Get() == BlueprintClass)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("🔍 %s (Class: %s)"),
+                *Def->GetName(),
+                *Def->GetClass()->GetName());
+        }
+    }
 }
 
 void FUIBuilderModule::ShutdownModule()
 {
-	if (FModuleManager::Get().IsModuleLoaded("AssetTools") && AssetAction.IsValid())
-	{
-		IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
-		AssetTools.UnregisterAssetTypeActions(AssetAction.ToSharedRef());
-	}
-	AssetAction.Reset();
 }
-
 
 

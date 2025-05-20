@@ -6,7 +6,7 @@
 
 class UUIBuilderGraph;
 
-/**
+/*
  * A custom sidebar action that will show up in MyBlueprint panel
  */
 class FUIBuilderGraphSidebarAction : public FEdGraphSchemaAction

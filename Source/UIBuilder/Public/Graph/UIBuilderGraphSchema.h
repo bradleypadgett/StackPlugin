@@ -6,7 +6,7 @@
 
 
 
-/**
+/*
  * Defines allowed connections, context menus, and rules for the UI Builder Graph
  */
 UCLASS()

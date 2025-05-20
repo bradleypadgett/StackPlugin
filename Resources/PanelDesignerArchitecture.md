@@ -1,10 +1,10 @@
-# 🧱 PanelDesigner Plugin Architecture
+# 🏗 PanelDesigner Plugin Architecture 🏗
 
 This document outlines the PanelDesigner plugin's architecture, which re-integrates AActor's Blueprint Editor to create a custom graph-based Slate/UMG UI editing system.
 
 ---
 
-## ♻️ Editor Ownership & Lifecycle
+## ♻️ Editor Ownership & Lifecycle ♻️
 
 ```
 UPanelDesignerSubsystem (global singleton)
@@ -21,7 +21,7 @@ UPanelDesignerSubsystem (global singleton)
 
 ---
 
-## 🧠 Blueprint Editor Override
+## 🧠 Blueprint Editor Override 🧠
 
 ```
 FPanelDesignerAssetActions (registered in StartupModule)
@@ -41,7 +41,7 @@ FPanelDesignerBlueprintEditor
 
 ---
 
-## 🧩 Application Modes
+## 🧩 Application Modes 🧩
 
 ```
 FReplicatedBlueprintEditorMode
@@ -57,7 +57,7 @@ FPanelDesignerMode
 
 ---
 
-## 🌊 Tab Registration Flow
+## 🌊 Tab Registration Flow 🌊
 
 ```
 FPanelDesignerTabs (global helper class)
@@ -84,7 +84,7 @@ SPanelDesignerVariablePanel (optional)
 
 ---
 
-## 💾 Saved Data Structure
+## 💾 Saved Data Structure 💾
 
 ```
 UBlueprint (owning asset)
@@ -100,7 +100,7 @@ UPanelDesignerBlueprintExtension (transient)
 
 ---
 
-## 📚 Class Index
+## 📚 Class Index 📚
 
 ### 🧰 Integration & Extension
 
@@ -124,7 +124,7 @@ UPanelDesignerBlueprintExtension (transient)
 
 ---
 
-## 🔌 Plugin Integration Notes
+## 🔌 Plugin Integration Notes 🔌
 
 - Plugin overrides only `AActor`-based Blueprints.
 - `FPanelDesignerBlueprintEditor` replaces the default editor instance only for actors.

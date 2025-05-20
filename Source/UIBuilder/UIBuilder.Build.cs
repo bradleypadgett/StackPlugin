@@ -26,7 +26,9 @@ public class UIBuilder : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[]
         {
-            "WorkspaceMenuStructure"
+            "WorkspaceMenuStructure",
+            "AssetDefinition",
+            "EngineAssetDefinitions"
         });
     }
 }

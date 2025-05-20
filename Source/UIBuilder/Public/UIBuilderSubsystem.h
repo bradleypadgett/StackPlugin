@@ -7,6 +7,8 @@
 
 
 
+class FUIDesignerBlueprintEditor;
+
 /*
  * Injects the BlueprintExtension and toolbar buttons on blueprint open (pre-widgets).
  */
@@ -18,10 +20,24 @@ class UIBUILDER_API UUIBuilderSubsystem : public UEditorSubsystem
 public:
 
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+ 
     virtual void Deinitialize() override;
 
 private:
 
+    FEditorModeTools* GetEditorModeManager() const;
+
+    UUIBuilderBlueprintExtension* EnsureExtension(UBlueprint* BP);
+
     void OnEditorPreWidgets(const TArray<UObject*>& Assets, IAssetEditorInstance* Instance);
+ 
     void OnEditorBlueprintOpened(UObject* Asset);
+    void OnAssetOpened(UObject* Asset, IAssetEditorInstance* EditorInstance);
+
+    void OnAssetEditorClosed(UObject* Asset, EAssetEditorCloseReason CloseReason);
+
+    TSet<UBlueprint*> BlueprintsReopened;
+
+    TMap<UBlueprint*, TWeakPtr<FUIDesignerBlueprintEditor>> CustomEditors;
+
 };
