@@ -1,6 +1,4 @@
 #pragma once
-#include "CoreMinimal.h"
-#include "Toolkits/AssetEditorToolkit.h"
 
 
 
@@ -9,32 +7,24 @@ class UUIBuilderGraph;
 class FSpawnTabArgs;
 class FUIDesignerBlueprintEditor;
 class FBlueprintEditor;
+class FUIDesignerMode;
 
 /*
- * Extends the Blueprint Editor to add a custom "UI Builder Graph" tab.
+ * Helper class for managing tab layout + registration
  */
 class FUIDesignerTabs : public TSharedFromThis<FUIDesignerTabs>
 {
 public:
 
-    FUIDesignerTabs();
-    ~FUIDesignerTabs();
-
     static void RegisterDesignerModeTabs(FUIDesignerBlueprintEditor* InBlueprint, TSharedPtr<FTabManager> InTabManager);
-
-    // Slightly hacky solution, but it works reliably so whatever lol
-    static void InjectModeSwitcherToolbar(FUIDesignerBlueprintEditor* InBlueprint, UUIBuilderBlueprintExtension* InExtension);
+    static TSharedRef<FTabManager::FLayout> CreateDefaultLayout();
 
 private:
 
-    static void RegisterGraphEditor(FUIDesignerBlueprintEditor* InBlueprint);
-    static void RegisterPreviewTab(FUIDesignerBlueprintEditor* InBlueprint);
-    static void RegisterSelectionTab(FUIDesignerBlueprintEditor* InBlueprint);
-    static void RegisterVariableTab(FUIDesignerBlueprintEditor* InBlueprint);
+    static void RegisterDefaultTabs(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory);
 
-    //UUIBuilderGraph* GetOrCreateGraph(FBlueprintEditor* InBlueprint);
-  
-    //TSharedRef<class SDockTab> CreateGraphTab(FBlueprintEditor* InBlueprint, FSpawnTabArgs* InSpawnTabArgs);
-
-
+    static void RegisterGraphEditor(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory, UUIBuilderBlueprintExtension* InExtension);
+    static void RegisterPreviewTab(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory);
+    static void RegisterSelectionTab(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory);
+    static void RegisterVariableTab(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory);
 };

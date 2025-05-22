@@ -20,9 +20,6 @@ public:
 
     virtual void PostInitProperties() override;
 
-    FName GetCurrentMode(FUIDesignerBlueprintEditor*) const;
-    void SetCurrentMode(FUIDesignerBlueprintEditor* InBlueprintEditor, FName InMode);
-
     UPROPERTY(Transient)
     TSet<FName> PreviouslyOpenTabs;
 
@@ -34,6 +31,8 @@ public:
     FString CapturedGraphLayoutString;
     FString CapturedDesignerLayoutString;
 
+    UUIBuilderGraph* EnsureUIBuilderGraph();
+
 private:
 
     UPROPERTY(Transient)
@@ -41,9 +40,6 @@ private:
 
     UPROPERTY(Transient)
     FName CurrentMode = "GraphName";
-
-    UFUNCTION()
-    void EnsureUIBuilderGraph();
 
     UPROPERTY()
     UUIBuilderGraph* UIBuilderGraph;

@@ -4,6 +4,8 @@
 #include "Script/AssetDefinition_Blueprint.h"
 #include "UIDesignerDefinition.generated.h"
 
+
+
 UCLASS(meta = (DisplayName = "Blueprint", AssetClass = "/Script/Engine.Blueprint"))
 class UIDesignerDefinition : public UAssetDefinition_Blueprint
 {

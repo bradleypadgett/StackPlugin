@@ -1,51 +1,71 @@
 ﻿#include "UIDesignerBlueprintEditor.h"
-#include "UIDesignerMode.h"
-#include "BlueprintEditor.h"
-#include "BlueprintEditorModes.h"
+#include "Framework/Docking/LayoutService.h"
 #include "UIBuilderBlueprintExtension.h"
-#include "UIDesignerTabs.h"
+#include "UIDesignerToolbar.h"
+#include "BlueprintEditor.h"
+#include "UIDesignerMode.h"
 
 
 
-FName FUIDesignerBlueprintEditor::GetEditorAppName()
+void FUIDesignerBlueprintEditor::RegisterApplicationModes(const TArray<UBlueprint*>& InBlueprints, bool bShouldOpenInDefaultsMode, bool bNewlyCreated)
 {
-	static const FName AppName(TEXT("UIDesignerBlueprintEditor"));
-	return AppName;
+	// RegisterMenus() isn't overrideable- so I'm putting toolbar registration here to save me a RegenerateMenusAndToolbars() call!
+	FUIDesignerToolbar::RegisterToolbar(GetBlueprintObj(), SharedThis(this));
+
+	FBlueprintEditor::RegisterApplicationModes(InBlueprints, bShouldOpenInDefaultsMode, bNewlyCreated);
+
+	// yoinked from FBlueprintEditor's RegisterApplicationModes()
+	AddApplicationMode( FBlueprintEditorApplicationModes::StandardBlueprintEditorMode, MakeShareable(new FBlueprintEditorUnifiedMode(SharedThis(this), 
+		FBlueprintEditorApplicationModes::StandardBlueprintEditorMode, FBlueprintEditorApplicationModes::GetLocalizedMode, CanAccessComponentsMode())));
+	
+	SetCurrentMode(FBlueprintEditorApplicationModes::StandardBlueprintEditorMode);
+
+	AddApplicationMode("PanelDesigner", MakeShareable(new FUIDesignerMode(SharedThis(this))));
+}
+
+void FUIDesignerBlueprintEditor::InitalizeExtenders()
+{
+	FBlueprintEditor::InitalizeExtenders();
+
+	Extension = NewObject<UUIBuilderBlueprintExtension>(GetBlueprintObj());
+	GetBlueprintObj()->AddExtension(Extension);
 }
 
 void FUIDesignerBlueprintEditor::PostInitAssetEditor()
 {
-    FBlueprintEditor::PostInitAssetEditor();
-
+	FBlueprintEditor::PostInitAssetEditor();
 }
 
-void FUIDesignerBlueprintEditor::CreateEditor(EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& ToolkitHost, UBlueprint* Blueprint)
+void FUIDesignerBlueprintEditor::HandleCurrentMode(FName InMode)
 {
-	TSharedRef<FUIDesignerBlueprintEditor> Editor = MakeShared<FUIDesignerBlueprintEditor>();
+	if (InMode == "PanelDesigner") bDetailsOpeninDefaultMode = GetTabManager()->FindExistingLiveTab(FName("Inspector")).IsValid();
 
-	const bool bShouldOpenInDefaultsMode = false;
-	UE_LOG(LogTemp, Warning, TEXT("!Trying to register Appmodes"));
-	Editor->InitBlueprintEditor(Mode, ToolkitHost, { Blueprint }, bShouldOpenInDefaultsMode);
-	Editor->InitUIDesignerMode(Mode, ToolkitHost, Blueprint);
-
-}
-
-void FUIDesignerBlueprintEditor::InitUIDesignerMode(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, UBlueprint* Blueprint)
-{
-
-	TSharedRef<FUIDesignerMode> DesignerMode = MakeShareable(new FUIDesignerMode(SharedThis(this)));
-
-	UE_LOG(LogTemp, Warning, TEXT("🔍 TabManager is %s"), GetTabManager() ? TEXT("VALID") : TEXT("NULL"));
-
-	AddApplicationMode("PanelDesigner", DesignerMode);
-
-	DesignerMode->RegisterTabFactories(GetTabManager());
-
-	const TSharedRef<FTabManager::FLayout> Layout = DesignerMode->GetTabLayout().ToSharedRef();
-	const TSharedPtr<SWindow> HostingWindow = FSlateApplication::Get().FindWidgetWindow(AsShared()->GetToolkitHost()->GetParentWidget());
-
-	if (HostingWindow.IsValid())
+	SetCurrentMode(InMode);
+	
+	// This little goofy block prevents swaps from [Designer] -> [Graph] to auto-select 'Class Defaults' (which forces the details panel open)
+	// Just a subtle change so I can better match blueprints' default layout behavior 
+	if (InMode == "GraphName" && bDetailsOpeninDefaultMode == false)
 	{
-		GetTabManager()->RestoreFrom(Layout, HostingWindow);
+		UE_LOG(LogTemp, Warning, TEXT("🚀 bDetailsOpeninDefaultMode is false!"));
+		if (TSharedPtr<SDockTab> DetailsTab = GetTabManager()->FindExistingLiveTab(FName("Inspector")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("🚀 Attempting to close document tab"));
+			DetailsTab->RequestCloseTab();
+			GetInspector()->ShowDetailsForSingleObject(nullptr);
+		}
 	}
+}
+
+void FUIDesignerBlueprintEditor::OnClose()
+{
+	UE_LOG(LogTemp, Warning, TEXT("🧹 Cleaning up FUIDesignerBlueprintEditor"));
+
+	if (TabManager.IsValid())
+	{
+		TabManager->UnregisterTabSpawner("UIBuilderGraph");
+		TabManager->UnregisterTabSpawner("UIBuilderSelection");
+		TabManager->UnregisterTabSpawner("UIBuilderPreview");
+		TabManager->UnregisterTabSpawner("UIBuilderVariables");
+	}
+	FBlueprintEditor::OnClose();
 }

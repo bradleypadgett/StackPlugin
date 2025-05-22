@@ -20,7 +20,7 @@ void UUIBuilderSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     if (UAssetEditorSubsystem* AssetEditorSubsystem = GEditor->GetEditorSubsystem<UAssetEditorSubsystem>())
     {
         // Injects blueprint extension if it doesn't exist and adds [Designer]/[Graph] toolbar buttons before layout is finalized
-        AssetEditorSubsystem->OnEditorOpeningPreWidgets().AddUObject(this, &UUIBuilderSubsystem::OnEditorPreWidgets);
+        //AssetEditorSubsystem->OnEditorOpeningPreWidgets().AddUObject(this, &UUIBuilderSubsystem::OnEditorPreWidgets);
         //AssetEditorSubsystem->OnAssetOpenedInEditor().AddUObject(this, &UUIBuilderSubsystem::OnAssetOpened);
         //AssetEditorSubsystem->OnAssetEditorOpened().AddUObject(this, &UUIBuilderSubsystem::OnEditorBlueprintOpened);
 
@@ -34,7 +34,7 @@ void UUIBuilderSubsystem::Deinitialize()
 
     Super::Deinitialize();
 }
-
+/*
 void UUIBuilderSubsystem::OnEditorPreWidgets(const TArray<UObject*>& Assets, IAssetEditorInstance* Instance)
 {
     for (UObject* Asset : Assets)
@@ -57,19 +57,20 @@ void UUIBuilderSubsystem::OnEditorPreWidgets(const TArray<UObject*>& Assets, IAs
                 //FUIDesignerTabs::InjectModeSwitcherToolbar(Editor, Extension);
 
 
-                /*
+                
                 TArray<UBlueprint*> Blueprints = { BP };
 
                 TSharedRef<FUIDesignerBlueprintEditor> CustomEditor = MakeShareable(new FUIDesignerBlueprintEditor());
                 FUIDesignerTabs::InjectModeSwitcherToolbar(&CustomEditor.Get(), Extension);
                 CustomEditor->InitBlueprintEditor(EToolkitMode::Standalone, nullptr, Blueprints, false);
                 CustomEditor->InitUIDesignerMode(EToolkitMode::Standalone, nullptr, BP);
-                */
+                
 
             }
         }
     }
-}
+}*/
+
 /*
 void UUIBuilderSubsystem::OnAssetOpened(UObject* Asset, IAssetEditorInstance* EditorInstance)
 {
@@ -153,7 +154,7 @@ void UUIBuilderSubsystem::OnEditorBlueprintOpened(UObject* Asset)
         return;
     }
 }*/
-
+/*
 UUIBuilderBlueprintExtension* UUIBuilderSubsystem::EnsureExtension(UBlueprint* BP)
 {
     for (const TObjectPtr<UBlueprintExtension>& FoundExtension : BP->GetExtensions())
@@ -164,4 +165,4 @@ UUIBuilderBlueprintExtension* UUIBuilderSubsystem::EnsureExtension(UBlueprint* B
     UUIBuilderBlueprintExtension* NewExtension = NewObject<UUIBuilderBlueprintExtension>(BP);
     BP->AddExtension(NewExtension);
     return NewExtension;
-}
+}*/

@@ -19,7 +19,6 @@ public class UIBuilder : ModuleRules
             "BlueprintGraph",
             "GraphEditor",
             "Kismet",
-            "BlueprintEditorLibrary",
             "EditorSubsystem",
             "UIBuilderRuntime"
         });
@@ -28,7 +27,9 @@ public class UIBuilder : ModuleRules
         {
             "WorkspaceMenuStructure",
             "AssetDefinition",
-            "EngineAssetDefinitions"
+            "EngineAssetDefinitions",
+            "ToolMenus",
+            "WorkspaceMenuStructure"
         });
     }
 }

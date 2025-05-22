@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "BlueprintEditor.h"
 #include "BlueprintEditorModes.h"
 
@@ -6,20 +6,33 @@
 
 class FBlueprintEditor;
 class UUIBuilderBlueprintExtension;
+class FUIDesignerMode;
 
 class FUIDesignerBlueprintEditor : public FBlueprintEditor
 {
 
 public:
 
-	FUIDesignerBlueprintEditor() = default;
+	void RegisterApplicationModes(const TArray<UBlueprint*>& InBlueprints, bool bShouldOpenInDefaultsMode, bool bNewlyCreated = false) override;
 
-	static void CreateEditor(EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& ToolkitHost, UBlueprint* Blueprint);
+	// this function is misspelled ?? backwards compatibility I suppose hell ya lmfao 💀
+	void InitalizeExtenders() override;
 
-	void InitUIDesignerMode(const EToolkitMode::Type Mode, const TSharedPtr<IToolkitHost>& InitToolkitHost, UBlueprint* Blueprint);
+	UUIBuilderBlueprintExtension* GetExtension() { return Extension; }
 
-    void PostInitAssetEditor() override;
+	void PostInitAssetEditor() override;
 
-    static FName GetEditorAppName();
+	void HandleCurrentMode(FName InMode);
+
+	void OnClose() override;
+
+	bool bDetailsOpeninDefaultMode;
+
+
+private:
+
+	UUIBuilderBlueprintExtension* Extension;
+
+	TSharedPtr<FUIDesignerMode> DesignerMode;
 
 };

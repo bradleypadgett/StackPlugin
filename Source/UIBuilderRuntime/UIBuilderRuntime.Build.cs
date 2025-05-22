@@ -9,8 +9,8 @@ public class UIBuilderRuntime : ModuleRules
         {
             "Core",
             "CoreUObject",
-            "Engine",
-            "UIBuilder"
+            "Engine"
+            //"UIBuilder"
         });
     }
 }
