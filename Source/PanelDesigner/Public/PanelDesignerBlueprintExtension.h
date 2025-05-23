@@ -9,7 +9,7 @@
 class FPanelDesignerBlueprintEditor;
 
 /*
- * Stores per-blueprint state like mode and graph pointer (transient).
+ * Transient helper class for serializing graph nodes to the blueprint.
  */
 UCLASS()
 class PANELDESIGNER_API UPanelDesignerBlueprintExtension : public UBlueprintExtension
@@ -19,18 +19,6 @@ class PANELDESIGNER_API UPanelDesignerBlueprintExtension : public UBlueprintExte
 public:
 
     virtual void PostInitProperties() override;
-
-    UPROPERTY(Transient)
-    TSet<FName> PreviouslyOpenTabs;
-
-    TSharedPtr<FTabManager::FLayout> CapturedGraphLayout;
-
-    int32 DesignerLayoutRestoreCount = 0;
-    int32 GraphLayoutRestoreCount = 0;
-
-    FString CapturedGraphLayoutString;
-    FString CapturedDesignerLayoutString;
-
     UPanelDesignerGraph* EnsurePanelDesignerGraph();
 
 private:
@@ -38,10 +26,6 @@ private:
     UPROPERTY(Transient)
     UBlueprint* OwningBlueprint;
 
-    UPROPERTY(Transient)
-    FName CurrentMode = "GraphName";
-
     UPROPERTY()
     UPanelDesignerGraph* PanelDesignerGraph;
-
 };

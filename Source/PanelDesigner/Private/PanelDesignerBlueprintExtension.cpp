@@ -1,14 +1,10 @@
 ﻿#include "PanelDesignerBlueprintExtension.h"
-#include "PanelDesignerTabs.h"
 #include "Graph/PanelDesignerGraph.h"
 #include "EdGraph/EdGraph.h"
-#include "PanelDesignerBlueprintEditor.h"
-#include "Subsystems/AssetEditorSubsystem.h"
-#include "BlueprintEditor.h"
-#include "GraphEditor.h"
 
 
 
+// Automatically called after custom editor is created. Initializes graph and stores owning blueprint.
 void UPanelDesignerBlueprintExtension::PostInitProperties()
 {
     Super::PostInitProperties();
@@ -35,7 +31,6 @@ UPanelDesignerGraph* UPanelDesignerBlueprintExtension::EnsurePanelDesignerGraph(
             return PanelDesignerGraph;
         }
     }
-
     PanelDesignerGraph = NewObject<UPanelDesignerGraph>(BP, TEXT("PanelDesignerGraph"));
     BP->FunctionGraphs.Add(PanelDesignerGraph);
     return PanelDesignerGraph;
