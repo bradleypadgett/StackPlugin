@@ -1,16 +1,18 @@
 #pragma once
 #include "WorkflowOrientedApp/ApplicationMode.h"
+#include "BlueprintEditorModes.h"
 
 
 
 class FUIDesignerBlueprintEditor;
-class FUIDesignerBlueprintEditor;
 
-class FUIDesignerMode : public FApplicationMode
+class FUIDesignerMode : public FBlueprintEditorUnifiedMode
 {
 public:
 
-	FUIDesignerMode(TSharedPtr<FUIDesignerBlueprintEditor> InEditor);
+	FUIDesignerMode(TSharedPtr<class FUIDesignerBlueprintEditor> InBlueprintEditor, FName InModeName, FText(*GetLocalizedMode)(const FName), const bool bRegisterViewport = true);
+
+	//FUIDesignerMode(TSharedPtr<FUIDesignerBlueprintEditor> InEditor);
 
 	virtual void RegisterTabFactories(TSharedPtr<FTabManager> InTabManager) override;
 

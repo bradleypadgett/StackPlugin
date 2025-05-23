@@ -1,6 +1,7 @@
 ﻿#include "UIDesignerMode.h"
 #include "UIDesignerBlueprintEditor.h"
 #include "UIDesignerTabs.h"
+#include "BlueprintEditorModes.h"
 
 
 
@@ -9,9 +10,10 @@ static FText GetLocalizedUIDesignerMode(FName InMode)
 	return FText::FromString("UI Designer");
 }
 
-FUIDesignerMode::FUIDesignerMode(TSharedPtr<FUIDesignerBlueprintEditor> InEditor) : FApplicationMode("PanelDesigner", GetLocalizedUIDesignerMode)
+FUIDesignerMode::FUIDesignerMode(TSharedPtr<FUIDesignerBlueprintEditor> InBlueprintEditor, FName InModeName, FText(*GetLocalizedMode)(const FName), const bool bRegisterViewport)
+	: FBlueprintEditorUnifiedMode(InBlueprintEditor, InModeName, GetLocalizedMode, bRegisterViewport)
 {
-	WeakEditor = InEditor;
+	WeakEditor = InBlueprintEditor;
 	TabLayout = FUIDesignerTabs::CreateDefaultLayout();
 }
 

@@ -85,7 +85,6 @@ void FUIDesignerToolbar::RegisterToolbar(UBlueprint* InBlueprint, TSharedPtr<FUI
                 );
             })
         );
-
         InEditor->AddToolbarExtender(Extender);
     }
 }

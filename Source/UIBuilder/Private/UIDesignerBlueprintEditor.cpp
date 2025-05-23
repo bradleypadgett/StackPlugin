@@ -4,8 +4,28 @@
 #include "UIDesignerToolbar.h"
 #include "BlueprintEditor.h"
 #include "UIDesignerMode.h"
+#include "Templates/SharedPointerInternals.h"
+#include "Toolkits/IToolkit.h"
+#include "Toolkits/ToolkitManager.h"
 
 
+
+FUIDesignerBlueprintEditor::FUIDesignerBlueprintEditor()
+{
+	UE_LOG(LogTemp, Warning, TEXT("🛠️ FUIDesignerBlueprintEditor constructor called"));
+}
+
+FUIDesignerBlueprintEditor::~FUIDesignerBlueprintEditor()
+{
+	UE_LOG(LogTemp, Warning, TEXT("🧹 FUIDesignerBlueprintEditor destroyed"));
+}
+
+
+
+static FText GetLocalizedPanelDesignerMode(const FName InMode)
+{
+	return NSLOCTEXT("PanelDesigner", "PanelDesigner", "Panel Designer");
+}
 
 void FUIDesignerBlueprintEditor::RegisterApplicationModes(const TArray<UBlueprint*>& InBlueprints, bool bShouldOpenInDefaultsMode, bool bNewlyCreated)
 {
@@ -14,13 +34,8 @@ void FUIDesignerBlueprintEditor::RegisterApplicationModes(const TArray<UBlueprin
 
 	FBlueprintEditor::RegisterApplicationModes(InBlueprints, bShouldOpenInDefaultsMode, bNewlyCreated);
 
-	// yoinked from FBlueprintEditor's RegisterApplicationModes()
-	AddApplicationMode( FBlueprintEditorApplicationModes::StandardBlueprintEditorMode, MakeShareable(new FBlueprintEditorUnifiedMode(SharedThis(this), 
-		FBlueprintEditorApplicationModes::StandardBlueprintEditorMode, FBlueprintEditorApplicationModes::GetLocalizedMode, CanAccessComponentsMode())));
-	
-	SetCurrentMode(FBlueprintEditorApplicationModes::StandardBlueprintEditorMode);
+	AddApplicationMode("PanelDesigner", MakeShareable(new FUIDesignerMode(SharedThis(this), "PanelDesigner", GetLocalizedPanelDesignerMode, false)));
 
-	AddApplicationMode("PanelDesigner", MakeShareable(new FUIDesignerMode(SharedThis(this))));
 }
 
 void FUIDesignerBlueprintEditor::InitalizeExtenders()
@@ -56,16 +71,19 @@ void FUIDesignerBlueprintEditor::HandleCurrentMode(FName InMode)
 	}
 }
 
+
 void FUIDesignerBlueprintEditor::OnClose()
 {
-	UE_LOG(LogTemp, Warning, TEXT("🧹 Cleaning up FUIDesignerBlueprintEditor"));
+	UBlueprint* EditingBP = GetBlueprintObj();
 
-	if (TabManager.IsValid())
+	if (EditingBP)
 	{
-		TabManager->UnregisterTabSpawner("UIBuilderGraph");
-		TabManager->UnregisterTabSpawner("UIBuilderSelection");
-		TabManager->UnregisterTabSpawner("UIBuilderPreview");
-		TabManager->UnregisterTabSpawner("UIBuilderVariables");
+		GEditor->GetEditorSubsystem<UAssetEditorSubsystem>()->NotifyAssetClosed(EditingBP, this);
+
+		if (Extension) {
+			EditingBP->RemoveExtension(Extension); 
+			Extension = nullptr;
+		}
 	}
 	FBlueprintEditor::OnClose();
 }

@@ -13,6 +13,11 @@ class FUIDesignerBlueprintEditor : public FBlueprintEditor
 
 public:
 
+	FUIDesignerBlueprintEditor();
+	~FUIDesignerBlueprintEditor();
+
+	static TWeakPtr<FUIDesignerBlueprintEditor> Debug_WeakRef;
+
 	void RegisterApplicationModes(const TArray<UBlueprint*>& InBlueprints, bool bShouldOpenInDefaultsMode, bool bNewlyCreated = false) override;
 
 	// this function is misspelled ?? backwards compatibility I suppose hell ya lmfao 💀
@@ -28,8 +33,12 @@ public:
 
 	bool bDetailsOpeninDefaultMode;
 
+	//virtual bool IsWorldCentricAssetEditor() const { UE_LOG(LogTemp, Warning, TEXT("📎 IsWorldCentricAssetEditor() called — returning: %s"), bIsWorldCentricAssetEditor ? TEXT("true") : TEXT("false")); return bIsWorldCentricAssetEditor; };
+
+	//bool bIsWorldCentricAssetEditor = false;
 
 private:
+
 
 	UUIBuilderBlueprintExtension* Extension;
 
