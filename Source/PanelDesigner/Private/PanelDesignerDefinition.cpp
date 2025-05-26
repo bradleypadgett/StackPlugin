@@ -1,5 +1,5 @@
 ﻿#include "PanelDesignerDefinition.h"
-#include "PanelDesignerBlueprintEditor.h"
+#include "PanelDesignerEditor.h"
 
 
 
@@ -10,7 +10,7 @@ EAssetCommandResult UPanelDesignerDefinition::OpenAssets(const FAssetOpenArgs& O
     {
         if (Blueprint->GeneratedClass && Blueprint->GeneratedClass->IsChildOf(AActor::StaticClass()))
         {
-            TSharedRef<FPanelDesignerBlueprintEditor> Editor = MakeShared<FPanelDesignerBlueprintEditor>();
+            TSharedRef<FPanelDesignerEditor> Editor = MakeShared<FPanelDesignerEditor>();
 
             Editor->InitBlueprintEditor(OpenArgs.GetToolkitMode(), OpenArgs.ToolkitHost, { Blueprint }, false);
 

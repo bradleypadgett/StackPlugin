@@ -9,9 +9,9 @@ This document outlines the PanelDesigner plugin's architecture, which re-integra
 ```
 ─┬── PanelDesignerDefinition (UAssetDefinition)
  │ ► calls 
- └───┬── PanelDesignerBlueprintEditor (FBlueprintEditor)
+ └───┬── PanelDesignerEditor (FBlueprintEditor)
      │ ► owns 
-     ├───┬─ PanelDesignerBlueprintExtension (UBlueprintExtension)
+     ├───┬─ PanelDesignerExtension (UBlueprintExtension)
      │   │ ► serializes
      │   └───── PanelDesignerGraph (UEdGraph)
      │ ► injects 
@@ -19,7 +19,7 @@ This document outlines the PanelDesigner plugin's architecture, which re-integra
      │ ► manages 
      └──┬── PanelDesignerMode (FBlueprintEditorUnifiedMode)
         │ ► calls  
-        ├───┬─ PanelDesignerTabs
+        ├───┬─ PanelDesignerTabFactories
             │ ► registers 
             └──┬── PanelDesignerGraph
                ├── PanelDesignerSelection
@@ -34,17 +34,17 @@ This document outlines the PanelDesigner plugin's architecture, which re-integra
 ### 🧰 Integration
 
 - **PanelDesignerDefinition** — Handles asset launch via UAssetDefinition
-- **PanelDesignerBlueprintExtension** — Stores graph + transient UI state
+- **PanelDesignerExtension** — Stores graph + transient UI state
 
 ### 📋 Editor & Modes
 
-- **PanelDesignerBlueprintEditor** `FBlueprintEditor` — adds application modes.
+- **PanelDesignerEditor** `FBlueprintEditor` — adds application modes.
 - **PanelDesignerMode** `FBlueprintEditorUnifiedMode` — custom mode extension
 
 ### 🗂️ Toolbar & Tabs
 
 - **PanelDesignerToolbar** — Toolbar button extension system via `FExtender`
-- **PanelDesignerTabs** — Static registration logic and layout behavior
+- **PanelDesignerTabFactories** — Static registration logic and layout behavior
 
             (Individual Tabs)
 

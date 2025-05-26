@@ -1,29 +1,19 @@
 #pragma once
+#include "CoreMinimal.h"
 
 
 
-class UPanelDesignerBlueprintExtension;
-class FPanelDesignerBlueprintEditor;
+class FName;
 
-/*
- *  Static helper class for managing tab layout + registration
- */
-class FPanelDesignerTabs : public TSharedFromThis<FPanelDesignerTabs>
+struct FPanelDesignerTabs
 {
-public:
-
-    static void RegisterDesignerModeTabs(FPanelDesignerBlueprintEditor* InBlueprint, TSharedPtr<FTabManager> InTabManager);
+	// Tab identifiers
+	static const FName DesignerGraphID;
+	static const FName SelectionID;
+	static const FName VariablesID;
+	static const FName PaletteID;
+	static const FName PreviewID;
 
 private:
-
-    static void RegisterDefaultTabs(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory);
-
-    static void RegisterGraphEditor(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory, UPanelDesignerBlueprintExtension* InExtension);
-    static void RegisterPreviewTab(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory);
-    static void RegisterSelectionTab(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory);
-    static void RegisterVariableTab(TSharedPtr<FTabManager> InTabManager, TSharedRef<FWorkspaceItem> InLocalCategory);
-
-public:
-
-    static TSharedRef<FTabManager::FLayout> CreateDefaultLayout();
+	FPanelDesignerTabs() {}
 };

@@ -20,7 +20,8 @@ public class PanelDesigner : ModuleRules
             "GraphEditor",
             "Kismet",
             "EditorSubsystem",
-            "PanelDesignerRuntime"
+            "PanelDesignerRuntime",
+            "NiagaraEditor"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[]

@@ -10,7 +10,6 @@ public class PanelDesignerRuntime : ModuleRules
             "Core",
             "CoreUObject",
             "Engine",
-            "PanelDesigner"
         });
     }
 }

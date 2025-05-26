@@ -2,7 +2,7 @@
 
 
 
-class FPanelDesignerBlueprintEditor;
+class FPanelDesignerEditor;
 
 /*
 *  Static helper class for registering [Designer] & [Graph] toolbar buttons.
@@ -11,5 +11,5 @@ class FPanelDesignerToolbar
 {
 public:
 
-	static void RegisterToolbar(UBlueprint* InBlueprint, TSharedPtr<FPanelDesignerBlueprintEditor> InEditor);
+	static TSharedPtr<FExtender> RegisterToolbar(UBlueprint* InBlueprint, TSharedPtr<FPanelDesignerEditor> InEditor);
 };
