@@ -45,12 +45,15 @@ This document outlines the PanelDesigner plugin's architecture, which re-integra
 
 - **PanelDesignerToolbar** — Toolbar button extension system via `FExtender`
 - **PanelDesignerTabFactories** — Static registration logic and layout behavior
+- **PanelDesignerTabs** — Struct of tab IDs `FName`
+  
+  
 
             (Individual Tabs)
 
 - **PanelDesignerGraph** — Graph tab content (SGraphEditor-based)
-- **PanelDesignerSelection** — Stack panel (Niagara-style)
-- **PanelDesignerVariable** — Variables (BP-style list)
+- **PanelDesignerSelection** — Details panel (Niagara-style)
+- **PanelDesignerVariable** — Parameters (BP-style list)
 - **PanelDesignerPreview** — Live layout preview (optional)
 
 ---
@@ -61,6 +64,4 @@ This document outlines the PanelDesigner plugin's architecture, which re-integra
 
 - Fully non-destructive — turning off plugin reverts to Epic’s default behavior
 
-- Tabs, toolbar, and layout registered in a modular fashion — easy to extend
-
-- Asset-based loading ensures full editor integration without needing subsystems
+- Plugin functionality works *with* Blueprints' native systems.
