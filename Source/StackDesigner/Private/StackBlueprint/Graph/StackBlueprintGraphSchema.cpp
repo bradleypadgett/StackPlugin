@@ -1,6 +1,6 @@
 #include "Graph/StackBlueprintGraphSchema.h"
-#include "StackNode_AddButton.h"
 #include "BlueprintNodeSpawner.h"
+#include "StackNode.h"
 
 
 
@@ -15,8 +15,8 @@ void UStackBlueprintGraphSchema::GetGraphContextActions(FGraphContextMenuBuilder
     {
         return;
     }
-
-    UBlueprintNodeSpawner* NodeSpawner = UBlueprintNodeSpawner::Create(UStackNode_AddButton::StaticClass());
+    /*
+    UBlueprintNodeSpawner* NodeSpawner = UBlueprintNodeSpawner::Create(UStackNode::StaticClass());
 
     if (NodeSpawner)
     {
@@ -30,9 +30,9 @@ void UStackBlueprintGraphSchema::GetGraphContextActions(FGraphContextMenuBuilder
         NewAction->NodeSpawner = NodeSpawner;
 
         ContextMenuBuilder.AddAction(NewAction);
-    }
+    }*/
 }
-
+/*
 UEdGraphNode* UStackBlueprintGraphSchema::FToolUI_NewNodeAction::PerformAction(UEdGraph* ParentGraph, UEdGraphPin* FromPin, const FVector2D Location, bool bSelectNewNode)
 {
     if (!NodeSpawner || !ParentGraph)
@@ -40,11 +40,11 @@ UEdGraphNode* UStackBlueprintGraphSchema::FToolUI_NewNodeAction::PerformAction(U
         return nullptr;
     }
 
-    UStackNode_AddButton* NewNode = NewObject<UStackNode_AddButton>(ParentGraph);
+    UStackNode_AddButton* NewNode = NewObject<UStackNode>(ParentGraph);
     ParentGraph->AddNode(NewNode, true, false);
 
     NewNode->NodePosX = Location.X;
     NewNode->NodePosY = Location.Y;
 
     return NewNode;
-}
+}*/

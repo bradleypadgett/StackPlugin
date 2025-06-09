@@ -30,11 +30,7 @@ public class StackDesigner : ModuleRules
             "AssetDefinition",
             "EngineAssetDefinitions",
             "ToolMenus",
-            "WorkspaceMenuStructure",
-            "Niagara",
-            "NiagaraEditor",
-            "NiagaraCore",
-            "NiagaraEditorWidgets"
+            "WorkspaceMenuStructure"
         });
     }
 }

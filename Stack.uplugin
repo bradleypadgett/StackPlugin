@@ -40,10 +40,6 @@
 		{
 			"Name": "EngineAssetDefinitions",
 			"Enabled": true
-		},
-		{
-			"Name": "Niagara",
-			"Enabled": true
 		}
 	]
 }
