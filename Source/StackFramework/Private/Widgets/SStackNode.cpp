@@ -1,10 +1,11 @@
-#include "Widgets/SStackNode.h"
+﻿#include "Widgets/SStackNode.h"
 #include "Widgets/SStackView.h"
 #include "StackNode.h"
 #include "ViewModels/Editor/StackViewModel.h"
 #include "ViewModels/Editor/StackSelectionViewModel.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
+#include "Widgets/StackStyle.h"
 
 
 
@@ -28,8 +29,8 @@ void SStackNode::Construct(const FArguments& InArgs, UStackNode* InNode)
 		UE_LOG(LogTemp, Warning, TEXT("SStackNode: SelectionViewModel is null!"));
 	}
 
-
 	SetCursor(EMouseCursor::CardinalCross);
+
 	UpdateGraphNode();
 }
 
@@ -39,31 +40,12 @@ void SStackNode::Tick(const FGeometry& AllottedGeometry, const double InCurrentT
 	// Add visual tick updates here later (selection highlight, etc.)
 }
 
-void SStackNode::UpdateGraphNode()
-{
-	InputPins.Empty();
-	OutputPins.Empty();
-	RightNodeBox.Reset();
-	LeftNodeBox.Reset();
-
-	this->ContentScale.Bind(this, &SGraphNode::GetContentScale);
-
-	this->GetOrAddSlot(ENodeZone::Center)
-		[
-			SNew(SBorder)
-				.BorderImage(FAppStyle::GetBrush("Graph.Node.Body"))
-				[
-					CreateNodeContentArea()
-				]
-		];
-}
-
-
 TSharedRef<SWidget> SStackNode::CreateNodeContentArea()
 {
 	return SNew(SStackView)
 		.StackViewModel(StackViewModel)
 		.SelectionViewModel(SelectionViewModel);
 }
+
 
 #undef LOCTEXT_NAMESPACE

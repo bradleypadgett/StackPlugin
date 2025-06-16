@@ -1,21 +1,27 @@
-#include "ViewModels/StackGraphUtilities.h"
+#include "Graph/StackGraphUtilities.h"
 #include "ViewModels/Editor/StackViewModel.h"
 #include "ViewModels/StackEntry.h"
 #include "StackNode.h"
 
 
 
-void FStackGraphUtilities::AddStackNodeToGraph(UEdGraph* Graph, const FVector2D& Location)
+UStackNode* FStackGraphUtilities::AddStackNodeToGraph(UEdGraph* Graph, const FVector2D& Location)
 {
-	if (!Graph) return;
-
-	// Create a new node
 	UStackNode* NewNode = NewObject<UStackNode>(Graph);
-	Graph->AddNode(NewNode, /*bFromUI=*/true, /*bSelectNewNode=*/true);
+	Graph->AddNode(NewNode);
+
+	NewNode->CreateNewGuid();
+	NewNode->PostPlacedNewNode();
+	NewNode->AllocateDefaultPins();
 
 	NewNode->NodePosX = Location.X;
 	NewNode->NodePosY = Location.Y;
+
 	NewNode->SnapToGrid(16);
+
+	NewNode->Initialize(NewNode); // use self as owner for now
+
+	return NewNode;
 }
 
 void FStackGraphUtilities::RemoveStackNodeFromGraph(UStackEntry* StackEntry)

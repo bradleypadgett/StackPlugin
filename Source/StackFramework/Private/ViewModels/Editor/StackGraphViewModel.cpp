@@ -1,6 +1,6 @@
 #include "ViewModels/Editor/StackGraphViewModel.h"
 #include "ViewModels/Editor/StackEditorViewModel.h"
-#include "ViewModels/StackGraphUtilities.h"
+#include "Graph/StackGraphUtilities.h"
 #include "ViewModels/StackEntry.h"
 //#include "StackObjectSelection.h"
 

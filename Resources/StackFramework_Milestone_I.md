@@ -33,7 +33,7 @@ Order to create classes: [`🪛` / `📌` / `📍` / `🎯`] Simultaneously in t
 
 ---
 
-### 🌱 Phase 1 | Minimum Visual Stack (MVP)
+### 🌱 Phase I | Minimum Visual Stack (MVP)
 
 To get *something visual and placeable* working in the editor~
 
@@ -141,7 +141,7 @@ SStackNode
 
 ---
 
-### 🪴 Phase 2 | Core Functional Rows
+### 🪴 Phase II | Core Functional Rows
 
 Hooking up actual module-style rows and grouping behavior~
 
@@ -215,21 +215,21 @@ Hooking up actual module-style rows and grouping behavior~
 
 ---
 
-### 🌲 Phase 3 | Utilities, Style, and Polish
+### 🌲 Phase III | Utilities, Style, and Polish
 
 Transitioning into interactivity and functionality~
 
 #### NiagaraEditorWidgets/ | StackFramework/Widgets/
 
-11. **💎 NiagaraEditorWidgetsStyle** 🪛 (StackStyle)
+11. **💎 NiagaraEditorWidgetsStyle** 🪛 (StackStyle) ✅
     
     * Used for icon styling, category color brushes, etc.
 
-12. **💎 NiagaraEditorWidgetsModule** 🪛 (StackStyleModule)
+12. **💎 NiagaraEditorWidgetsModule** 🪛 (StackStyleModule) ✅
     
     * Custom Slate styling and brushes for stack UI.
 
-13. **💎 NiagaraEditorWidgetsUtilities** 🪛 (StackUtilities)
+13. **💎 NiagaraEditorWidgetsUtilities** 🪛 (StackUtilities) ✅
     
     * Shared layout helpers, icon names, drag-drop rules, etc.
 
@@ -255,18 +255,26 @@ Transitioning into interactivity and functionality~
 
 #### NiagaraEditor/ | StackFramework/
 
-21. **🌷 SDynamicLayoutBox** 🪛 (SStackLayoutBox)
+21. **🌷 NiagaraEditorStyle.h** 🪛 (StackEditorStyle) ✅
+    
+    * Registers brushes/colors/fonts.
+
+22. **🌷 NiagaraEditorUtilities.h** 🪛 (StackEditorUtilities)
+    
+    * Wide set of editor helpers.
+
+23. **🌷 SDynamicLayoutBox** 🪛 (SStackLayoutBox)
     
     * Custom layout widget.
 
-22. **🌷 SNiagaraSelectedObjectsDetails** 📍 (SelectedObjectsDetails)
+24. **🌷 SNiagaraSelectedObjectsDetails** 📍 (SelectedObjectsDetails)
     
     * View-side details panel wrapper, should pair with the selection ViewModels.
 
-23. **🌷 SNiagaraSelectedAssetDetails** 📍 (SStackSelectedAssetDetails)
+25. **🌷 SNiagaraSelectedAssetDetails** 📍 (SStackSelectedAssetDetails)
     
     * Details panel for selected assets.
 
-24. **🪻 NiagaraCurveSelectionViewModel** 📍 (StackCurveSelectionViewModel)
+26. **🪻 NiagaraCurveSelectionViewModel** 📍 (StackCurveSelectionViewModel)
     
     - Tracks curve editor selection.

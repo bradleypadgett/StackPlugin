@@ -12,6 +12,7 @@ public class StackFramework : ModuleRules
             "Engine",
             "Slate",
             "SlateCore",
+            "EditorStyle"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[]

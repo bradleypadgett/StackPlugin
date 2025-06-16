@@ -26,7 +26,7 @@ void UStackEntry::RefreshChildrenInternal(const TArray<UStackEntry*>& /*CurrentC
 
 FText UStackEntry::GetDisplayName() const
 {
-	return FText::FromString(TEXT("Untitled Entry"));
+	return !DisplayName.IsEmpty() ? DisplayName : FText::FromString(TEXT("<Unnamed>"));
 }
 
 bool UStackEntry::GetCanExpand() const

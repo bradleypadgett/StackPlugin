@@ -16,11 +16,10 @@ public:
 	void Construct(const FArguments& InArgs, UStackNode* InNode);
 
 	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override;
-	virtual void UpdateGraphNode() override;
 	virtual bool ShouldAllowCulling() const override { return false; }
 
 protected:
-	TSharedRef<SWidget> CreateNodeContentArea();
+	virtual TSharedRef<SWidget> CreateNodeContentArea() override;
 
 private:
 	UStackNode* StackNode = nullptr;

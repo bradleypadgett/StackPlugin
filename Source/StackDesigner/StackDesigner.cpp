@@ -6,7 +6,7 @@
 #include "UObject/ReferenceChainSearch.h"
 #include "Engine/Blueprint.h"
 #include "Editor.h"
-
+#include "StackNodeFactory.h"
 
 
 
@@ -17,6 +17,8 @@ TStrongObjectPtr<UStackBlueprintDefinition> DesignerDefinitionInstance;
 // Unregister's Epic's default blueprint definition and replaces with StackDesigner's
 void FStackDesignerModule::StartupModule()
 {
+	FEdGraphUtilities::RegisterVisualNodeFactory(MakeShared<FStackNodeFactory>());
+
     UAssetDefinitionRegistry* Registry = UAssetDefinitionRegistry::Get();
 
     for (UAssetDefinition* Def : Registry->GetAllAssetDefinitions())

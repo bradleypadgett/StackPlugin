@@ -23,8 +23,6 @@ public:
 	void Construct(const FArguments& InArgs, const TSharedRef<STableViewBase>& InOwnerTable);
 
 private:
-	TSharedRef<SWidget> CreateContent();
-
 	FText GetDisplayName() const;
 
 private:

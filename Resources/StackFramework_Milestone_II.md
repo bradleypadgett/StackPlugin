@@ -33,7 +33,7 @@ Order to create classes: [`🪛` / `📌` / `📍` / `🎯`] Simultaneously in t
 
 ---
 
-### 🌱 Phase 1 | General Functionality
+### 🌱 Phase I | General Functionality
 
 🪛 *Core Input Rendering*
 
@@ -137,7 +137,7 @@ Order to create classes: [`🪛` / `📌` / `📍` / `🎯`] Simultaneously in t
 
 ---
 
-### 🪴 Phase 2 | Stack Group and Input UX
+### 🪴 Phase II | Stack Group and Input UX
 
 🪛 *Property Display*
 
@@ -257,7 +257,7 @@ Order to create classes: [`🪛` / `📌` / `📍` / `🎯`] Simultaneously in t
 
 ---
 
-### 🌲 Phase 3 | Editor Embeds and Visual Overlays
+### 🌲 Phase III | Editor Embeds and Visual Overlays
 
 🪛 *Clipboard / Logging / Utilities*
 

@@ -10,6 +10,8 @@ UStackViewModel::UStackViewModel()
 
 void UStackViewModel::Initialize(UObject* InOwnerContext, bool bInIncludeEditorSections)
 {
+	UE_LOG(LogTemp, Warning, TEXT("UStackViewModel::Initialize() called"));
+
 	OwnerContext = InOwnerContext;
 	bIncludeEditorSections = bInIncludeEditorSections;
 
@@ -36,12 +38,29 @@ void UStackViewModel::RefreshChildren()
 	{
 		Children.Add(Entry);
 	}
+
+	RootEntries = Children;
 }
 
 void UStackViewModel::RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren)
 {
-	// TODO: Subclass override
+	UStackEntry* Settings = NewObject<UStackEntry>(this);
+	Settings->SetDisplayName(FText::FromString("System Settings"));
+	NewChildren.Add(Settings);
+
+	UStackEntry* Spawn = NewObject<UStackEntry>(this);
+	Spawn->SetDisplayName(FText::FromString("System Spawn"));
+	NewChildren.Add(Spawn);
+
+	UStackEntry* Update = NewObject<UStackEntry>(this);
+	Update->SetDisplayName(FText::FromString("System Update"));
+	NewChildren.Add(Update);
+
+	UStackEntry* State = NewObject<UStackEntry>(this);
+	State->SetDisplayName(FText::FromString("System State"));
+	NewChildren.Add(State);
 }
+
 
 UStackEntry* UStackViewModel::GetOrCreateGroup(FName GroupID, const TArray<UStackEntry*>& CurrentChildren)
 {

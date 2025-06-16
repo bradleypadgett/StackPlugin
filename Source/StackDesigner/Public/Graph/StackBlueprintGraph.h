@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "EdGraph/EdGraph.h"
+#include "Graph/StackGraph.h"
 #include "StackBlueprintGraph.generated.h"
 
 
@@ -9,7 +9,7 @@
  * The actual graph data structure; added to `FunctionGraphs` for saving.
  */
 UCLASS()
-class STACKDESIGNER_API UStackBlueprintGraph : public UEdGraph
+class STACKDESIGNER_API UStackBlueprintGraph : public UStackGraph
 {
     GENERATED_BODY()
 

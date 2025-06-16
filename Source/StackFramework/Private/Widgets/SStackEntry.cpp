@@ -8,32 +8,20 @@
 
 void SStackEntry::Construct(const FArguments& InArgs, const TSharedRef<STableViewBase>& InOwnerTable)
 {
-	STableRow::Construct(STableRow::FArguments(), InOwnerTable);
-
 	StackEntry = InArgs._StackEntry;
 	SelectionViewModel = InArgs._SelectionViewModel;
 
-	SNew(SStackRow)
-		.Entry(StackEntry)
-		.SelectionViewModel(SelectionViewModel);
-}
-
-
-TSharedRef<SWidget> SStackEntry::CreateContent()
-{
-	const FText DisplayName = StackEntry
-		? StackEntry->GetDisplayName()
-		: FText::FromString(TEXT("<Invalid>"));
-
-	return SNew(SBox)
+	STableRow::Construct(
+		STableRow::FArguments()
 		.Padding(FMargin(4, 2))
+		.Content()
 		[
-			SNew(STextBlock)
-				.Text(DisplayName)
-				.Font(FAppStyle::GetFontStyle("NormalFont"))
-		];
+			SNew(SStackRow)
+				.Entry(StackEntry)
+				.SelectionViewModel(SelectionViewModel)
+		],
+		InOwnerTable);
 }
-
 
 FText SStackEntry::GetDisplayName() const
 {
