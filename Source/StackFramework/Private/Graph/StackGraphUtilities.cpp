@@ -1,5 +1,5 @@
 #include "Graph/StackGraphUtilities.h"
-#include "ViewModels/Editor/StackViewModel.h"
+#include "ViewModels/StackRoot.h"
 #include "ViewModels/StackEntry.h"
 #include "StackNode.h"
 
@@ -19,7 +19,7 @@ UStackNode* FStackGraphUtilities::AddStackNodeToGraph(UEdGraph* Graph, const FVe
 
 	NewNode->SnapToGrid(16);
 
-	NewNode->Initialize(NewNode); // use self as owner for now
+	//NewNode->Initialize(/*Get System*/);
 
 	return NewNode;
 }
@@ -44,10 +44,10 @@ TArray<UStackEntry*> FStackGraphUtilities::GetAllStackEntries(UEdGraph* Graph)
 	{
 		if (UStackNode* StackNode = Cast<UStackNode>(Node))
 		{
-			if (UStackEntry* Entry = StackNode->GetStackViewModel())
-			{
-				Entries.Add(Entry);
-			}
+			//if (UStackEntry* Entry = StackNode->GetStackRoot())
+			//{
+			//	Entries.Add(Entry);
+			//}
 		}
 	}
 	return Entries;

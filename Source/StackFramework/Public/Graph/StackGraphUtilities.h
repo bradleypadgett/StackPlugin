@@ -7,7 +7,7 @@ class UEdGraph;
 class UStackEntry;
 class UStackNode;
 
-/**
+/*
  * Utility functions for working with stack graphs.
  */
 class STACKFRAMEWORK_API FStackGraphUtilities

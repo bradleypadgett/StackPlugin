@@ -1,0 +1,1 @@
+#include "ViewModels/StackItem.h"

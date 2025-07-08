@@ -6,24 +6,19 @@
 
 
 
-void SStackEntry::Construct(const FArguments& InArgs, const TSharedRef<STableViewBase>& InOwnerTable)
+void SStackEntry::Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionViewModel* InSelectionViewModel)
 {
-	StackEntry = InArgs._StackEntry;
-	SelectionViewModel = InArgs._SelectionViewModel;
-
-	STableRow::Construct(
-		STableRow::FArguments()
-		.Padding(FMargin(4, 2))
-		.Content()
+	StackEntry = InStackEntry;
+	SelectionViewModel = InSelectionViewModel;
+	/*
+	ChildSlot
 		[
-			SNew(SStackRow)
-				.Entry(StackEntry)
-				.SelectionViewModel(SelectionViewModel)
-		],
-		InOwnerTable);
+			SNew(SStackRow, StackEntry, SelectionViewModel)
+		];*/
 }
 
-FText SStackEntry::GetDisplayName() const
+TSharedRef<SWidget> SStackEntry::BuildRowContent()
 {
-	return StackEntry ? StackEntry->GetDisplayName() : FText::FromString(TEXT("<Invalid>"));
+	return SNew(STextBlock).Text(FText::FromString(TEXT("Unnamed Entry")));
 }
+

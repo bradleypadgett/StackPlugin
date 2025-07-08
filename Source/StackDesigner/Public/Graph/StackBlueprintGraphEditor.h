@@ -21,7 +21,7 @@ public:
         SLATE_ARGUMENT(UStackBlueprintGraph*, GraphToEdit)
     SLATE_END_ARGS()
 
-    void Construct(const FArguments& InArgs);
+    void Construct(const FArguments& InArgs, UStackBlueprintGraph* InGraphBeingEdited);
 
 private:
     UStackBlueprintGraph* GraphBeingEdited;

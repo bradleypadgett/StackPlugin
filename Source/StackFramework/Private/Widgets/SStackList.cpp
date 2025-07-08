@@ -1,56 +1,106 @@
 #include "Widgets/SStackList.h"
-#include "ViewModels/Editor/StackViewModel.h"
+#include "ViewModels/StackRoot.h"
 #include "ViewModels/Editor/StackSelectionViewModel.h"
 #include "Widgets/SStackEntry.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Views/SListView.h"
+#include "ViewModels/Editor/StackRootViewModel.h"
 
 
 
-void SStackList::Construct(const FArguments& InArgs)
+void SStackList::Construct(const FArguments& InArgs, UStackRootViewModel* InRootViewModel, UStackRoot* InRoot, UStackSelectionViewModel* InSelection)
 {
-	StackViewModel = InArgs._StackViewModel;
-	SelectionViewModel = InArgs._SelectionViewModel;
+	Root = InRoot;
+	RootViewModel = InRootViewModel;
+	SelectionViewModel = InSelection;
 
 	RefreshEntries();
 
 	ChildSlot
 		[
-			SAssignNew(ListView, SListView<UStackEntry*>)
-				.ListItemsSource(&EntryList)
-				.OnGenerateRow(this, &SStackList::OnGenerateRow)
-				.OnSelectionChanged(this, &SStackList::OnSelectionChanged)
-				.SelectionMode(ESelectionMode::Single)
+			SNew(SVerticalBox)
+
+				// Header List View
+				+ SVerticalBox::Slot()
+				.AutoHeight()
+				[
+					SAssignNew(HeaderList, SListView<TSharedRef<UStackRootViewModel::FStackRootContainer>>)
+						.ListItemsSource(&RootContainers)
+						.OnGenerateRow_Lambda([](TSharedRef<UStackRootViewModel::FStackRootContainer> RootContainer, const TSharedRef<STableViewBase>& OwnerTable)
+							{
+								return SNew(STableRow<TSharedRef<UStackRootViewModel::FStackRootContainer>>, OwnerTable)
+									[
+										SNew(STextBlock).Text(RootContainer->DisplayName)
+									];
+							})
+				]
+
+			// Entry Tree View
+			+ SVerticalBox::Slot()
+				.FillHeight(1.f)
+				[
+					SAssignNew(Tree, STreeView<UStackEntry*>)
+						.TreeItemsSource(&RootEntries)
+						.OnGenerateRow_Lambda([](UStackEntry* Entry, const TSharedRef<STableViewBase>& OwnerTable)
+							{
+								return SNew(STableRow<UStackEntry*>, OwnerTable)
+									[
+										SNew(STextBlock).Text(Entry ? Entry->GetDisplayName() : FText::FromString("<Invalid>")) 
+									];
+							})
+						.OnGetChildren_Lambda([](UStackEntry* Parent, TArray<UStackEntry*>& OutChildren)
+							{
+								if (Parent)
+								{
+									OutChildren = Parent->GetChildren(); // You may need to expose this
+								}
+							})
+				]
 		];
 }
 
+
 void SStackList::RefreshEntries()
 {
-	EntryList.Reset();
+	RootContainers.Reset();
+	RootEntries.Reset();
 
-	if (StackViewModel)
+	if (RootViewModel)
 	{
-		EntryList.Append(StackViewModel->GetRootEntries());
+		// Add stack root entries
+		RootEntries.Append(RootViewModel->GetRootEntries());
+
+		// Add top-level stack headers (for pinned tabs, etc.)
+		for (const UStackRootViewModel::FStackRootContainer& RootContainer : RootViewModel->GetRootContainers())
+		{
+			RootContainers.Add(MakeShared<UStackRootViewModel::FStackRootContainer>(RootContainer));
+		}
 	}
 
-	if (ListView.IsValid())
+	if (HeaderList.IsValid())
 	{
-		ListView->RequestListRefresh();
+		HeaderList->RequestListRefresh();
+	}
+	if (Tree.IsValid())
+	{
+		Tree->RequestTreeRefresh();
 	}
 }
 
 TSharedRef<ITableRow> SStackList::OnGenerateRow(UStackEntry* Entry, const TSharedRef<STableViewBase>& OwnerTable)
 {
-	return SNew(SStackEntry, OwnerTable)
-		.StackEntry(Entry)
-		.SelectionViewModel(SelectionViewModel);
+	return SNew(STableRow<UStackEntry*>, OwnerTable)
+		[
+			SNew(SStackEntry, Entry, SelectionViewModel)
+		];
 }
 
 void SStackList::OnSelectionChanged(UStackEntry* Entry, ESelectInfo::Type SelectInfo)
 {
-	if (SelectionViewModel)
-	{
-		SelectionViewModel->SetSelectedEntry(Entry);
-	}
+	//if (SelectionViewModel)
+	//{
+	//	SelectionViewModel->SetSelectedEntry(Entry);
+	//}
 }
+

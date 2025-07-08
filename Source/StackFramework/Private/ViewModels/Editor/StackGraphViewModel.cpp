@@ -1,5 +1,5 @@
 #include "ViewModels/Editor/StackGraphViewModel.h"
-#include "ViewModels/Editor/StackEditorViewModel.h"
+#include "ViewModels/Editor/StackSystemViewModel.h"
 #include "Graph/StackGraphUtilities.h"
 #include "ViewModels/StackEntry.h"
 //#include "StackObjectSelection.h"
@@ -16,15 +16,15 @@ FStackGraphViewModel::~FStackGraphViewModel()
 
 }
 
-void FStackGraphViewModel::Initialize(TSharedRef<FStackEditorViewModel> InEditorViewModel, UEdGraph* InGraph)
+void FStackGraphViewModel::Initialize(TSharedRef<FStackSystemViewModel> InSystemViewModel, UEdGraph* InGraph)
 {
-	EditorViewModel = InEditorViewModel;
+	SystemViewModel = InSystemViewModel;
 	Graph = InGraph;
 }
 
-TSharedRef<FStackEditorViewModel> FStackGraphViewModel::GetEditorViewModel() const
+TSharedRef<FStackSystemViewModel> FStackGraphViewModel::GetSystemViewModel() const
 {
-	return EditorViewModel.Pin().ToSharedRef();
+	return SystemViewModel.Pin().ToSharedRef();
 }
 
 UEdGraph* FStackGraphViewModel::GetGraph() const

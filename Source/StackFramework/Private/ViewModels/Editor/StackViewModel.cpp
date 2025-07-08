@@ -1,77 +1,31 @@
 #include "ViewModels/Editor/StackViewModel.h"
-#include "ViewModels/StackEntry.h"
+#include "ViewModels/Editor/StackHandleViewModel.h"
+#include "State/StackData.h"
 
 
 
-UStackViewModel::UStackViewModel()
+FStackViewModel::FStackViewModel()
 {
-	bIncludeEditorSections = true;
+
 }
 
-void UStackViewModel::Initialize(UObject* InOwnerContext, bool bInIncludeEditorSections)
+FStackViewModel::~FStackViewModel()
 {
-	UE_LOG(LogTemp, Warning, TEXT("UStackViewModel::Initialize() called"));
 
-	OwnerContext = InOwnerContext;
-	bIncludeEditorSections = bInIncludeEditorSections;
-
-	RefreshChildren();
 }
 
-UStackSelectionViewModel* UStackViewModel::GetSelectionViewModel() const
+UStackData& FStackViewModel::GetStackData()
 {
-	return SelectionViewModel;
+	return *GetMutableDefault<UStackData>();
 }
 
-const TArray<UStackEntry*>& UStackViewModel::GetRootEntries() const
+UStack& FStackViewModel::GetStack()
 {
-	return RootEntries;
+	// TO-DO ~ weak ptr check
+	return *Stack;
 }
 
-void UStackViewModel::RefreshChildren()
+TSharedPtr<FStackHandleViewModel> FStackViewModel::GetHandleViewModel(const FStackHandleViewModel& InHandleViewModel) const
 {
-	TArray<UStackEntry*> NewChildren;
-	RefreshChildrenInternal(Children, NewChildren);
-
-	Children.Empty();
-	for (UStackEntry* Entry : NewChildren)
-	{
-		Children.Add(Entry);
-	}
-
-	RootEntries = Children;
-}
-
-void UStackViewModel::RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren)
-{
-	UStackEntry* Settings = NewObject<UStackEntry>(this);
-	Settings->SetDisplayName(FText::FromString("System Settings"));
-	NewChildren.Add(Settings);
-
-	UStackEntry* Spawn = NewObject<UStackEntry>(this);
-	Spawn->SetDisplayName(FText::FromString("System Spawn"));
-	NewChildren.Add(Spawn);
-
-	UStackEntry* Update = NewObject<UStackEntry>(this);
-	Update->SetDisplayName(FText::FromString("System Update"));
-	NewChildren.Add(Update);
-
-	UStackEntry* State = NewObject<UStackEntry>(this);
-	State->SetDisplayName(FText::FromString("System State"));
-	NewChildren.Add(State);
-}
-
-
-UStackEntry* UStackViewModel::GetOrCreateGroup(FName GroupID, const TArray<UStackEntry*>& CurrentChildren)
-{
-	for (UStackEntry* Entry : CurrentChildren)
-	{
-		if (Entry && Entry->GetFName() == GroupID)
-		{
-			return Entry;
-		}
-	}
-
-	UStackEntry* NewGroup = NewObject<UStackEntry>(this, GroupID);
-	return NewGroup;
+	return HandleViewModel;
 }

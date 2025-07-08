@@ -6,7 +6,7 @@
 
 class UEdGraph;
 class UStackEntry;
-class FStackEditorViewModel;
+class FStackSystemViewModel;
 class FStackObjectSelection;
 
 /*
@@ -18,9 +18,9 @@ public:
 	FStackGraphViewModel();
 	virtual ~FStackGraphViewModel();
 
-	void Initialize(TSharedRef<FStackEditorViewModel> InEditorViewModel, UEdGraph* InGraph);
+	void Initialize(TSharedRef<FStackSystemViewModel> InSystemViewModel, UEdGraph* InGraph);
 
-	TSharedRef<FStackEditorViewModel> GetEditorViewModel() const;
+	TSharedRef<FStackSystemViewModel> GetSystemViewModel() const;
 	UEdGraph* GetGraph() const;
 
 	TSharedRef<FStackObjectSelection> GetNodeSelection() const;
@@ -31,7 +31,7 @@ public:
 	virtual void PostRedo(bool bSuccess) override { PostUndo(bSuccess); }
 
 private:
-	TWeakPtr<FStackEditorViewModel> EditorViewModel;
+	TWeakPtr<FStackSystemViewModel> SystemViewModel;
 	TWeakObjectPtr<UEdGraph> Graph;
 
 	TSharedPtr<FStackObjectSelection> NodeSelection;

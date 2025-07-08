@@ -8,7 +8,7 @@ class SGraphNode;
 class UEdGraphNode;
 
 /*
- * Maps UStackNode to its visual SStackNode representation.
+ * Maps UStackNode to its visual SStackNodeRoot representation.
  */
 class STACKFRAMEWORK_API FStackNodeFactory : public FGraphPanelNodeFactory
 {

@@ -3,7 +3,7 @@
 
 
 
-/** Style set for stack-specific widgets (rows, icons, colors, inputs). */
+// Style set for stack-specific widgets (rows, icons, colors, inputs)
 class FStackStyle : public FSlateStyleSet
 {
 public:

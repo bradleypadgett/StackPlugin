@@ -20,7 +20,8 @@ public class StackFramework : ModuleRules
             "PropertyEditor",
             "UnrealEd",
             "GraphEditor",
-            "InputCore"
+            "InputCore",
+            "ToolMenus"
         });
     }
 }

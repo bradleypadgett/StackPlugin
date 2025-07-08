@@ -1,12 +1,13 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "StackDataBase.h"
 #include "StackEditorData.generated.h"
 
 
 
 UCLASS()
-class STACKFRAMEWORK_API UStackEditorData : public UObject
+class STACKFRAMEWORK_API UStackEditorData : public UStackDataBase
 {
 	GENERATED_BODY()
 
@@ -20,6 +21,9 @@ public:
 	double GetLastScrollPosition() const;
 	void SetLastScrollPosition(double InScrollPosition);
 
+	bool GetIsExpandedInNode(const FString& StackEntryKey, bool bIsExpandedDefault) const;
+	void SetIsExpandedInNode(const FString& StackEntryKey, bool bIsExpanded);
+
 private:
 	UPROPERTY()
 	TMap<FString, bool> ExpandedMap;
@@ -27,6 +31,9 @@ private:
 	UPROPERTY()
 	TMap<FString, bool> RenamePendingMap;
 
+	UPROPERTY()
+	TMap<FString, bool> KeyToExpandedNodeMap;
+	
 	UPROPERTY()
 	double LastScrollPosition = 0.0;
 };

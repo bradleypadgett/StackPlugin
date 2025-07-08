@@ -6,25 +6,61 @@
 
 
 class UStackEntry;
+class UStackSelection;
+class UStackRootViewModel;
+class FStackSystemViewModel;
 
 DECLARE_MULTICAST_DELEGATE(FOnEntrySelectionChanged);
 
 UCLASS()
 class STACKFRAMEWORK_API UStackSelectionViewModel : public UObject
 {
+public:
+	DECLARE_MULTICAST_DELEGATE(FOnSelectionChanged);
+
+private:
+	struct FSelectedEntry
+	{
+		explicit FSelectedEntry(UStackEntry* SelectedEntry);
+
+		const TWeakObjectPtr<UStackEntry> Entry;
+		const FGuid StackID;
+		const FString EditorDataKey;
+	};
+
 	GENERATED_BODY()
 
 public:
-	void Initialize();
+	void Initialize(TSharedRef<FStackSystemViewModel> InStackSystemViewModel);
 
-	void SetSelectedEntry(UStackEntry* Entry);
-	UStackEntry* GetSelectedEntry() const;
+	bool ContainsEntry(UStackEntry* Entry) const;
+
+	void GetSelectedEntries(TArray<UStackEntry*>& OutSelectedEntries) const;
+	void UpdateSelectedEntries(const TArray<UStackEntry*>& InSelected, const TArray<UStackEntry*>& InDeselected, bool bClearSelection);
+
 
 	FOnEntrySelectionChanged& OnEntrySelectionChanged();
 
 private:
+
+	void DeselectEntryInternal(UStackEntry* InDeselectedEntry);
+
+	void UpdateExternalSelectionState();
+
+private:
+
+	TWeakPtr<FStackSystemViewModel> SystemViewModelWeak;
+
 	UPROPERTY()
-	TObjectPtr<UStackEntry> SelectedEntry;
+	TObjectPtr<UStackSelection> SelectionEntry;
+
+	UPROPERTY()
+	TObjectPtr<UStackRootViewModel> SelectedRootViewModel;
+
+	bool bRefreshIsPending = false;
+	bool bIsSystemNodeSelected = false;
+
+	TArray<FSelectedEntry> SelectedEntries;
 
 	FOnEntrySelectionChanged EntrySelectionChangedDelegate;
 };

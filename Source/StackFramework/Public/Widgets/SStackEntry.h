@@ -10,9 +10,8 @@ class UStackSelectionViewModel;
 
 /*
  * Widget that displays one row from a stack entry.
- * Will render name, icon, rename support, etc. (later).
  */
-class SStackEntry : public STableRow<UStackEntry*>
+class SStackEntry : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SStackEntry) {}
@@ -20,13 +19,12 @@ public:
 		SLATE_ARGUMENT(UStackSelectionViewModel*, SelectionViewModel)
 	SLATE_END_ARGS()
 
-	void Construct(const FArguments& InArgs, const TSharedRef<STableViewBase>& InOwnerTable);
+	void Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionViewModel* InSelectionViewModel);
 
-private:
-	FText GetDisplayName() const;
+	virtual TSharedRef<SWidget> BuildRowContent();
 
-private:
-	UStackEntry* StackEntry = nullptr;
-	UStackSelectionViewModel* SelectionViewModel = nullptr;
+protected:
+	UStackEntry* StackEntry;
+	UStackSelectionViewModel* SelectionViewModel;
 
 };

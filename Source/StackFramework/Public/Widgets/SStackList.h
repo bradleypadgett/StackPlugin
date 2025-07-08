@@ -1,35 +1,44 @@
 #pragma once
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/Views/SListView.h"
+#include "ViewModels/StackEntry.h"
+#include "ViewModels/Editor/StackRootViewModel.h"
 
 
-
-class UStackViewModel;
+class UStackRoot;
 class UStackSelectionViewModel;
 class UStackEntry;
+class UStackRootViewModel;
 
 /*
- * Core ListView for rendering stack entries.
- */
+* Renders stack sections and entry tree for one stack node.
+*/
 class SStackList : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SStackList) {}
-		SLATE_ARGUMENT(UStackViewModel*, StackViewModel)
+		SLATE_ARGUMENT(UStackRoot*, Root)
 		SLATE_ARGUMENT(UStackSelectionViewModel*, SelectionViewModel)
 	SLATE_END_ARGS()
 
-	void Construct(const FArguments& InArgs);
+	void Construct(const FArguments& InArgs, UStackRootViewModel* InRootViewModel, UStackRoot* InRoot, UStackSelectionViewModel* InSelection);
 
 private:
 	TSharedRef<ITableRow> OnGenerateRow(UStackEntry* Entry, const TSharedRef<STableViewBase>& OwnerTable);
+
+	// TO-DO ~ Switch to entry array
 	void OnSelectionChanged(UStackEntry* Entry, ESelectInfo::Type SelectInfo);
+
 	void RefreshEntries();
 
 private:
-	UStackViewModel* StackViewModel = nullptr;
-	UStackSelectionViewModel* SelectionViewModel = nullptr;
+	UStackRoot* Root;
+	UStackRootViewModel* RootViewModel;
+	UStackSelectionViewModel* SelectionViewModel;
 
-	TArray<UStackEntry*> EntryList;
-	TSharedPtr<SListView<UStackEntry*>> ListView;
+	TSharedPtr<SListView<TSharedRef<UStackRootViewModel::FStackRootContainer>>> HeaderList;
+	TSharedPtr<STreeView<UStackEntry*>> Tree;
+
+	TArray<TSharedRef<UStackRootViewModel::FStackRootContainer>> RootContainers;
+	TArray<UStackEntry*> RootEntries;
 };

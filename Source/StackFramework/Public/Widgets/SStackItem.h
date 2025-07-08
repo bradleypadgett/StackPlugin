@@ -14,15 +14,13 @@ class SStackItem : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SStackItem) {}
-		SLATE_ARGUMENT(UStackEntry*, Entry)
-		SLATE_ARGUMENT(UStackSelectionViewModel*, SelectionViewModel)
 	SLATE_END_ARGS()
 
-	void Construct(const FArguments& InArgs);
+	void Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionViewModel* InSelectionViewModel);
 
 private:
-	UStackEntry* StackEntry = nullptr;
-	UStackSelectionViewModel* SelectionViewModel = nullptr;
+	UStackEntry* StackEntry;
+	UStackSelectionViewModel* SelectionViewModel;
 
 	TSharedRef<SWidget> BuildContent();
 };

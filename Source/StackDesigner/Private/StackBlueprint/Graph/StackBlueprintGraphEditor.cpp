@@ -6,9 +6,9 @@
 
 
 
-void SStackBlueprintGraphEditor::Construct(const FArguments& InArgs)
+void SStackBlueprintGraphEditor::Construct(const FArguments& InArgs, UStackBlueprintGraph* InGraphBeingEdited)
 {
-    GraphBeingEdited = InArgs._GraphToEdit;
+    GraphBeingEdited = InGraphBeingEdited;
 
     UE_LOG(LogTemp, Warning, TEXT("✅ SStackBlueprintGraphEditor::Construct fired."));
 

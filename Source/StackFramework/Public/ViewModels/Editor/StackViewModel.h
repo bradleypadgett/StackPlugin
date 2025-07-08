@@ -1,57 +1,30 @@
 #pragma once
-#include "CoreMinimal.h"
-#include "ViewModels/StackEntry.h"
-#include "StackViewModel.generated.h"
 
 
 
-class UStackEntry;
-class UStackSelectionViewModel;
+class UStackData;
+class FStackViewModel;
+class FStackHandleViewModel;
+class UStack;
 
-/*
- * Base stack root. Inherits from StackEntry so it can appear as a visual entry,
- * and contain nested children (groups/items).
- */
-UCLASS()
-class STACKFRAMEWORK_API UStackViewModel : public UStackEntry
+// TO~DO - mayyybe add viewmodel manager for all these viewmodels
+class FStackViewModel : public TSharedFromThis<FStackViewModel>
 {
-	GENERATED_BODY()
-
 public:
-	UStackViewModel();
+	FStackViewModel();
+	~FStackViewModel();
 
-	void Initialize(UObject* InOwnerContext, bool bInIncludeEditorSections = true);
+	UStackData& GetStackData();
+	UStack& GetStack();
 
-	// UStackEntry overrides
-	virtual bool GetCanExpand() const override { return true; }
-	virtual bool GetShouldShowInStack() const override { return true; }
+	TSharedPtr<FStackHandleViewModel> GetHandleViewModel(const FStackHandleViewModel& InHandleViewModel) const;
 
-	UStackSelectionViewModel* GetSelectionViewModel() const;
+private:
 
-	// Return the top-level entries to display
-	const TArray<UStackEntry*>& GetRootEntries() const;
+	TSharedPtr<FStackHandleViewModel> HandleViewModel;
 
-	// Refresh stack children
-	virtual void RefreshChildren() override;
-
-
-protected:
-	/** Rebuilds children, possibly reusing existing ones. */
-	virtual void RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren);
-
-	/** Utility for reusing or creating a group entry by name */
-	UStackEntry* GetOrCreateGroup(FName GroupID, const TArray<UStackEntry*>& CurrentChildren);
-
-protected:
+	// TO-DO ~ Store as weak ptr
 	UPROPERTY()
-	TObjectPtr<UObject> OwnerContext;
-
-	UPROPERTY()
-	TArray<UStackEntry*> RootEntries;
-
-	UPROPERTY()
-	UStackSelectionViewModel* SelectionViewModel = nullptr;
-
-	UPROPERTY()
-	bool bIncludeEditorSections;
+	UStack* Stack;
+	//TWeakPtr<UStack> StackWeakPtr;
 };

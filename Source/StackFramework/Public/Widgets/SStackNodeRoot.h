@@ -4,13 +4,14 @@
 
 
 class UStackNode;
-class UStackViewModel;
+class UStackRoot;
 class UStackSelectionViewModel;
+class UStackRootViewModel;
 
-class SStackNode : public SGraphNode
+class SStackNodeRoot : public SGraphNode
 {
 public:
-	SLATE_BEGIN_ARGS(SStackNode) {}
+	SLATE_BEGIN_ARGS(SStackNodeRoot) {}
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs, UStackNode* InNode);
@@ -19,11 +20,16 @@ public:
 	virtual bool ShouldAllowCulling() const override { return false; }
 
 protected:
+	virtual void UpdateGraphNode() override;
 	virtual TSharedRef<SWidget> CreateNodeContentArea() override;
 
+
+	virtual TSharedRef<SWidget> CreateNodeStack();
+	TSharedRef<SWidget> CreateTitleWidget(TSharedPtr<SNodeTitle> NodeTitle);
+
 private:
-	UStackNode* StackNode = nullptr;
-	UStackViewModel* StackViewModel = nullptr;
+	UStackNode* Node = nullptr;
+	UStackRootViewModel* RootViewModel = nullptr;
 	UStackSelectionViewModel* SelectionViewModel = nullptr;
 
 	TSharedPtr<SWidget> StackContent;
