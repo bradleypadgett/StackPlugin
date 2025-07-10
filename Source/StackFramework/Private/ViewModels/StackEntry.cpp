@@ -1,5 +1,5 @@
 #include "ViewModels/StackEntry.h"
-#include "State/StackEditorData.h"
+#include "State/StackViewState.h"
 
 
 
@@ -14,15 +14,15 @@ UStackEntry::UStackEntry()
 
 }
 
-void UStackEntry::Initialize(FStackEntryContext InStackEntryContext, FString InEditorDataKey)
+void UStackEntry::Initialize(FStackEntryContext InStackEntryContext, FString InStackViewStateKey)
 {
 	SystemViewModel = InStackEntryContext.SystemViewModel;
 	StackViewModel = InStackEntryContext.StackViewModel;
 	CategoryName = InStackEntryContext.CategoryName;
 	SubcategoryName = InStackEntryContext.SubcategoryName;
-	EditorData = InStackEntryContext.EditorData;
+	StackViewState = InStackEntryContext.StackViewState;
 
-	EditorDataKey = InEditorDataKey;
+	StackViewStateKey = InStackViewStateKey;
 }
 
 
@@ -41,15 +41,15 @@ FText UStackEntry::GetDisplayName() const
 	return !DisplayName.IsEmpty() ? DisplayName : FText::FromString(TEXT("<Unnamed>"));
 }
 
-UStackEditorData& UStackEntry::GetEditorData() const
+UStackViewState& UStackEntry::GetStackViewState() const
 {
-	checkf(EditorData, TEXT("StackEditorData is nullptr — check finalized state first"));
-	return *EditorData;
+	checkf(StackViewState, TEXT("StackState is nullptr — check finalized state first"));
+	return *StackViewState;
 }
 
-FString UStackEntry::GetEditorDataKey() const
+FString UStackEntry::GetStackViewStateKey() const
 {
-	return EditorDataKey;
+	return StackViewStateKey;
 }
 
 FText UStackEntry::GetTooltipText() const
@@ -69,18 +69,18 @@ bool UStackEntry::GetCanExpandInNode() const
 
 bool UStackEntry::GetIsExpandedInNode() const
 {
-	if (!bIsExpandedInNodeCache.IsSet() && EditorData != nullptr)
+	if (!bIsExpandedInNodeCache.IsSet() && StackViewState != nullptr)
 	{
-		bIsExpandedInNodeCache = EditorData->GetIsExpandedInNode(GetEditorDataKey(), false);
+		bIsExpandedInNodeCache = StackViewState->GetIsExpandedInNode(GetStackViewStateKey(), false);
 	}
 	return bIsExpandedInNodeCache.Get(false);
 }
 
 void UStackEntry::SetIsExpandedInNode(bool bInExpanded)
 {
-	if (EditorData && GetCanExpandInNode())
+	if (StackViewState && GetCanExpandInNode())
 	{
-		EditorData->SetIsExpandedInNode(GetEditorDataKey(), bInExpanded);
+		StackViewState->SetIsExpandedInNode(GetStackViewStateKey(), bInExpanded);
 	}
 	bIsExpandedInNodeCache.Reset();
 	ExpansionInNodeChangedDelegate.Broadcast();
@@ -131,7 +131,7 @@ const TArray<UStackEntry::FStackIssue>& UStackEntry::GetIssues() const
 	return StackIssues;
 }
 
-void UStackEntry::RefreshChildrenInternal(const TArray<UStackEntry*>& /*CurrentChildren*/, TArray<UStackEntry*>& /*OutNewChildren*/, TArray<FStackIssue>& NewIssues)
+void UStackEntry::RefreshStackChildren(const TArray<UStackEntry*>& /*CurrentChildren*/, TArray<UStackEntry*>& /*OutNewChildren*/, TArray<FStackIssue>& NewIssues)
 {
 
 }
@@ -140,7 +140,7 @@ void UStackEntry::RefreshChildren()
 {
 	TArray<UStackEntry*> NewChildren;
 	TArray<FStackIssue> NewStackIssues;
-	RefreshChildrenInternal(Children, NewChildren, NewStackIssues);
+	RefreshStackChildren(Children, NewChildren, NewStackIssues);
 
 	Children.Empty();
 	for (UStackEntry* Entry : NewChildren)

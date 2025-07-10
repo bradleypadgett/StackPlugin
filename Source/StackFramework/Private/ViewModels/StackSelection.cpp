@@ -1,6 +1,6 @@
 #include "ViewModels/StackSelection.h"
 #include "ViewModels/StackEntry.h"
-#include "State/StackEditorData.h"
+#include "State/StackViewState.h"
 
 
 
@@ -21,7 +21,7 @@ void UStackSelection::SetSelectedEntries(const TArray<UStackEntry*>& InSelectedE
 	RefreshChildren();
 }
 
-void UStackSelection::RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues)
+void UStackSelection::RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues)
 {
 	for (TWeakObjectPtr<UStackEntry> Entry : SelectedEntries)
 	{

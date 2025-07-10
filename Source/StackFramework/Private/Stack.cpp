@@ -19,3 +19,8 @@ bool UStack::SetUniqueName(const FString& InName) {
 	UniqueName = InName;
 	return true;
 }
+
+UStackEditorState* UStack::GetStackEditorState() const
+{
+	return StackEditorState;
+}

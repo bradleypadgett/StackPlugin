@@ -1,4 +1,5 @@
 #include "StackHandle.h"
+#include "Definition/StackSource.h"
 #include "Stack.h"
 
 
@@ -8,17 +9,17 @@ FStackHandle::FStackHandle()
 {
 }
 
-FStackHandle::FStackHandle(UStack& InStack)
-	: ID(FGuid::NewGuid())
-	, Name(*InStack.GetUniqueName())
-	, Stack(&InStack)
+FStackHandle::FStackHandle(const TScriptInterface<IStackSource>& InStackSource)
+	: StackSource(InStackSource)
+	, ID(FGuid::NewGuid())
+	, Name(InStackSource->GetStack().GetUniqueName())
 	, bIsEnabled(true)
 {
 }
 
 bool FStackHandle::IsValid() const
 {
-	return ID.IsValid() && Stack != nullptr;
+	return ID.IsValid() && GetSource() != nullptr;
 }
 
 FGuid FStackHandle::GetHandleID() const
@@ -34,13 +35,8 @@ FName FStackHandle::GetName() const
 void FStackHandle::SetName(FName NewName)
 {
 	Name = NewName;
-	if (Stack)
+	if (GetSource())
 	{
-		Stack->Rename(*NewName.ToString());
+		GetStack().Rename(*NewName.ToString());
 	}
-}
-
-UStack* FStackHandle::GetStack() const
-{
-	return Stack;
 }

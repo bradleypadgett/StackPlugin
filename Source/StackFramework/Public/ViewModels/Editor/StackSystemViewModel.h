@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "Definition/StackSource.h"
 #include "Templates/SharedPointer.h"
 
 
@@ -8,7 +9,8 @@ class UStackRoot;
 class UStackEntry;
 class SWidget;
 class UStack;
-class UStackSystemData;
+class UStackSystem;
+class UStackSystemState;
 class UStackRootViewModel;
 class UStackSelectionViewModel;
 class FStackRootViewModel;
@@ -24,21 +26,18 @@ public:
 	FStackSystemViewModel();
 	virtual ~FStackSystemViewModel() {}
 
-	void Initialize(UStack* InStack);
+	void Initialize(TScriptInterface<IStackSource> InStackSource);
 
-	virtual UStack* GetStack() const;
-	UStackSystemData& GetSystemData() const;
-
-	void AddStack(UStack* InStack);
-	TArray<UStack*> GetAllStacks() const;
+	void AddStackSource(TScriptInterface<IStackSource> InStackSource);
+	TArray<TScriptInterface<IStackSource>> GetAllStackSources() const;
 
 	UStackSelectionViewModel* GetSelectionViewModel() const;
 
 	TSharedPtr<FStackHandleViewModel> GetHandleViewModelFromID(const FGuid& InHandleID) const;
 	TSharedPtr<FStackHandleViewModel> GetHandleViewModelFromStack(const UStack& InStack) const;
 
-	void SetActiveStack(UStack* InStack);
-	UStack* GetActiveStack() const;
+	void SetActiveStackSource(TScriptInterface<IStackSource> InStack);
+	TScriptInterface<IStackSource> GetActiveStackSource() const;
 
 	void SetSelectedEntry(UStackEntry* Entry);
 	UStackEntry* GetSelectedEntry() const;
@@ -46,17 +45,25 @@ public:
 	/** Returns a prebuilt Palette tab widget */
 	TSharedRef<SWidget> CreatePaletteWidget();
 
-private:
-	void SetStack(UStack* InStack);
+public:
 
-	UStack* Stack = nullptr;
+
+	IStackSource* GetStackSource() const;
+	UStackSystemState& GetSystemState() const;
+
+private:
+	UStackSystemState* SystemState;
+
+	void SetStackSource(TScriptInterface<IStackSource> InSource);
+
+	TScriptInterface<IStackSource> StackSource;
 
 	TArray<TSharedRef<FStackHandleViewModel>> HandleViewModels;
 
 	TObjectPtr<UStackRootViewModel> RootViewModel;
 	TObjectPtr<UStackSelectionViewModel> SelectionViewModel;
 
-	TArray<TWeakObjectPtr<UStack>> Stacks;
-	TWeakObjectPtr<UStack> ActiveStack;
+	TArray<TScriptInterface<IStackSource>> StackSources;
+	TScriptInterface<IStackSource> ActiveStackSource;
 	TWeakObjectPtr<UStackEntry> SelectedEntry;
 };

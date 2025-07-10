@@ -7,7 +7,6 @@
 
 
 
-class UStack;
 struct FStackHandle;
 
 UCLASS(BlueprintType)
@@ -29,9 +28,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "System")
 	FName Name;
-
-	UPROPERTY(EditAnywhere, Instanced, Category = "System")
-	TObjectPtr<UStack> StackAsset;
 
 	UPROPERTY()
 	TArray<FStackHandle> StackHandles;

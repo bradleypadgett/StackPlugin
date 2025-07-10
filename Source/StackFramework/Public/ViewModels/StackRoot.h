@@ -7,7 +7,7 @@
 
 class FStackHandleViewModel;
 class FStackModuleViewModel;
-class UStackEditorData;
+class UStackViewState;
 
 UCLASS()
 class UStackRoot : public UStackEntry
@@ -24,16 +24,15 @@ public:
 	virtual bool GetShouldShowInStack() const override;
 
 protected:
-	virtual void RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
+	virtual void RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
 
 private:
-	void RefreshNodeChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren);
 
-	UStackEntry* GetOrCreateNodePropertiesGroup(const TArray<UStackEntry*>& CurrentChildren);
+	UStackEntry* GetOrCreateStackSettingsGroup(const TArray<UStackEntry*>& CurrentChildren);
 
 	UStackEntry* GetCurrentModuleGroup(const TArray<UStackEntry*>& CurrentChildren, FName ModuleUsageKey) const;
-	UStackEntry* CreateModuleGroup(TSharedRef<FStackModuleViewModel> InModuleViewModel, EStackModuleUsage InModuleUsage, FGuid InModuleUsageId, UStackEditorData& InEditorData, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip);
+	UStackEntry* CreateModuleGroup(TSharedRef<FStackModuleViewModel> InModuleViewModel, EStackModuleUsage InModuleUsage, FGuid InModuleUsageId, UStackViewState& InStackViewState, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip);
 
 private:
-	bool bIncludePropertiesGroup;
+	bool bIncludeSettingsGroup;
 };

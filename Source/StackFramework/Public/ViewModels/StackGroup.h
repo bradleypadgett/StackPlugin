@@ -36,7 +36,7 @@ public:
 protected:
 	void SetDisplayName(FText InDisplayName);
 
-	virtual void RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
+	virtual void RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
 
 	virtual int32 GetChildIndentLevel() const override;
 

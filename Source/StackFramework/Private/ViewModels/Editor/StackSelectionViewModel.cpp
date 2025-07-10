@@ -3,7 +3,8 @@
 #include "ViewModels/Editor/StackRootViewModel.h"
 #include "ViewModels/Editor/StackHandleViewModel.h"
 #include "ViewModels/Editor/StackViewModel.h"
-#include "State/StackSystemData.h"
+#include "State/StackSystemState.h"
+#include "Definition/StackSource.h"
 #include "ViewModels/StackSelection.h"
 #include "ViewModels/StackEntry.h"
 
@@ -12,11 +13,11 @@
 // helps gen.cpp files make UCLASS(), UFUNCTION(), UPROPERTY() stuff work correctly
 #include UE_INLINE_GENERATED_CPP_BY_NAME(StackSelectionViewModel)
 
-FGuid GetStackIDFromEntry(UStackEntry* Entry)
+FGuid GetHandleIDFromEntry(UStackEntry* Entry)
 {
 	if (Entry->GetStackViewModel().IsValid())
 	{
-		TSharedPtr<FStackHandleViewModel> HandleViewModel = Entry->GetSystemViewModel()->GetHandleViewModelFromStack(Entry->GetStackViewModel()->GetStack());
+		TSharedPtr<FStackHandleViewModel> HandleViewModel = Entry->GetSystemViewModel()->GetHandleViewModelFromStack(Entry->GetStackViewModel()->GetStackSource()->GetStack());
 		if (HandleViewModel.IsValid())
 		{
 			return HandleViewModel->GetHandleID();
@@ -27,8 +28,8 @@ FGuid GetStackIDFromEntry(UStackEntry* Entry)
 
 UStackSelectionViewModel::FSelectedEntry::FSelectedEntry(UStackEntry* SelectedEntry)
 	: Entry(SelectedEntry)
-	, StackID(GetStackIDFromEntry(SelectedEntry))
-	, EditorDataKey(SelectedEntry->GetEditorDataKey())
+	, HandleID(GetHandleIDFromEntry(SelectedEntry))
+	, StackViewStateKey(SelectedEntry->GetStackViewStateKey())
 {
 
 }
@@ -44,7 +45,7 @@ void UStackSelectionViewModel::Initialize(TSharedRef<FStackSystemViewModel> InSt
 		, TSharedPtr<FStackViewModel>()
 		, UStackEntry::FCategoryNames::Default
 		, UStackEntry::FSubcategoryNames::Default
-		, InStackSystemViewModel->GetSystemData().GetEditorData()
+		, InStackSystemViewModel->GetSystemState().GetStackViewState()
 	));
 
 	// Wraps Selection with a dedicated ViewModel

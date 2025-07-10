@@ -1,21 +1,21 @@
 #pragma once
 #include "Blueprint/BlueprintExtension.h"
-#include "Definition/StackEditorDataProvider.h"
-#include "State/StackDataBase.h"
-#include "State/StackEditorData.h"
+#include "Definition/StackSource.h"
+#include "State/StackEditorState.h"
+#include "Stack.h"
 #include "StackBlueprintExtension.generated.h"
 
 
 
 class FStackBlueprintEditor;
 class UStackBlueprintGraph;
-class UStackEditorData;
+class UStackEditorState;
 
 /*
  * Transient helper class for serializing graph nodes to the blueprint.
  */
 UCLASS(DefaultToInstanced)
-class STACKDESIGNER_API UStackBlueprintExtension : public UBlueprintExtension, public IStackEditorDataProvider
+class STACKDESIGNER_API UStackBlueprintExtension : public UBlueprintExtension, public IStackSource
 {
     GENERATED_BODY()
 
@@ -25,7 +25,12 @@ public:
 
     UStackBlueprintGraph* GetStackBlueprintGraph() const { return StackBlueprintGraph; }
 
-    virtual UStackEditorData* GetEditorData() const override { return Cast<UStackEditorData>(StackEditorData); }
+
+public:
+
+    virtual UStack& GetStack() override { return *Stack; };
+    virtual const UStack& GetStack() const override { return *Stack; };
+    virtual UStackEditorState* GetStackEditorState() const override { return Cast<UStackEditorState>(StackEditorState); }
 
 private:
 
@@ -33,7 +38,10 @@ private:
     TObjectPtr<UStackBlueprintGraph> StackBlueprintGraph;
 
     UPROPERTY()
-    TObjectPtr<UStackEditorData> StackEditorData;
+    TObjectPtr<UStackEditorState> StackEditorState;
+
+    UPROPERTY()
+    TObjectPtr<UStack> Stack;
 
     UPROPERTY()
     bool bNewExtension = true;

@@ -1,13 +1,12 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "StackDataBase.h"
-#include "StackEditorData.generated.h"
+#include "StackViewState.generated.h"
 
 
 
 UCLASS()
-class STACKFRAMEWORK_API UStackEditorData : public UStackDataBase
+class STACKFRAMEWORK_API UStackViewState : public UObject
 {
 	GENERATED_BODY()
 
@@ -23,6 +22,15 @@ public:
 
 	bool GetIsExpandedInNode(const FString& StackEntryKey, bool bIsExpandedDefault) const;
 	void SetIsExpandedInNode(const FString& StackEntryKey, bool bIsExpanded);
+
+#if WITH_EDITORONLY_DATA
+	virtual void PostLoadFromOwner(UObject* InOwner) {}
+
+	FSimpleMulticastDelegate& OnPersistentDataChanged() { return PersistentDataChangedDelegate; }
+
+private:
+	FSimpleMulticastDelegate PersistentDataChangedDelegate;
+#endif
 
 private:
 	UPROPERTY()

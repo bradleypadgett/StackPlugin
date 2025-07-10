@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "UObject/ObjectMacros.h"
+#include "Definition/StackSource.h"
 #include "StackHandle.generated.h"
 
 
@@ -16,13 +17,12 @@ struct FStackHandle
 public:
 	FStackHandle();
 
-	FStackHandle(UStack& InStack);
+	FStackHandle(const TScriptInterface<IStackSource>& InStackSource);
 
 	bool IsValid() const;
 	FGuid GetHandleID() const;
 	FName GetName() const;
 	void SetName(FName NewName);
-	UStack* GetStack() const;
 
 	FORCEINLINE bool operator==(const FStackHandle& Other) const
 	{
@@ -39,16 +39,21 @@ public:
 		return GetTypeHash(Handle.ID);
 	}
 	
+public:
+
+	IStackSource* GetSource() const { return StackSource.GetInterface(); }
+	UStack& GetStack() { return StackSource->GetStack(); }
+	virtual const UStack& GetStack() const { return StackSource->GetStack(); }
 
 private:
+	UPROPERTY()
+	TScriptInterface<IStackSource> StackSource;
+
 	UPROPERTY()
 	FGuid ID;
 
 	UPROPERTY()
 	FName Name;
-
-	UPROPERTY()
-	TObjectPtr<UStack> Stack = nullptr;
 
 	UPROPERTY()
 	bool bIsEnabled = true;

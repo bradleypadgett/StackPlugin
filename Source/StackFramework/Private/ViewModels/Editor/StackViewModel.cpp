@@ -1,6 +1,9 @@
 #include "ViewModels/Editor/StackViewModel.h"
+#include "Definition/StackSource.h"
+#include "State/StackEditorState.h"
+#include "Stack.h"
+#include "State/StackViewState.h"
 #include "ViewModels/Editor/StackHandleViewModel.h"
-#include "State/StackData.h"
 
 
 
@@ -14,16 +17,26 @@ FStackViewModel::~FStackViewModel()
 
 }
 
-UStackData& FStackViewModel::GetStackData()
+void FStackViewModel::Initialize(TScriptInterface<IStackSource> InStackSource)
 {
-	return *GetMutableDefault<UStackData>();
+	StackSource = InStackSource;
 }
 
-UStack& FStackViewModel::GetStack()
+UStackEditorState* FStackViewModel::GetStackEditorState() const
 {
-	// TO-DO ~ weak ptr check
-	return *Stack;
+	return StackSource->GetStackEditorState();
 }
+
+UStackViewState& FStackViewModel::GetStackViewState() const
+{
+	return StackSource->GetStackEditorState()->GetStackViewState();
+}
+
+IStackSource* FStackViewModel::GetStackSource() const
+{
+	return StackSource.GetInterface();
+}
+
 
 TSharedPtr<FStackHandleViewModel> FStackViewModel::GetHandleViewModel(const FStackHandleViewModel& InHandleViewModel) const
 {

@@ -1,8 +1,7 @@
 ﻿#include "ViewModels/Editor/StackSystemViewModel.h"
-#include "State/StackSystemData.h"
-#include "State/StackData.h"
+#include "State/StackSystemState.h"
+#include "State/StackEditorState.h"
 #include "ViewModels/StackRoot.h"
-#include "Definition/StackEditorDataProvider.h"
 #include "ViewModels/Editor/StackHandleViewModel.h"
 #include "ViewModels/Editor/StackViewModel.h"
 #include "Stack.h"
@@ -16,51 +15,46 @@ FStackSystemViewModel::FStackSystemViewModel()
 
 }
 
-void FStackSystemViewModel::Initialize(UStack* InStack)
+void FStackSystemViewModel::Initialize(TScriptInterface<IStackSource> InStackSource)
 {
-	SetStack(InStack);
+	SetStackSource(InStackSource);
 }
 
-void FStackSystemViewModel::SetStack(UStack* InStack)
+void FStackSystemViewModel::SetStackSource(TScriptInterface<IStackSource> InStackSource)
 {
-	check(InStack);
-	check(InStack->GetClass()->ImplementsInterface(UStackEditorDataProvider::StaticClass()));
-	Stack = InStack;
+	check(InStackSource);
+	StackSource = InStackSource;
 }
 
-UStack* FStackSystemViewModel::GetStack() const
+IStackSource* FStackSystemViewModel::GetStackSource() const
 {
-	check(Stack);
-	return Stack;
+	check(StackSource);
+	return StackSource.GetInterface();
 }
 
-// Take the editor data for this system, and treat it as a UStackSystemData. Crash if it's not.
-UStackSystemData& FStackSystemViewModel::GetSystemData() const
+UStackSystemState& FStackSystemViewModel::GetSystemState() const
 {
-	check(Stack);
-	const IStackEditorDataProvider* Provider = Cast<IStackEditorDataProvider>(Stack);
-	checkf(Provider, TEXT("Asset must implement IStackEditorDataProvider"));
-	return *CastChecked<UStackSystemData>(Provider->GetEditorData());
+	return *SystemState;
 }
 
-void FStackSystemViewModel::AddStack(UStack* InStack)
+void FStackSystemViewModel::AddStackSource(TScriptInterface<IStackSource> InStackSource)
 {
-	if (InStack)
+	if (InStackSource)
 	{
-		Stacks.AddUnique(InStack);
+		StackSources.AddUnique(InStackSource);
 	}
 }
 
-TArray<UStack*> FStackSystemViewModel::GetAllStacks() const
+TArray<TScriptInterface<IStackSource>> FStackSystemViewModel::GetAllStackSources() const
 {
-	TArray<UStack*> Result;
-	for (auto& WeakStack : Stacks)
-	{
-		if (UStack* TempStack = WeakStack.Get())
-		{
-			Result.Add(TempStack);
-		}
-	}
+	TArray<TScriptInterface<IStackSource>> Result;
+	//for (auto& WeakStack : StackSources)
+	//{
+	//	if (TScriptInterface<IStackSource> TempStack = WeakStack.Get())
+	//	{
+	//		Result.Add(TempStack);
+	//	}
+	//}
 	return Result;
 }
 
@@ -83,11 +77,11 @@ TSharedPtr<FStackHandleViewModel> FStackSystemViewModel::GetHandleViewModelFromI
 
 TSharedPtr<FStackHandleViewModel> FStackSystemViewModel::GetHandleViewModelFromStack(const UStack& InStack) const
 {
-	/*if (UStackData* StackData = InStack.GetStackData())
+	/*if (UStackEditorState* StackEditorState = InStack.GetStackEditorState())
 	{
 		for (TSharedRef<FStackHandleViewModel> Handle : HandleViewModels)
 		{
-			if (StackData == Handle->GetStackViewModel()->GetStack().GetStackData())
+			if (StackState == Handle->GetStackViewModel()->GetStack().GetStackEditorState())
 			{
 				return Handle;
 			}
@@ -98,14 +92,14 @@ TSharedPtr<FStackHandleViewModel> FStackSystemViewModel::GetHandleViewModelFromS
 
 
 
-void FStackSystemViewModel::SetActiveStack(UStack* InStack)
+void FStackSystemViewModel::SetActiveStackSource(TScriptInterface<IStackSource> InStackSource)
 {
-	ActiveStack = InStack;
+	ActiveStackSource = InStackSource;
 }
 
-UStack* FStackSystemViewModel::GetActiveStack() const
+TScriptInterface<IStackSource> FStackSystemViewModel::GetActiveStackSource() const
 {
-	return ActiveStack.Get();
+	return ActiveStackSource;
 }
 
 void FStackSystemViewModel::SetSelectedEntry(UStackEntry* InEntry)

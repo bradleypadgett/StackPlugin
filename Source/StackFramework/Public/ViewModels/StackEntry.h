@@ -9,7 +9,7 @@
 
 
 class UStackEntry;
-class UStackEditorData;
+class UStackViewState;
 class FStackSystemViewModel;
 class FStackViewModel;
 
@@ -114,12 +114,12 @@ public:
 
 	struct FStackEntryContext
 	{
-		FStackEntryContext(TSharedRef<FStackSystemViewModel> InSystemViewModel, TSharedPtr<FStackViewModel> InStackViewModel, FName InCategoryName, FName InSubcategoryName, UStackEditorData& InEditorData)
+		FStackEntryContext(TSharedRef<FStackSystemViewModel> InSystemViewModel, TSharedPtr<FStackViewModel> InStackViewModel, FName InCategoryName, FName InSubcategoryName, UStackViewState& InStackViewState)
 			: SystemViewModel(InSystemViewModel)
 			, StackViewModel(InStackViewModel)
 			, CategoryName(InCategoryName)
 			, SubcategoryName(InSubcategoryName)
-			, EditorData(&InEditorData)
+			, StackViewState(&InStackViewState)
 		{
 		}
 
@@ -127,7 +127,7 @@ public:
 		const TSharedPtr<FStackViewModel> StackViewModel;
 		const FName CategoryName;
 		const FName SubcategoryName;
-		UStackEditorData* const EditorData;
+		UStackViewState* const StackViewState;
 	};
 
 	struct FStackIssue
@@ -142,7 +142,7 @@ public:
 
 	UStackEntry();
 
-	void Initialize(FStackEntryContext InStackEntryContext, FString InEditorDataKey);
+	void Initialize(FStackEntryContext InStackEntryContext, FString InStackStateKey);
 	//void Finalize();
 	bool IsFinalized() const;
 	
@@ -155,8 +155,8 @@ public:
 	//remove later
 	void SetDisplayName(FText Name) { DisplayName = Name; };
 
-	UStackEditorData& GetEditorData() const;
-	FString GetEditorDataKey() const;
+	UStackViewState& GetStackViewState() const;
+	FString GetStackViewStateKey() const;
 
 	virtual FText GetTooltipText() const;
 
@@ -185,7 +185,7 @@ public:
 	virtual bool TestCanDeleteWithMessage(FText& OutCanDeleteMessage) const { return false; }
 
 protected:
-	virtual void RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues);
+	virtual void RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues);
 
 public:
 	virtual void RefreshChildren();
@@ -275,9 +275,8 @@ private:
 	TWeakPtr<FStackViewModel> StackViewModel;
 
 	UPROPERTY()
-	TObjectPtr<UStackEditorData> EditorData;
-
-	FString EditorDataKey;
+	TObjectPtr<UStackViewState> StackViewState;
+	FString StackViewStateKey;
 
 	FOnExpansionChanged ExpansionChangedDelegate;
 

@@ -6,7 +6,7 @@
 
 class FStackSystemViewModel;
 class FStackViewModel;
-class UStackEditorData;
+class UStackState;
 struct FStackHandle;
 class UStackRootViewModel;
 
@@ -16,7 +16,7 @@ public:
 	FStackHandleViewModel();
 	~FStackHandleViewModel();
 
-	void Initialize(TSharedRef<FStackSystemViewModel> InSystemViewModel, FGuid InStackID, FName InName, UStackEditorData* InEditorData);
+	void Initialize(TSharedRef<FStackSystemViewModel> InSystemViewModel, FGuid InStackID, FName InName, UStackState* InStackState);
 
 	FGuid GetHandleID() const;
 	FName GetName() const;
@@ -26,7 +26,7 @@ public:
 	bool CanRename() const;
 	void OnNameCommitted(const FText& NewText);
 
-	UStackEditorData* GetEditorData() const;
+	UStackState* GetStackState() const;
 	TSharedRef<FStackSystemViewModel> GetSystemViewModel() const;
 	TSharedRef<FStackViewModel> GetStackViewModel() const;
 
@@ -37,9 +37,9 @@ private:
 	TSharedRef<FStackViewModel> StackViewModel;
 	TObjectPtr<UStackRootViewModel> RootViewModel;
 
-	FGuid StackID;
+	FGuid HandleID;
 	FName Name;
-	UStackEditorData* EditorData;
+	UStackState* StackState;
 
 	bool bIsRenamePending;
 };

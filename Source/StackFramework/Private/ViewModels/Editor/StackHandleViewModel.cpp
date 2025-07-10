@@ -2,7 +2,7 @@
 #include "ViewModels/Editor/StackSystemViewModel.h"
 #include "ViewModels/Editor/StackRootViewModel.h"
 #include "ViewModels/Editor/StackViewModel.h"
-#include "State/StackEditorData.h"
+#include "State/StackViewState.h"
 #include "Internationalization/Text.h"
 
 
@@ -11,7 +11,7 @@ FStackHandleViewModel::FStackHandleViewModel()
 	: StackHandle(nullptr)
 	, StackViewModel(MakeShared<FStackViewModel>())
 	, RootViewModel(NewObject<UStackRootViewModel>())
-	, StackID(FGuid::NewGuid())
+	, HandleID(FGuid::NewGuid())
 	, bIsRenamePending(false)
 {
 }
@@ -21,18 +21,18 @@ FStackHandleViewModel::~FStackHandleViewModel()
 	// Cleanup if needed in the future
 }
 
-void FStackHandleViewModel::Initialize(TSharedRef<FStackSystemViewModel> InSystemViewModel, FGuid InStackID, FName InName, UStackEditorData* InEditorData)
+void FStackHandleViewModel::Initialize(TSharedRef<FStackSystemViewModel> InSystemViewModel, FGuid InHandleID, FName InName, UStackState* InStackState)
 {
 	SystemViewModel = InSystemViewModel;
-	StackID = InStackID;
+	HandleID = InHandleID;
 	Name = InName;
-	EditorData = InEditorData;
+	StackState = InStackState;
 	bIsRenamePending = false;
 }
 
 FGuid FStackHandleViewModel::GetHandleID() const
 {
-	return StackID;
+	return HandleID;
 }
 
 FName FStackHandleViewModel::GetName() const
@@ -64,9 +64,9 @@ void FStackHandleViewModel::OnNameCommitted(const FText& NewText)
 	SetName(FName(*NewText.ToString()));
 }
 
-UStackEditorData* FStackHandleViewModel::GetEditorData() const
+UStackState* FStackHandleViewModel::GetStackState() const
 {
-	return EditorData;
+	return StackState;
 }
 
 TSharedRef<FStackSystemViewModel> FStackHandleViewModel::GetSystemViewModel() const

@@ -24,8 +24,8 @@ private:
 		explicit FSelectedEntry(UStackEntry* SelectedEntry);
 
 		const TWeakObjectPtr<UStackEntry> Entry;
-		const FGuid StackID;
-		const FString EditorDataKey;
+		const FGuid HandleID;
+		const FString StackViewStateKey;
 	};
 
 	GENERATED_BODY()

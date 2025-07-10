@@ -6,7 +6,6 @@
 
 
 class UStackSystem;
-class UStackData;
 class FStackHandleViewModel;
 
 UCLASS(MinimalAPI)
