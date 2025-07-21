@@ -1,9 +1,10 @@
 #include "ViewModels/Editor/StackViewModel.h"
 #include "Definition/StackSource.h"
-#include "State/StackEditorState.h"
+#include "EditorData/StackEditorData.h"
 #include "Stack.h"
-#include "State/StackViewState.h"
+#include "EditorData/StackEntryEditorData.h"
 #include "ViewModels/Editor/StackHandleViewModel.h"
+#include "ViewModels/Editor/StackScriptViewModel.h"
 
 
 
@@ -22,14 +23,9 @@ void FStackViewModel::Initialize(TScriptInterface<IStackSource> InStackSource)
 	StackSource = InStackSource;
 }
 
-UStackEditorState* FStackViewModel::GetStackEditorState() const
+UStackEditorData& FStackViewModel::GetStackEditorData() const
 {
-	return StackSource->GetStackEditorState();
-}
-
-UStackViewState& FStackViewModel::GetStackViewState() const
-{
-	return StackSource->GetStackEditorState()->GetStackViewState();
+	return *StackSource->GetStackEditorData();
 }
 
 IStackSource* FStackViewModel::GetStackSource() const
@@ -41,4 +37,9 @@ IStackSource* FStackViewModel::GetStackSource() const
 TSharedPtr<FStackHandleViewModel> FStackViewModel::GetHandleViewModel(const FStackHandleViewModel& InHandleViewModel) const
 {
 	return HandleViewModel;
+}
+
+TSharedRef<FStackScriptViewModel> FStackViewModel::GetScriptViewModel()
+{
+	return ScriptViewModel;
 }

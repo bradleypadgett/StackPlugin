@@ -17,24 +17,24 @@ TArray<UStackRootViewModel::FStackRootContainer> UStackRootViewModel::GetRootCon
 }
 
 
-void UStackRootViewModel::Initialize(UStackEntry* InRootEntry)
+void UStackRootViewModel::InitializeStackFromSystem(TSharedPtr<UStackSystem> InSystem, TSharedPtr<UStackHandle> InHandle)
+{
+	return;
+}
+
+void UStackRootViewModel::InitializeStackFromEntry(UStackEntry* InRootEntry)
 {
 	// TO-DO ~ Flesh the heck outta this
 
 	RootEntry = InRootEntry;
+	//RootEntry->Initialize();
+
 	RefreshStack();
 }
 
 void UStackRootViewModel::RefreshStack()
 {
-	RootEntries.Empty();
 
-	// test hardcoded sections
-	UStackRoot* SectionA = NewObject<UStackRoot>(this, FName("SectionA"));
-	UStackRoot* SectionB = NewObject<UStackRoot>(this, FName("SectionB"));
-
-	RootEntries.Add(SectionA);
-	RootEntries.Add(SectionB);
 }
 
 void UStackRootViewModel::SetSearchText(const FText& NewText)

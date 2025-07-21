@@ -18,9 +18,9 @@ UStackNode::UStackNode()
 	bCanRenameNode = true;
 };
 
-void UStackNode::Initialize(UStackSystem* InAssetContext)
+void UStackNode::Initialize(/*UStackSystem* InSystem*/)
 {
-	OwningSystem = InAssetContext;
+	//OwningSystem = InSystem;
 }
 
 FText UStackNode::GetNodeTitle(ENodeTitleType::Type TitleType) const

@@ -1,25 +1,26 @@
 #include "ViewModels/StackRoot.h"
 #include "ViewModels/Editor/StackHandleViewModel.h"
 #include "ViewModels/Editor/StackViewModel.h"
-#include "ViewModels/Editor/StackModuleViewModel.h"
+#include "ViewModels/Editor/StackScriptViewModel.h"
 #include "ViewModels/Editor/StackSystemViewModel.h"
 #include "ViewModels/StackSettingsGroup.h"
-#include "ViewModels/StackStatelessGroup.h"
-#include "ViewModels/StackStatelessModuleGroup.h"
-#include "ViewModels/StackModuleGroup.h"
-#include "State/StackViewState.h"
+#include "ViewModels/StackScriptGroup.h"
+#include "ViewModels/StackGroup.h"
+#include "EditorData/StackEntryEditorData.h"
 
 
+
+#define LOCTEXT_NAMESPACE "StackRoot"
 
 UStackRoot::UStackRoot()
 {
 
 }
 
-void UStackRoot::Initialize(FStackEntryContext InContext, bool bInIncludePropertiesGroup)
+void UStackRoot::Initialize(FStackEntryContext InContext, bool bInIncludeSettingsGroup)
 {
 	Super::Initialize(InContext, TEXT("Root"));
-	bIncludeSettingsGroup = bInIncludePropertiesGroup;
+	bIncludeSettingsGroup = bInIncludeSettingsGroup;
 }
 
 void UStackRoot::FinalizeInternal()
@@ -37,62 +38,71 @@ bool UStackRoot::GetShouldShowInStack() const
 	return false;
 }
 
-void UStackRoot::RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues)
+void UStackRoot::RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues)
 {
 	if (bIncludeSettingsGroup)
 	{
-		NewChildren.Add(GetOrCreateStackSettingsGroup(CurrentChildren));
+		NewChildren.Add(GetOrCreateSettingsGroup(CurrentChildren));
 	}
+	
+	//UStackEntryEditorData& LocalStackEntryEditorData = GetStackViewModel()->GetStackEntryEditorData();
+	TSharedRef<FStackScriptViewModel> ScriptViewModel = GetStackViewModel()->GetScriptViewModel();
+
 	/*
-	UStackEditorState* StackEditorState = GetStackViewModel()->GetStackEditorState();
-	for (UStackModule* Module : StackEditorState->GetModules())
+	UStackEntry* TestEntry = GetCurrentGroupByCompileTarget(CurrentChildren, EScriptCompileTarget::Default, FGuid());
+	if (TestEntry == nullptr)
 	{
-		const FGuid ModuleId = FGuid::NewGuid(); // Placeholder until real ID
-		const FText DisplayName = FText::FromString(TEXT("Module Group"));
-		const FText ToolTip = FText::FromString(TEXT("A user-added module group"));
-
-		UStackModuleGroup* Group = NewObject<UStackModuleGroup>(this);
-		
-		FStackEntryContext EntryContext(
-			GetSystemViewModel(),
-			GetStackViewModel(),
-			FCategoryNames::Default,
-			FSubcategoryNames::Default,
-			GetStackViewModel()->GetStackState());
-
-		Group->Initialize(EntryContext, DisplayName, ToolTip, MakeShared<FStackModuleViewModel>(), EStackModuleUsage::Standard, ModuleId);
-
-		NewChildren.Add(Group);
-	}*/
-
+		EScriptCompileTarget CompileTarget = EScriptCompileTarget::Default;
+		FGuid GroupID = FGuid();
+		FName ExecutionCategory = FCategoryNames::Default;
+		FName ExecutionSubCategory = FSubcategoryNames::Default;
+		FText EntryDisplayName = LOCTEXT("TestGroupName", "testin'");
+		FText ToolTip = LOCTEXT("TestGroupTooltip", "hopefully this shows up lol");
+		TestEntry = CreateScriptGroup(ScriptViewModel, CompileTarget, GroupID, LocalStackEntryEditorData, ExecutionCategory, ExecutionSubCategory, EntryDisplayName, ToolTip);
+	}
+	NewChildren.Add(TestEntry);*/
 }
 
-UStackEntry* UStackRoot::GetOrCreateStackSettingsGroup(const TArray<UStackEntry*>& CurrentChildren)
+
+UStackEntry* UStackRoot::GetCurrentGroupByCompileTarget(const TArray<UStackEntry*>& CurrentChildren, EScriptCompileTarget InScriptCompileTarget, FGuid InGroupID) const
+{
+	return FindCurrentChildOfTypeByPredicate<UStackGroup>(
+		CurrentChildren, [InScriptCompileTarget, InGroupID](UStackGroup* Group) {
+			return Group->GetScriptCompileTarget() == InScriptCompileTarget && Group->GetGroupID() == InGroupID; });
+}
+
+UStackEntry* UStackRoot::GetCurrentGroupByCategory(const TArray<UStackEntry*>& CurrentChildren, FName InCategory, FName InSubcategory, FGuid InGroupID) const
+{
+	return FindCurrentChildOfTypeByPredicate<UStackGroup>(
+		CurrentChildren,
+		[InCategory, InSubcategory, InGroupID](UStackGroup* Group)
+		{
+			return Group->GetCategory() == InCategory &&
+				Group->GetSubcategory() == InSubcategory &&
+				Group->GetGroupID() == InGroupID;
+		});
+}
+
+UStackEntry* UStackRoot::GetOrCreateSettingsGroup(const TArray<UStackEntry*>& CurrentChildren)
 {
 	UStackSettingsGroup* SettingsGroup = FindCurrentChildOfType<UStackSettingsGroup>(CurrentChildren);
 	if (SettingsGroup == nullptr)
 	{
-		SettingsGroup = NewObject<UStackSettingsGroup>(this);
+	/*	SettingsGroup = NewObject<UStackSettingsGroup>(this);
 		FStackEntryContext EntryContext(GetSystemViewModel(), GetStackViewModel(),
-			FCategoryNames::Node, FSubcategoryNames::Settings,
-			GetStackViewModel()->GetStackViewState());
-		SettingsGroup->Initialize(EntryContext);
+			FCategoryNames::Default, FSubcategoryNames::Settings,
+			GetStackViewModel()->GetStackEditorData());
+		SettingsGroup->Initialize(EntryContext);*/
 	}
 	return SettingsGroup;
 }
 
-UStackEntry* UStackRoot::GetCurrentModuleGroup(const TArray<UStackEntry*>& CurrentChildren, FName ModuleUsageKey) const
+UStackEntry* UStackRoot::CreateScriptGroup(TSharedRef<FStackScriptViewModel> InScriptViewModel, EScriptCompileTarget InScriptCompileTarget, FGuid InGroupID, UStackEntryEditorData& InStackEntryEditorData, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip)
 {
-	return FindCurrentChildOfTypeByPredicate<UStackModuleGroup>(CurrentChildren, [ModuleUsageKey](const UStackModuleGroup* Group)
-		{
-			return Group->GetUsageKey() == ModuleUsageKey;
-		});
+	UStackScriptGroup* ScriptGroup = NewObject<UStackScriptGroup>(this);
+	FStackEntryContext EntryContext(GetSystemViewModel(), GetStackViewModel(), InCategoryName, InSubcategoryName, InStackEntryEditorData);
+	ScriptGroup->Initialize(EntryContext, InDisplayName, InToolTip, InScriptViewModel, InScriptCompileTarget, InGroupID);
+	return ScriptGroup;
 }
 
-UStackEntry* UStackRoot::CreateModuleGroup( TSharedRef<FStackModuleViewModel> InModuleViewModel, EStackModuleUsage InModuleUsage, FGuid InModuleUsageId, UStackViewState& InStackViewState, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip)
-{
-	UStackModuleGroup* ModuleGroup = NewObject<UStackModuleGroup>(this);
-	FStackEntryContext Context(GetSystemViewModel(), GetStackViewModel(), InCategoryName, InSubcategoryName, InStackViewState);
-	ModuleGroup->Initialize(Context, InDisplayName, InToolTip, InModuleViewModel, InModuleUsage, InModuleUsageId);
-	return ModuleGroup;
-}
+#undef LOCTEXT_NAMESPACE

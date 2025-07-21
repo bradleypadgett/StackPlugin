@@ -9,7 +9,7 @@
 
 
 class UStackEntry;
-class UStackViewState;
+class UStackEntryEditorData;
 class FStackSystemViewModel;
 class FStackViewModel;
 
@@ -102,7 +102,7 @@ public:
 	struct FCategoryNames
 	{
 		static const FName Default;
-		static const FName Node;
+		static const FName System;
 
 	};
 
@@ -114,12 +114,12 @@ public:
 
 	struct FStackEntryContext
 	{
-		FStackEntryContext(TSharedRef<FStackSystemViewModel> InSystemViewModel, TSharedPtr<FStackViewModel> InStackViewModel, FName InCategoryName, FName InSubcategoryName, UStackViewState& InStackViewState)
+		FStackEntryContext(TSharedRef<FStackSystemViewModel> InSystemViewModel, TSharedPtr<FStackViewModel> InStackViewModel, FName InCategoryName, FName InSubcategoryName, UStackEntryEditorData& InStackEntryEditorData)
 			: SystemViewModel(InSystemViewModel)
 			, StackViewModel(InStackViewModel)
 			, CategoryName(InCategoryName)
 			, SubcategoryName(InSubcategoryName)
-			, StackViewState(&InStackViewState)
+			, StackEntryEditorData(&InStackEntryEditorData)
 		{
 		}
 
@@ -127,7 +127,7 @@ public:
 		const TSharedPtr<FStackViewModel> StackViewModel;
 		const FName CategoryName;
 		const FName SubcategoryName;
-		UStackViewState* const StackViewState;
+		UStackEntryEditorData* const StackEntryEditorData;
 	};
 
 	struct FStackIssue
@@ -142,7 +142,7 @@ public:
 
 	UStackEntry();
 
-	void Initialize(FStackEntryContext InStackEntryContext, FString InStackStateKey);
+	void Initialize(FStackEntryContext InStackEntryContext, FString InStackEntryEditorDataKey);
 	//void Finalize();
 	bool IsFinalized() const;
 	
@@ -151,14 +151,18 @@ protected:
 
 public:
 	virtual FText GetDisplayName() const;
+	virtual FName GetCategory() const { return CategoryName; }
+	virtual FName GetSubcategory() const { return SubcategoryName; }
 
 	//remove later
 	void SetDisplayName(FText Name) { DisplayName = Name; };
 
-	UStackViewState& GetStackViewState() const;
-	FString GetStackViewStateKey() const;
+	UStackEntryEditorData& GetStackEntryEditorData() const;
+	FString GetStackEntryEditorDataKey() const;
 
 	virtual FText GetTooltipText() const;
+
+	virtual UObject* GetDisplayedObject() const;
 
 	virtual bool GetCanExpand() const;
 	virtual bool GetCanExpandInNode() const;
@@ -185,7 +189,9 @@ public:
 	virtual bool TestCanDeleteWithMessage(FText& OutCanDeleteMessage) const { return false; }
 
 protected:
-	virtual void RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues);
+	virtual FStackEntryContext GetDefaultEntryContext() const;
+
+	virtual void RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues);
 
 public:
 	virtual void RefreshChildren();
@@ -275,8 +281,8 @@ private:
 	TWeakPtr<FStackViewModel> StackViewModel;
 
 	UPROPERTY()
-	TObjectPtr<UStackViewState> StackViewState;
-	FString StackViewStateKey;
+	TObjectPtr<UStackEntryEditorData> StackEntryEditorData;
+	FString StackEntryEditorDataKey;
 
 	FOnExpansionChanged ExpansionChangedDelegate;
 

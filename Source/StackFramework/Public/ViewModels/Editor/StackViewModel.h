@@ -2,9 +2,9 @@
 
 
 
+class FStackScriptViewModel;
 class FStackHandleViewModel;
-class UStackEditorState;
-class UStackViewState;
+class UStackEditorData;
 class IStackSource;
 
 // TO~DO - mayyybe add viewmodel manager for all these viewmodels
@@ -16,11 +16,11 @@ public:
 
 	void Initialize(TScriptInterface<IStackSource> InStackSource);
 
-	UStackEditorState* GetStackEditorState() const;
-	UStackViewState& GetStackViewState() const;
+	UStackEditorData& GetStackEditorData() const;
 	IStackSource* GetStackSource() const;
 
 	TSharedPtr<FStackHandleViewModel> GetHandleViewModel(const FStackHandleViewModel& InHandleViewModel) const;
+	TSharedRef<FStackScriptViewModel> GetScriptViewModel();
 
 private:
 
@@ -28,5 +28,6 @@ private:
 	TScriptInterface<IStackSource> StackSource;
 
 	TSharedPtr<FStackHandleViewModel> HandleViewModel;
+	TSharedRef<FStackScriptViewModel> ScriptViewModel;
 
 };

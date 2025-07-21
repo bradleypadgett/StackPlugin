@@ -7,7 +7,7 @@
 class FStackAddAction;
 
 /*
- * Interface for Stack item groups that support dynamic Add (+) buttons.
+ * Interface for utilities that allow a stack group to support Add (+) functionality.
  */
 class IStackGroupAddUtilities
 {
@@ -15,35 +15,52 @@ public:
 	enum class EAddMode
 	{
 		AddDirectly,
-		AddFromActionList,
+		AddFromActionList
 	};
 
 	virtual ~IStackGroupAddUtilities() {}
 
-	/** Name shown in the Add menu, e.g., "Parameter" or "Module". */
 	virtual FText GetAddItemName() const = 0;
-
-	/** Whether the Add label ("Add Parameter") is shown next to the button. */
 	virtual bool GetShowLabel() const = 0;
-
-	/** Whether to expand all actions by default in the search popup. */
 	virtual bool GetAutoExpandAddActions() const = 0;
-
-	/** Returns how Add works: directly or from search. */
 	virtual EAddMode GetAddMode() const = 0;
 
-	/** Called if mode is AddDirectly. */
 	virtual void AddItemDirectly() = 0;
-
-	/** Populates list of searchable add actions. */
 	virtual void GenerateAddActions(TArray<TSharedRef<FStackAddAction>>& OutActions) const = 0;
-
-	/** Executes a selected action. */
 	virtual void ExecuteAddAction(TSharedRef<FStackAddAction> Action, int32 TargetIndex) = 0;
+
+	virtual bool SupportsLibraryFilter() const { return false; }
+	virtual bool SupportsSourceFilter() const { return false; }
 };
 
-/**
- * Represents a single add action (for searchable menu).
+/*
+ * Base implementation of the IStackGroupAddUtilities interface.
+ */
+class FStackGroupAddUtilities : public IStackGroupAddUtilities
+{
+public:
+	FStackGroupAddUtilities(FText InAddItemName, EAddMode InAddMode, bool bInAutoExpandAddActions, bool bInShowLabel)
+		: AddItemName(MoveTemp(InAddItemName))
+		, bShowLabel(bInShowLabel)
+		, bAutoExpandAddActions(bInAutoExpandAddActions)
+		, AddMode(InAddMode)
+	{
+	}
+
+	virtual FText GetAddItemName() const override { return AddItemName; }
+	virtual bool GetShowLabel() const override { return bShowLabel; }
+	virtual bool GetAutoExpandAddActions() const override { return bAutoExpandAddActions; }
+	virtual EAddMode GetAddMode() const override { return AddMode; }
+
+protected:
+	FText AddItemName;
+	bool bShowLabel;
+	bool bAutoExpandAddActions;
+	EAddMode AddMode;
+};
+
+/*
+ * Represents a single searchable add action in a group's add list.
  */
 class FStackAddAction : public TSharedFromThis<FStackAddAction>
 {
@@ -63,4 +80,34 @@ private:
 	FText DisplayName;
 	FText Description;
 	FText Keywords;
+};
+
+// A templated helper that wraps a static utility struct for group add logic
+template<typename StaticUtilityStructType>
+class TStackGroupAddUtilities final : public FStackGroupAddUtilities
+{
+public:
+	TStackGroupAddUtilities()
+		: FStackGroupAddUtilities(
+			StaticUtilityStructType::GetAddItemName(),
+			StaticUtilityStructType::GetAddMode(),
+			StaticUtilityStructType::GetAutoExpandAddActions(),
+			StaticUtilityStructType::GetShowLabel())
+	{
+	}
+
+	virtual void AddItemDirectly() override
+	{
+		StaticUtilityStructType::StaticExecuteAdd();
+	}
+
+	virtual void GenerateAddActions(TArray<TSharedRef<FStackAddAction>>& OutActions) const override
+	{
+		StaticUtilityStructType::StaticGenerateAddActions(OutActions);
+	}
+
+	virtual void ExecuteAddAction(TSharedRef<FStackAddAction> Action, int32 TargetIndex) override
+	{
+		StaticUtilityStructType::StaticExecuteAction(Action, TargetIndex);
+	}
 };

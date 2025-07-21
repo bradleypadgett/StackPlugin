@@ -2,7 +2,7 @@
 #include "ViewModels/Editor/StackSystemViewModel.h"
 #include "ViewModels/Editor/StackRootViewModel.h"
 #include "ViewModels/Editor/StackViewModel.h"
-#include "State/StackViewState.h"
+#include "EditorData/StackEntryEditorData.h"
 #include "Internationalization/Text.h"
 
 

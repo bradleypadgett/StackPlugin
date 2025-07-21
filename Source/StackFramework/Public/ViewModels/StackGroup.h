@@ -19,6 +19,9 @@ class STACKFRAMEWORK_API UStackGroup : public UStackEntry
 public:
 	void Initialize(FStackEntryContext InContext, FText InDisplayName, FText InToolTip, IStackGroupAddUtilities* InAddUtilities);
 
+	EScriptCompileTarget GetScriptCompileTarget() const;
+	FGuid GetGroupID() const;
+
 	virtual FText GetDisplayName() const override;
 	//virtual EStackRowStyle GetRowStyle() const override;
 	virtual FText GetTooltipText() const override;
@@ -36,7 +39,7 @@ public:
 protected:
 	void SetDisplayName(FText InDisplayName);
 
-	virtual void RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
+	virtual void RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
 
 	virtual int32 GetChildIndentLevel() const override;
 
@@ -46,6 +49,10 @@ private:
 	bool FilterChildrenWithIssues(const UStackEntry& Child) const;
 
 private:
+
+	EScriptCompileTarget ScriptCompileTarget;
+	FGuid GroupID;
+
 	//UPROPERTY()
 	//TObjectPtr<UStackGroupFooter> GroupFooter;
 

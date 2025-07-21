@@ -25,7 +25,7 @@ private:
 
 		const TWeakObjectPtr<UStackEntry> Entry;
 		const FGuid HandleID;
-		const FString StackViewStateKey;
+		const FString StackEntryEditorDataKey;
 	};
 
 	GENERATED_BODY()

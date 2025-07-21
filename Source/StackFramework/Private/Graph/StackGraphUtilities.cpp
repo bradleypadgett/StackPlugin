@@ -19,7 +19,7 @@ UStackNode* FStackGraphUtilities::AddStackNodeToGraph(UEdGraph* Graph, const FVe
 
 	NewNode->SnapToGrid(16);
 
-	//NewNode->Initialize(/*Get System*/);
+	NewNode->Initialize(/*Get System*/);
 
 	return NewNode;
 }

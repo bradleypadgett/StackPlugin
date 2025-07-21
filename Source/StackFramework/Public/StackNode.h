@@ -15,7 +15,7 @@ class UStackNode : public UEdGraphNode
 public:
 	UStackNode();
 
-	void Initialize(UStackSystem* InOwningSystem);
+	void Initialize(/*UStackSystem* InOwningSystem*/);
 	void UpdateState() {};
 	const FGuid GetHandleID() const;
 	struct FStackHandle* TryGetHandle() const;

@@ -20,7 +20,7 @@ bool UStack::SetUniqueName(const FString& InName) {
 	return true;
 }
 
-UStackEditorState* UStack::GetStackEditorState() const
+UStackEditorData* UStack::GetStackEditorData() const
 {
-	return StackEditorState;
+	return StackEditorData;
 }

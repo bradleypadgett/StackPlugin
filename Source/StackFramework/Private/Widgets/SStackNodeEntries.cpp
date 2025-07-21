@@ -6,7 +6,7 @@
 #include "Definition/StackCommonTypes.h"
 #include "ViewModels/StackRoot.h"
 #include "ViewModels/Editor/StackSelectionViewModel.h"
-#include "State/StackViewState.h"
+#include "EditorData/StackEntryEditorData.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/Text/STextBlock.h"
@@ -79,7 +79,7 @@ public:
 														? NSLOCTEXT("Stack", "Expand", "Expand Entry")
 														: NSLOCTEXT("Stack", "Collapse", "Collapse Entry"));
 
-													StackEntry->GetStackViewState().Modify();
+													StackEntry->GetStackEntryEditorData().Modify();
 													StackEntry->SetIsExpandedInNode(bWillExpand);
 													return FReply::Handled();
 												})

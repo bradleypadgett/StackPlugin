@@ -14,6 +14,18 @@ void UStackGroup::Initialize(FStackEntryContext InContext, FText InDisplayName, 
 	Super::Initialize(InContext, InDisplayName.ToString());
 }
 
+EScriptCompileTarget UStackGroup::GetScriptCompileTarget() const
+{
+	return ScriptCompileTarget;
+}
+
+FGuid UStackGroup::GetGroupID() const
+{
+	return GroupID;
+}
+
+
+
 FText UStackGroup::GetDisplayName() const
 {
 	return GroupDisplayName;
@@ -39,7 +51,7 @@ int32 UStackGroup::GetChildIndentLevel() const
 	return GetIndentLevel();
 }
 
-void UStackGroup::RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues)
+void UStackGroup::RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues)
 {
 	NewChildren.Empty();
 }
@@ -52,7 +64,6 @@ void UStackGroup::ChildStructureChangedInternal()
 
 bool UStackGroup::FilterChildrenWithIssues(const UStackEntry& Child) const
 {
-	// TO-DO ~ Flesh out with StackState & Module checks
 	return false;
 }
 

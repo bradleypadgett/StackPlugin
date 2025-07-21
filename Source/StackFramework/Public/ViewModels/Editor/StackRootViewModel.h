@@ -8,19 +8,8 @@
 
 class UStackRoot;
 class UStackEntry;
-
-/** Options that control what this stack shows */
-USTRUCT()
-struct FStackRootViewModelOptions
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	bool bIncludeSystemInfo = false;
-
-	UPROPERTY()
-	bool bIncludeEmitterInfo = false;
-};
+class UStackHandle;
+class UStackSystem;
 
 UCLASS()
 class STACKFRAMEWORK_API UStackRootViewModel : public UObject
@@ -43,7 +32,7 @@ public:
 
 		bool IsValid() const { return StackRoot.IsValid(); }
 	};
-	/** Returns top-level stack roots as viewmodels */
+	// Returns top-level stack roots as viewmodels
 	TArray<FStackRootContainer> GetRootContainers() const;
 
 	struct FSearchResult
@@ -55,13 +44,13 @@ public:
 			return EntryPath.Num() > 0 ? EntryPath.Last() : nullptr;
 		}
 	};
-	/** Initializes stack viewmodel with the given root entries. */
-	virtual void Initialize(UStackEntry* InRootEntry);
 
-	/** Clears and re-populates all root sections. */
+	virtual void InitializeStackFromSystem(TSharedPtr<UStackSystem> InSystem, TSharedPtr<UStackHandle> InHandle);
+	virtual void InitializeStackFromEntry(UStackEntry* InRootEntry);
+
+	// Clears and re-populates all root sections
 	virtual void RefreshStack();
 
-	/** Optional: search UI hook */
 	void SetSearchText(const FText& NewText);
 	FText GetSearchText() const { return SearchText; }
 
@@ -74,10 +63,6 @@ public:
 
 protected:
 
-
-	UPROPERTY()
-	FStackRootViewModelOptions Options;
-
 	UPROPERTY()
 	FText SearchText;
 
@@ -85,6 +70,7 @@ private:
 	UPROPERTY()
 	TArray<UStackEntry*> RootEntries;
 
+	UPROPERTY()
 	TObjectPtr<UStackEntry> RootEntry;
 
 	FOnExpansionChanged ExpansionChangedDelegate;

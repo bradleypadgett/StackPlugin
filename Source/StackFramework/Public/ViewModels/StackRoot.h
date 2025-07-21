@@ -6,8 +6,8 @@
 
 
 class FStackHandleViewModel;
-class FStackModuleViewModel;
-class UStackViewState;
+class FStackScriptViewModel;
+class UStackEntryEditorData;
 
 UCLASS()
 class UStackRoot : public UStackEntry
@@ -24,14 +24,16 @@ public:
 	virtual bool GetShouldShowInStack() const override;
 
 protected:
-	virtual void RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
+	virtual void RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
 
 private:
 
-	UStackEntry* GetOrCreateStackSettingsGroup(const TArray<UStackEntry*>& CurrentChildren);
+	UStackEntry* GetCurrentGroupByCompileTarget(const TArray<UStackEntry*>& CurrentChildren, EScriptCompileTarget InScriptCompileTarget, FGuid InGroupID) const;
+	UStackEntry* GetCurrentGroupByCategory(const TArray<UStackEntry*>& CurrentChildren, FName InCategory, FName InSubcategory, FGuid InGroupID) const;
 
-	UStackEntry* GetCurrentModuleGroup(const TArray<UStackEntry*>& CurrentChildren, FName ModuleUsageKey) const;
-	UStackEntry* CreateModuleGroup(TSharedRef<FStackModuleViewModel> InModuleViewModel, EStackModuleUsage InModuleUsage, FGuid InModuleUsageId, UStackViewState& InStackViewState, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip);
+	UStackEntry* GetOrCreateSettingsGroup(const TArray<UStackEntry*>& CurrentChildren);
+
+	UStackEntry* CreateScriptGroup(TSharedRef<FStackScriptViewModel> InScriptViewModel, EScriptCompileTarget InScriptCompileTarget, FGuid InGroupID, UStackEntryEditorData& InStackEntryEditorData, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip);
 
 private:
 	bool bIncludeSettingsGroup;

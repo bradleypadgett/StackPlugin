@@ -5,7 +5,7 @@
 
 
 class UStack;
-class UStackEditorState;
+class UStackEditorData;
 
 UINTERFACE(MinimalAPI, BlueprintType)
 class UStackSource : public UInterface
@@ -20,5 +20,5 @@ class IStackSource
 public:
 	virtual UStack& GetStack() = 0;
 	virtual const UStack& GetStack() const = 0;
-	virtual UStackEditorState* GetStackEditorState() const = 0;
+	virtual UStackEditorData* GetStackEditorData() const = 0;
 };

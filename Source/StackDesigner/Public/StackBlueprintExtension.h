@@ -1,7 +1,7 @@
 #pragma once
 #include "Blueprint/BlueprintExtension.h"
 #include "Definition/StackSource.h"
-#include "State/StackEditorState.h"
+#include "EditorData/StackEditorData.h"
 #include "Stack.h"
 #include "StackBlueprintExtension.generated.h"
 
@@ -9,7 +9,7 @@
 
 class FStackBlueprintEditor;
 class UStackBlueprintGraph;
-class UStackEditorState;
+class UStackEditorData;
 
 /*
  * Transient helper class for serializing graph nodes to the blueprint.
@@ -30,7 +30,7 @@ public:
 
     virtual UStack& GetStack() override { return *Stack; };
     virtual const UStack& GetStack() const override { return *Stack; };
-    virtual UStackEditorState* GetStackEditorState() const override { return Cast<UStackEditorState>(StackEditorState); }
+    virtual UStackEditorData* GetStackEditorData() const override { return Cast<UStackEditorData>(StackEditorData); }
 
 private:
 
@@ -38,7 +38,7 @@ private:
     TObjectPtr<UStackBlueprintGraph> StackBlueprintGraph;
 
     UPROPERTY()
-    TObjectPtr<UStackEditorState> StackEditorState;
+    TObjectPtr<UStackEditorData> StackEditorData;
 
     UPROPERTY()
     TObjectPtr<UStack> Stack;

@@ -3,7 +3,7 @@
 #include "ViewModels/Editor/StackRootViewModel.h"
 #include "ViewModels/Editor/StackHandleViewModel.h"
 #include "ViewModels/Editor/StackViewModel.h"
-#include "State/StackSystemState.h"
+#include "EditorData/StackSystemEditorData.h"
 #include "Definition/StackSource.h"
 #include "ViewModels/StackSelection.h"
 #include "ViewModels/StackEntry.h"
@@ -29,7 +29,7 @@ FGuid GetHandleIDFromEntry(UStackEntry* Entry)
 UStackSelectionViewModel::FSelectedEntry::FSelectedEntry(UStackEntry* SelectedEntry)
 	: Entry(SelectedEntry)
 	, HandleID(GetHandleIDFromEntry(SelectedEntry))
-	, StackViewStateKey(SelectedEntry->GetStackViewStateKey())
+	, StackEntryEditorDataKey(SelectedEntry->GetStackEntryEditorDataKey())
 {
 
 }
@@ -40,18 +40,18 @@ void UStackSelectionViewModel::Initialize(TSharedRef<FStackSystemViewModel> InSt
 
 	// Creates new Stack Selection
 	SelectionEntry = NewObject<UStackSelection>(this);
-	SelectionEntry->Initialize(UStackEntry::FStackEntryContext(
+	/*SelectionEntry->Initialize(UStackEntry::FStackEntryContext(
 		InStackSystemViewModel
 		, TSharedPtr<FStackViewModel>()
 		, UStackEntry::FCategoryNames::Default
 		, UStackEntry::FSubcategoryNames::Default
-		, InStackSystemViewModel->GetSystemState().GetStackViewState()
-	));
+		, InStackSystemViewModel->GetSystemEditorData().GetStackEditorData()
+	));*/
 
 	// Wraps Selection with a dedicated ViewModel
 	// Used to show what's selected in Node UI
 	SelectedRootViewModel = NewObject<UStackRootViewModel>(this);
-	SelectedRootViewModel->Initialize(SelectionEntry);
+	SelectedRootViewModel->InitializeStackFromEntry(SelectionEntry);
 
 	bRefreshIsPending = false;
 }

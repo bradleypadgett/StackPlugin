@@ -7,8 +7,7 @@
 
 
 class UStackRoot;
-class UStackEditorState;
-class UStackState;
+class UStackEditorData;
 
 /*
  * A reusable stack asset that stores a stack layout (root + child entries).
@@ -28,7 +27,6 @@ public:
 	UPROPERTY(EditAnywhere, Category="Metadata")
 	FGuid StackID = FGuid::NewGuid();
 
-	// Categorization for organizing stacks.
 	UPROPERTY(EditAnywhere, Category="Metadata")
 	FName StackCategory;
 
@@ -39,10 +37,10 @@ public:
 	// IStackSource implementation
 	virtual UStack& GetStack() override { return *this; }
 	virtual const UStack& GetStack() const override { return *this; }
-	virtual UStackEditorState* GetStackEditorState() const override;
+	virtual UStackEditorData* GetStackEditorData() const override;
 
 	UPROPERTY()
-	TObjectPtr<UStackEditorState> StackEditorState;
+	TObjectPtr<UStackEditorData> StackEditorData;
 
 private:
 	UPROPERTY()

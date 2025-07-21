@@ -18,7 +18,7 @@ public:
 	void SetSelectedEntries(const TArray<UStackEntry*>& InSelectedEntries);
 
 protected:
-	virtual void RefreshStackChildren(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
+	virtual void RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues) override;
 
 private:
 	TArray<TWeakObjectPtr<UStackEntry>> SelectedEntries;

@@ -15,10 +15,12 @@ enum EStackStructureChangedFlags
 
 /** Defines different usages for a Stack script. */
 UENUM()
-enum class EStackModuleUsage : uint8
+enum class EScriptCompileTarget : uint8
 {
-	Module,       // Most common – reusable building block | Called during preview/compile
-	Function,     // Logic-only helper | Called by Modules
-	CreateStage,  // Like Spawn – builds layout | Called during Compile
-	UpdateStage   // Like Update – runtime reaction/refresh | Called during runtime
+	Default,   // No compilation; Backend or organizational group
+	Metadata,  // Annotations, non-functional data
+	Slate,     // Build editor UI widgets
+	HLSL,      // Compile to shader code
+	K2,        // Execute via Blueprint
+	VM,        // Compile to bytecode
 };

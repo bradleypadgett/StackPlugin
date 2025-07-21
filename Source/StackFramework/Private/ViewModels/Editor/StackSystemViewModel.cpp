@@ -1,6 +1,6 @@
 ﻿#include "ViewModels/Editor/StackSystemViewModel.h"
-#include "State/StackSystemState.h"
-#include "State/StackEditorState.h"
+#include "EditorData/StackSystemEditorData.h"
+#include "EditorData/StackEditorData.h"
 #include "ViewModels/StackRoot.h"
 #include "ViewModels/Editor/StackHandleViewModel.h"
 #include "ViewModels/Editor/StackViewModel.h"
@@ -32,9 +32,9 @@ IStackSource* FStackSystemViewModel::GetStackSource() const
 	return StackSource.GetInterface();
 }
 
-UStackSystemState& FStackSystemViewModel::GetSystemState() const
+UStackSystemEditorData& FStackSystemViewModel::GetSystemEditorData() const
 {
-	return *SystemState;
+	return *SystemEditorData;
 }
 
 void FStackSystemViewModel::AddStackSource(TScriptInterface<IStackSource> InStackSource)
@@ -77,11 +77,11 @@ TSharedPtr<FStackHandleViewModel> FStackSystemViewModel::GetHandleViewModelFromI
 
 TSharedPtr<FStackHandleViewModel> FStackSystemViewModel::GetHandleViewModelFromStack(const UStack& InStack) const
 {
-	/*if (UStackEditorState* StackEditorState = InStack.GetStackEditorState())
+	/*if (UStackEditorData* StackEditorData = InStack.GetStackEditorData())
 	{
 		for (TSharedRef<FStackHandleViewModel> Handle : HandleViewModels)
 		{
-			if (StackState == Handle->GetStackViewModel()->GetStack().GetStackEditorState())
+			if (StackState == Handle->GetStackViewModel()->GetStack().GetStackEditorData())
 			{
 				return Handle;
 			}

@@ -10,7 +10,7 @@ class UStackEntry;
 class SWidget;
 class UStack;
 class UStackSystem;
-class UStackSystemState;
+class UStackSystemEditorData;
 class UStackRootViewModel;
 class UStackSelectionViewModel;
 class FStackRootViewModel;
@@ -49,10 +49,10 @@ public:
 
 
 	IStackSource* GetStackSource() const;
-	UStackSystemState& GetSystemState() const;
+	UStackSystemEditorData& GetSystemEditorData() const;
 
 private:
-	UStackSystemState* SystemState;
+	UStackSystemEditorData* SystemEditorData;
 
 	void SetStackSource(TScriptInterface<IStackSource> InSource);
 

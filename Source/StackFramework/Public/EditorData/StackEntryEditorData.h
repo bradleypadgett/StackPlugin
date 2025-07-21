@@ -1,12 +1,12 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "StackViewState.generated.h"
+#include "StackEntryEditorData.generated.h"
 
 
 
 UCLASS()
-class STACKFRAMEWORK_API UStackViewState : public UObject
+class STACKFRAMEWORK_API UStackEntryEditorData : public UObject
 {
 	GENERATED_BODY()
 
