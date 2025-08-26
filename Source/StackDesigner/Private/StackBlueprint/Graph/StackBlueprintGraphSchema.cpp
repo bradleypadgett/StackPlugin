@@ -1,6 +1,6 @@
 #include "Graph/StackBlueprintGraphSchema.h"
 #include "BlueprintNodeSpawner.h"
-#include "StackNode.h"
+#include "Editor/StackNode.h"
 
 
 

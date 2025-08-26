@@ -3,7 +3,8 @@
 
 
 
-class UStackEditorData;
+class UStackRootEditorData;
+class UStackSystem;
 
 UCLASS()
 class STACKFRAMEWORK_API UStackSystemEditorData : public UObject
@@ -11,9 +12,24 @@ class STACKFRAMEWORK_API UStackSystemEditorData : public UObject
 	GENERATED_BODY()
 
 public:
-	UStackEditorData& GetStackEditorData(/* TO-DO ~ Add Handle */) const { return *StackEditorData; }
+	virtual void PostInitProperties() override;
+
+	UStackRootEditorData& GetSystemRootEditorData() const { return *SystemRootEditorData; }
+
+	UEdGraph* GetSystemGraph();
+
+	bool GetIsGraphEnabled() { return bIsGraphEnabled; }
+	void SetIsGraphEnabled(bool bEnabled) { bIsGraphEnabled = bEnabled; }
+
+	void SyncSystemGraph(UStackSystem& InSystem);
 
 private:
+	UPROPERTY(Instanced)
+	TObjectPtr<UStackRootEditorData> SystemRootEditorData;
+
 	UPROPERTY()
-	TObjectPtr<UStackEditorData> StackEditorData;
+	TObjectPtr<UEdGraph> SystemGraph;
+
+	UPROPERTY()
+	bool bIsGraphEnabled = true;
 };

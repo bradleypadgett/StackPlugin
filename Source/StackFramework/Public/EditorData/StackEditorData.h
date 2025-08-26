@@ -2,8 +2,8 @@
 #include "StackEditorData.generated.h"
 
 
-
-class UStackEntryEditorData;
+// TO-DO ~ Store Stack node positions
+class UStackRootEditorData;
 
 UCLASS()
 class UStackEditorData : public UObject
@@ -15,9 +15,9 @@ public:
 
 	virtual void PostLoad() override;
 
-	UStackEntryEditorData& GetStackEntryEditorData() const;
+	UStackRootEditorData& GetRootEditorData() const;
 
-	void StackEntryEditorDataChanged();
+	void RootEditorDataChanged();
 	FSimpleMulticastDelegate& OnPersistentDataChanged() { return PersistentDataChangedDelegate; }
 
 private:
@@ -25,5 +25,5 @@ private:
 
 	// Stack holds a ref to the entry data
 	UPROPERTY(Instanced)
-	TObjectPtr<UStackEntryEditorData> StackEntryEditorData;
+	TObjectPtr<UStackRootEditorData> RootEditorData;
 };

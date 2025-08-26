@@ -1,13 +1,13 @@
 #pragma once
 #include "ViewModels/StackEntry.h"
-#include "Definition/StackCommonTypes.h"
+#include "Utilities/StackCommonTypes.h"
 #include "StackRoot.generated.h"
 
 
 
-class FStackHandleViewModel;
-class FStackScriptViewModel;
-class UStackEntryEditorData;
+class FStackHandleManager;
+class FStackScriptManager;
+class UStackRootEditorData;
 
 UCLASS()
 class UStackRoot : public UStackEntry
@@ -17,7 +17,7 @@ class UStackRoot : public UStackEntry
 public:
 	UStackRoot();
 
-	void Initialize(FStackEntryContext InContext, bool bInIncludePropertiesGroup);
+	void Initialize(FStackEntryContext InContext, bool bIncludeSettingsGroup);
 	virtual void FinalizeInternal() override;
 
 	virtual bool GetCanExpand() const override;
@@ -33,8 +33,8 @@ private:
 
 	UStackEntry* GetOrCreateSettingsGroup(const TArray<UStackEntry*>& CurrentChildren);
 
-	UStackEntry* CreateScriptGroup(TSharedRef<FStackScriptViewModel> InScriptViewModel, EScriptCompileTarget InScriptCompileTarget, FGuid InGroupID, UStackEntryEditorData& InStackEntryEditorData, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip);
+	UStackEntry* CreateScriptGroup(TSharedRef<FStackScriptManager> InScriptManager, EScriptCompileTarget InScriptCompileTarget, FGuid InGroupID, UStackRootEditorData& InRootEditorData, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip);
 
 private:
-	bool bIncludeSettingsGroup;
+	bool bSettingsGroupEnabled;
 };

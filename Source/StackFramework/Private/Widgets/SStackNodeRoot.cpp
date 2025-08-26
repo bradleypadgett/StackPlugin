@@ -1,13 +1,17 @@
 ﻿#include "Widgets/SStackNodeRoot.h"
 #include "Widgets/SStackNodeEntries.h"
-#include "StackNode.h"
+#include "Editor/StackNode.h"
 #include "ViewModels/StackRoot.h"
-#include "ViewModels/Editor/StackRootViewModel.h"
-#include "ViewModels/Editor/StackSelectionViewModel.h"
-#include "ViewModels/Editor/StackSystemViewModel.h"
+#include "ViewModels/Editor/StackRootManager.h"
+#include "ViewModels/Editor/StackHandleManager.h"
+#include "ViewModels/Editor/StackSelectionManager.h"
+#include "ViewModels/Editor/StackSystemManager.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Widgets/StackStyle.h"
+#include "Providers/Editor/StackSystemProvider.h"
+#include "StackFramework/StackFramework.h"
+#include "StackSystem.h"
 
 
 
@@ -17,24 +21,45 @@ void SStackNodeRoot::Construct(const FArguments& InArgs, UStackNode* InNode)
 {
 	Node = InNode;
 	GraphNode = InNode;
+	RootManager = nullptr;
+	SelectionManager = nullptr;
 	if (Node->GetOwningSystem())
 	{
-		/*if (TSharedPtr<FStackSystemViewModel> SystemViewModel = (Node->GetOwningSystem()))
+		FStackFrameworkModule& EditorModule = FStackFrameworkModule::Get();
+		TSharedPtr<FStackSystemManager> SystemManager = EditorModule.GetSystemManager(Node->GetOwningSystem());
+		if (SystemManager.IsValid())
 		{
+			UE_LOG(LogTemp, Warning, TEXT("SystemManager is valid"));
 
-			RootViewModel = GetOwn;
-		}*/
+			if (Node->GetHandleID().IsValid() == false)
+			{
+				RootManager = SystemManager->GetSystemStackRootManager();
+			}
+			else
+			{
+				HandleManagerWeak = SystemManager->GetHandleManagerFromID(Node->GetHandleID());
+				if (HandleManagerWeak.IsValid())
+				{
+					RootManager = HandleManagerWeak.Pin()->GetStackRootManager();
+				}
+			}
+
+			SelectionManager = SystemManager->GetSelectionManager();
+		}
 	}
 
-	// TO-DO ~ Replace this with a singleton registered editor module which'll nab the cached ViewModels. 
-	//RootViewModel = Node->GetRootViewModel();
-	//SelectionViewModel = Node->GetSelectionViewModel();
-
-	if (!RootViewModel || !SelectionViewModel)
+	if (!RootManager)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SStackNodeRoot: Missing ViewModel or SelectionViewModel."));
+		UE_LOG(LogTemp, Warning, TEXT("SStackNodeRoot: Missing Manager."));
 		return;
 	}
+
+	if (!SelectionManager)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SStackNodeRoot: Missing SelectionManager."));
+		return;
+	}
+
 
 	SetCursor(EMouseCursor::CardinalCross);
 	UpdateGraphNode();
@@ -93,7 +118,7 @@ TSharedRef<SWidget> SStackNodeRoot::CreateNodeContentArea()
 
 TSharedRef<SWidget> SStackNodeRoot::CreateNodeStack()
 {
-	return SNew(SStackNodeEntries, *RootViewModel, *SelectionViewModel);
+	return SNew(SStackNodeEntries, *RootManager, *SelectionManager);
 }
 
 #undef LOCTEXT_NAMESPACE

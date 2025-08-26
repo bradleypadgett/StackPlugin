@@ -2,11 +2,11 @@
 #include "Widgets/SStackList.h"
 #include "ViewModels/StackItem.h"
 #include "ViewModels/StackEntry.h"
-#include "ViewModels/Editor/StackRootViewModel.h"
-#include "Definition/StackCommonTypes.h"
+#include "ViewModels/Editor/StackRootManager.h"
+#include "Utilities/StackCommonTypes.h"
 #include "ViewModels/StackRoot.h"
-#include "ViewModels/Editor/StackSelectionViewModel.h"
-#include "EditorData/StackEntryEditorData.h"
+#include "ViewModels/Editor/StackSelectionManager.h"
+#include "EditorData/StackRootEditorData.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/Text/STextBlock.h"
@@ -79,7 +79,7 @@ public:
 														? NSLOCTEXT("Stack", "Expand", "Expand Entry")
 														: NSLOCTEXT("Stack", "Collapse", "Collapse Entry"));
 
-													StackEntry->GetStackEntryEditorData().Modify();
+													StackEntry->GetRootEditorData().Modify();
 													StackEntry->SetIsExpandedInNode(bWillExpand);
 													return FReply::Handled();
 												})
@@ -362,20 +362,20 @@ private:
 	mutable TOptional<FText> ToolTipCache;
 };
 
-void SStackNodeEntries::Construct(const FArguments& InArgs, UStackRootViewModel& InStackRootViewModel, UStackSelectionViewModel& InSelectionViewModel)
+void SStackNodeEntries::Construct(const FArguments& InArgs, UStackRootManager& InStackRootManager, UStackSelectionManager& InSelectionManager)
 {
 	AllowedClasses = InArgs._AllowedClasses;
 
 	bUpdatingSelectionFromStack = false;
 	bUpdatingStackFromSelection = false;
 
-	StackRootViewModel = &InStackRootViewModel;
-	SelectionViewModel = &InSelectionViewModel;
+	StackRootManager = &InStackRootManager;
+	SelectionManager = &InSelectionManager;
 
 	// Bind viewmodel events
-	StackRootViewModel->OnStructureChanged().AddSP(this, &SStackNodeEntries::EntryStructureChanged);
-	StackRootViewModel->OnExpansionInNodeChanged().AddSP(this, &SStackNodeEntries::EntryExpansionChanged);
-	SelectionViewModel->OnEntrySelectionChanged().AddSP(this, &SStackNodeEntries::UpdateSelection);
+	StackRootManager->OnStructureChanged().AddSP(this, &SStackNodeEntries::EntryStructureChanged);
+	StackRootManager->OnExpansionInNodeChanged().AddSP(this, &SStackNodeEntries::EntryExpansionChanged);
+	SelectionManager->OnEntrySelectionChanged().AddSP(this, &SStackNodeEntries::UpdateSelection);
 
 	// Main UI
 	ChildSlot
@@ -389,24 +389,24 @@ void SStackNodeEntries::Construct(const FArguments& InArgs, UStackRootViewModel&
 				//.OnItemToString_Debug_Static(...) // optional for debug logging
 		];
 
-	bRefreshEntryListPending = true;
-	RefreshEntryList();
-	UpdateSelection();
+	//bRefreshEntryListPending = true;
+	//RefreshEntryList();
+	//UpdateSelection();
 }
 
 
 SStackNodeEntries::~SStackNodeEntries()
 {
-	if (StackRootViewModel != nullptr)
+	if (StackRootManager != nullptr)
 	{
-		StackRootViewModel->OnStructureChanged().RemoveAll(this);
-		StackRootViewModel->OnExpansionInNodeChanged().RemoveAll(this);
-		StackRootViewModel->OnExpansionChanged().RemoveAll(this);
+		StackRootManager->OnStructureChanged().RemoveAll(this);
+		StackRootManager->OnExpansionInNodeChanged().RemoveAll(this);
+		StackRootManager->OnExpansionChanged().RemoveAll(this);
 	}
 
-	if (SelectionViewModel != nullptr)
+	if (SelectionManager != nullptr)
 	{
-		SelectionViewModel->OnEntrySelectionChanged().RemoveAll(this);
+		SelectionManager->OnEntrySelectionChanged().RemoveAll(this);
 	}
 }
 
@@ -450,7 +450,7 @@ EVisibility SStackNodeEntries::GetIssueIconVisibility(UStackEntry* StackEntry)
 
 void SStackNodeEntries::RefreshEntryList()
 {
-	if (!bRefreshEntryListPending || !StackRootViewModel)
+	if (!bRefreshEntryListPending || !StackRootManager)
 	{
 		return;
 	}
@@ -458,7 +458,7 @@ void SStackNodeEntries::RefreshEntryList()
 	EntryList.Reset();
 	EntryToParentChain.Reset();
 
-	UStackEntry* RootEntry = StackRootViewModel->GetRootEntry();
+	UStackEntry* RootEntry = StackRootManager->GetRootEntry();
 	checkf(RootEntry != nullptr, TEXT("Root entry was null."));
 
 	TArray<UStackEntry*> RootChildren;
@@ -536,7 +536,7 @@ void SStackNodeEntries::OnSelectionChanged(UStackEntry* InNewSelection, ESelectI
 
 		const bool bClearSelection = !FSlateApplication::Get().GetModifierKeys().IsControlDown();
 
-		SelectionViewModel->UpdateSelectedEntries(SelectedEntries, DeselectedEntries, bClearSelection);
+		SelectionManager->UpdateSelectedEntries(SelectedEntries, DeselectedEntries, bClearSelection);
 
 		PreviousSelection.Empty();
 		for (UStackEntry* Selected : SelectedEntries)
@@ -551,7 +551,7 @@ void SStackNodeEntries::OnSelectionChanged(UStackEntry* InNewSelection, ESelectI
 
 void SStackNodeEntries::UpdateSelection()
 {
-	if (!SelectionViewModel || bUpdatingSelectionFromStack)
+	if (!SelectionManager || bUpdatingSelectionFromStack)
 	{
 		return;
 	}
@@ -572,7 +572,7 @@ void SStackNodeEntries::UpdateSelection()
 
 	const bool bClearCurrentSelection = !FSlateApplication::Get().GetModifierKeys().IsControlDown();
 
-	SelectionViewModel->UpdateSelectedEntries(SelectedEntries, DeselectedEntries, bClearCurrentSelection);
+	SelectionManager->UpdateSelectedEntries(SelectedEntries, DeselectedEntries, bClearCurrentSelection);
 
 	PreviousSelection.Reset();
 	for (UStackEntry* Entry : SelectedEntries)

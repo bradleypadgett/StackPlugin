@@ -1,12 +1,12 @@
 #include "ViewModels/StackRoot.h"
-#include "ViewModels/Editor/StackHandleViewModel.h"
-#include "ViewModels/Editor/StackViewModel.h"
-#include "ViewModels/Editor/StackScriptViewModel.h"
-#include "ViewModels/Editor/StackSystemViewModel.h"
+#include "ViewModels/Editor/StackHandleManager.h"
+#include "ViewModels/Editor/StackManager.h"
+#include "ViewModels/Editor/StackScriptManager.h"
+#include "ViewModels/Editor/StackSystemManager.h"
 #include "ViewModels/StackSettingsGroup.h"
 #include "ViewModels/StackScriptGroup.h"
 #include "ViewModels/StackGroup.h"
-#include "EditorData/StackEntryEditorData.h"
+#include "EditorData/StackRootEditorData.h"
 
 
 
@@ -17,10 +17,10 @@ UStackRoot::UStackRoot()
 
 }
 
-void UStackRoot::Initialize(FStackEntryContext InContext, bool bInIncludeSettingsGroup)
+void UStackRoot::Initialize(FStackEntryContext InContext, bool bIncludeSettingsGroup)
 {
 	Super::Initialize(InContext, TEXT("Root"));
-	bIncludeSettingsGroup = bInIncludeSettingsGroup;
+	bSettingsGroupEnabled = bIncludeSettingsGroup;
 }
 
 void UStackRoot::FinalizeInternal()
@@ -40,13 +40,15 @@ bool UStackRoot::GetShouldShowInStack() const
 
 void UStackRoot::RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChildren, TArray<UStackEntry*>& NewChildren, TArray<FStackIssue>& NewIssues)
 {
-	if (bIncludeSettingsGroup)
+	if (bSettingsGroupEnabled)
 	{
 		NewChildren.Add(GetOrCreateSettingsGroup(CurrentChildren));
 	}
 	
-	//UStackEntryEditorData& LocalStackEntryEditorData = GetStackViewModel()->GetStackEntryEditorData();
-	TSharedRef<FStackScriptViewModel> ScriptViewModel = GetStackViewModel()->GetScriptViewModel();
+	//UStackRootEditorData& RootEditorData = GetStackManager()->GetRootEditorData();
+	
+	// might remove this later
+	//TSharedRef<FStackScriptManager> ScriptManager = GetStackManager()->GetScriptManager();
 
 	/*
 	UStackEntry* TestEntry = GetCurrentGroupByCompileTarget(CurrentChildren, EScriptCompileTarget::Default, FGuid());
@@ -58,7 +60,7 @@ void UStackRoot::RefreshChildrenInternal(const TArray<UStackEntry*>& CurrentChil
 		FName ExecutionSubCategory = FSubcategoryNames::Default;
 		FText EntryDisplayName = LOCTEXT("TestGroupName", "testin'");
 		FText ToolTip = LOCTEXT("TestGroupTooltip", "hopefully this shows up lol");
-		TestEntry = CreateScriptGroup(ScriptViewModel, CompileTarget, GroupID, LocalStackEntryEditorData, ExecutionCategory, ExecutionSubCategory, EntryDisplayName, ToolTip);
+		TestEntry = CreateScriptGroup(ScriptManager, CompileTarget, GroupID, LocalRootEditorData, ExecutionCategory, ExecutionSubCategory, EntryDisplayName, ToolTip);
 	}
 	NewChildren.Add(TestEntry);*/
 }
@@ -89,19 +91,19 @@ UStackEntry* UStackRoot::GetOrCreateSettingsGroup(const TArray<UStackEntry*>& Cu
 	if (SettingsGroup == nullptr)
 	{
 	/*	SettingsGroup = NewObject<UStackSettingsGroup>(this);
-		FStackEntryContext EntryContext(GetSystemViewModel(), GetStackViewModel(),
+		FStackEntryContext EntryContext(GetSystemManager(), GetStackManager(),
 			FCategoryNames::Default, FSubcategoryNames::Settings,
-			GetStackViewModel()->GetStackEditorData());
+			GetStackManager()->GetStackEditorData());
 		SettingsGroup->Initialize(EntryContext);*/
 	}
 	return SettingsGroup;
 }
 
-UStackEntry* UStackRoot::CreateScriptGroup(TSharedRef<FStackScriptViewModel> InScriptViewModel, EScriptCompileTarget InScriptCompileTarget, FGuid InGroupID, UStackEntryEditorData& InStackEntryEditorData, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip)
+UStackEntry* UStackRoot::CreateScriptGroup(TSharedRef<FStackScriptManager> InScriptManager, EScriptCompileTarget InScriptCompileTarget, FGuid InGroupID, UStackRootEditorData& InRootEditorData, FName InCategoryName, FName InSubcategoryName, FText InDisplayName, FText InToolTip)
 {
 	UStackScriptGroup* ScriptGroup = NewObject<UStackScriptGroup>(this);
-	FStackEntryContext EntryContext(GetSystemViewModel(), GetStackViewModel(), InCategoryName, InSubcategoryName, InStackEntryEditorData);
-	ScriptGroup->Initialize(EntryContext, InDisplayName, InToolTip, InScriptViewModel, InScriptCompileTarget, InGroupID);
+	FStackEntryContext EntryContext(GetSystemManager(), GetStackManager(), InCategoryName, InSubcategoryName, InRootEditorData);
+	ScriptGroup->Initialize(EntryContext, InDisplayName, InToolTip, InScriptManager, InScriptCompileTarget, InGroupID);
 	return ScriptGroup;
 }
 

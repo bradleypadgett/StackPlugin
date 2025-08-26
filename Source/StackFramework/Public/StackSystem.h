@@ -8,6 +8,7 @@
 
 
 struct FStackHandle;
+class UStackSystemEditorData;
 
 UCLASS(BlueprintType)
 class STACKFRAMEWORK_API UStackSystem : public UObject
@@ -17,19 +18,33 @@ class STACKFRAMEWORK_API UStackSystem : public UObject
 public:
 	UStackSystem();
 
-	const TArray<FStackHandle>& GetHandles() const { return StackHandles; }
-	TArray<FStackHandle>& GetHandles() { return StackHandles; }
+	virtual void PostInitProperties() override;
 
-	int32 GetNumHandles() const { return StackHandles.Num(); }
-	void ClearHandles() { StackHandles.Reset(); }
-	void AddHandle(FStackHandle& InNewHandle);
+	UStackSystemEditorData* GetSystemEditorData();
+
+	int32 GetNumHandles() const { return Handles.Num(); }
+	const TArray<FStackHandle>& GetHandles() const { return Handles; }
+	TArray<FStackHandle>& GetHandles() { return Handles; }
+
+	FStackHandle& GetHandle(int HandleIndex);
+
+	void ClearHandles() { Handles.Reset(); }
+	FStackHandle AddHandle(UStack& InStack, FName InStackName);
 	void RemoveHandle(FStackHandle& InHandleToRemove);
 
 
 	UPROPERTY(EditAnywhere, Category = "System")
 	FName Name;
 
+protected:
 	UPROPERTY()
-	TArray<FStackHandle> StackHandles;
+	TArray<FStackHandle> Handles;
+
+private:
+
+#if WITH_EDITORONLY_DATA
+	UPROPERTY()
+	TObjectPtr<UStackSystemEditorData> SystemEditorData;
+#endif
 
 };

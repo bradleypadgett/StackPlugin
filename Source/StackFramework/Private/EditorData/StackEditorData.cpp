@@ -1,15 +1,15 @@
 #include "EditorData/StackEditorData.h"
-#include "EditorData/StackEntryEditorData.h"
+#include "EditorData/StackRootEditorData.h"
 
 
 
 UStackEditorData::UStackEditorData(const FObjectInitializer& ObjectInitializer)
 {
-	StackEntryEditorData = ObjectInitializer.CreateDefaultSubobject<UStackEntryEditorData>(this, TEXT("StackEditorData"));
+	RootEditorData = ObjectInitializer.CreateDefaultSubobject<UStackRootEditorData>(this, TEXT("StackEditorData"));
 
-	if (StackEntryEditorData != nullptr)
+	if (RootEditorData != nullptr)
 	{
-		StackEntryEditorData->OnPersistentDataChanged().AddUObject(this, &UStackEditorData::StackEntryEditorDataChanged);
+		RootEditorData->OnPersistentDataChanged().AddUObject(this, &UStackEditorData::RootEditorDataChanged);
 	}
 }
 
@@ -17,23 +17,23 @@ void UStackEditorData::PostLoad()
 {
 	Super::PostLoad();
 
-	if (StackEntryEditorData == nullptr)
+	if (RootEditorData == nullptr)
 	{
-		StackEntryEditorData = NewObject<UStackEntryEditorData>(this, TEXT("StackEntryEditorData"), RF_Transactional);
-		StackEntryEditorData->OnPersistentDataChanged().AddUObject(this, &UStackEditorData::StackEntryEditorDataChanged);
+		RootEditorData = NewObject<UStackRootEditorData>(this, TEXT("RootEditorData"), RF_Transactional);
+		RootEditorData->OnPersistentDataChanged().AddUObject(this, &UStackEditorData::RootEditorDataChanged);
 	}
 
-	StackEntryEditorData->ConditionalPostLoad();
+	RootEditorData->ConditionalPostLoad();
 }
 
-void UStackEditorData::StackEntryEditorDataChanged()
+void UStackEditorData::RootEditorDataChanged()
 {
 	OnPersistentDataChanged().Broadcast();
 }
 
-UStackEntryEditorData& UStackEditorData::GetStackEntryEditorData() const
+UStackRootEditorData& UStackEditorData::GetRootEditorData() const
 {
-	check(StackEntryEditorData != nullptr);
-	return *StackEntryEditorData;
+	check(RootEditorData != nullptr);
+	return *RootEditorData;
 }
 

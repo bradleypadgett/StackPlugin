@@ -4,8 +4,6 @@
 
 
 
-class UStackBlueprintGraph;
-
 /*
  * A custom sidebar action that will show up in MyBlueprint panel
  */
@@ -13,7 +11,7 @@ class FStackBlueprintGraphSidebarAction : public FEdGraphSchemaAction
 {
 public:
 
-    UStackBlueprintGraph* Graph;
+    UEdGraph* Graph;
 
     FStackBlueprintGraphSidebarAction()
         : FEdGraphSchemaAction(

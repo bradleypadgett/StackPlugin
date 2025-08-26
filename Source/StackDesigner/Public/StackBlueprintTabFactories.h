@@ -3,10 +3,11 @@
 #include "WorkflowOrientedApp/WorkflowTabFactory.h"
 #include "Internationalization/Text.h"
 #include "Templates/SharedPointer.h"
+#include "Providers/Editor/StackTabProvider.h"
+
+
 
 #define LOCTEXT_NAMESPACE "StackBlueprint"
-
-
 
 struct FSlateBrush;
 
@@ -19,7 +20,7 @@ class FStackBlueprintEditor;
 
 
 
-struct FDesignerGraphSummoner : public FWorkflowTabFactory
+struct FDesignerGraphSummoner : public FWorkflowTabFactory//, public IStackTabProvider
 {
 public:
     FDesignerGraphSummoner(TSharedPtr<class FAssetEditorToolkit> InHostingApp);

@@ -2,13 +2,13 @@
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/Views/SListView.h"
 #include "ViewModels/StackEntry.h"
-#include "ViewModels/Editor/StackRootViewModel.h"
+#include "ViewModels/Editor/StackRootManager.h"
 
 
 class UStackRoot;
-class UStackSelectionViewModel;
+class UStackSelectionManager;
 class UStackEntry;
-class UStackRootViewModel;
+class UStackRootManager;
 
 /*
 * Renders stack sections and entry tree for one stack node.
@@ -18,10 +18,10 @@ class SStackList : public SCompoundWidget
 public:
 	SLATE_BEGIN_ARGS(SStackList) {}
 		SLATE_ARGUMENT(UStackRoot*, Root)
-		SLATE_ARGUMENT(UStackSelectionViewModel*, SelectionViewModel)
+		SLATE_ARGUMENT(UStackSelectionManager*, SelectionManager)
 	SLATE_END_ARGS()
 
-	void Construct(const FArguments& InArgs, UStackRootViewModel* InRootViewModel, UStackRoot* InRoot, UStackSelectionViewModel* InSelection);
+	void Construct(const FArguments& InArgs, UStackRootManager* InRootManager, UStackRoot* InRoot, UStackSelectionManager* InSelection);
 
 private:
 	TSharedRef<ITableRow> OnGenerateRow(UStackEntry* Entry, const TSharedRef<STableViewBase>& OwnerTable);
@@ -33,12 +33,12 @@ private:
 
 private:
 	UStackRoot* Root;
-	UStackRootViewModel* RootViewModel;
-	UStackSelectionViewModel* SelectionViewModel;
+	UStackRootManager* RootManager;
+	UStackSelectionManager* SelectionManager;
 
-	TSharedPtr<SListView<TSharedRef<UStackRootViewModel::FStackRootContainer>>> HeaderList;
+	TSharedPtr<SListView<TSharedRef<UStackRootManager::FStackRootContainer>>> HeaderList;
 	TSharedPtr<STreeView<UStackEntry*>> Tree;
 
-	TArray<TSharedRef<UStackRootViewModel::FStackRootContainer>> RootContainers;
+	TArray<TSharedRef<UStackRootManager::FStackRootContainer>> RootContainers;
 	TArray<UStackEntry*> RootEntries;
 };

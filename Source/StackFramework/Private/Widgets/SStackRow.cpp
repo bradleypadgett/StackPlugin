@@ -1,14 +1,14 @@
 #include "Widgets/SStackRow.h"
 #include "ViewModels/StackEntry.h"
-#include "ViewModels/Editor/StackSelectionViewModel.h"
+#include "ViewModels/Editor/StackSelectionManager.h"
 #include "Widgets/SStackItem.h"
 
 
 
-void SStackRow::Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionViewModel* InSelectionViewModel, const TSharedRef<STableViewBase>& InOwnerTableView)
+void SStackRow::Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionManager* InSelectionManager, const TSharedRef<STableViewBase>& InOwnerTableView)
 {
 	StackEntry = InStackEntry;
-	SelectionViewModel = InSelectionViewModel;
+	SelectionManager = InSelectionManager;
 
 	STableRow<UStackEntry*>::Construct(
 		STableRow<UStackEntry*>::FArguments()
@@ -24,5 +24,5 @@ void SStackRow::Construct(const FArguments& InArgs, UStackEntry* InStackEntry, U
 
 TSharedRef<SWidget> SStackRow::CreateDisplayWidget()
 {
-	return SNew(SStackItem, StackEntry, SelectionViewModel);
+	return SNew(SStackItem, StackEntry, SelectionManager);
 }

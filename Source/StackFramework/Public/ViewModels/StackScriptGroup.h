@@ -1,7 +1,7 @@
 #pragma once
 #include "StackGroup.h"
-#include "Definition/StackCommonTypes.h"
-#include "ViewModels/Editor/StackScriptViewModel.h"
+#include "Utilities/StackCommonTypes.h"
+#include "ViewModels/Editor/StackScriptManager.h"
 #include "StackScriptGroup.generated.h"
 
 
@@ -15,11 +15,11 @@ public:
 		FStackEntryContext InEntryContext,
 		FText InDisplayName,
 		FText InToolTip,
-		TSharedRef<FStackScriptViewModel> InScriptViewModel,
+		TSharedRef<FStackScriptManager> InScriptManager,
 		EScriptCompileTarget InScriptCompileTarget,
 		FGuid InGroupID);
 
 private:
-	TSharedPtr<FStackScriptViewModel> ScriptViewModel;
+	TSharedPtr<FStackScriptManager> ScriptManager;
 
 };

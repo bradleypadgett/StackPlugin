@@ -1,6 +1,6 @@
 #include "ViewModels/StackSelection.h"
 #include "ViewModels/StackEntry.h"
-#include "EditorData/StackEntryEditorData.h"
+#include "EditorData/StackRootEditorData.h"
 
 
 

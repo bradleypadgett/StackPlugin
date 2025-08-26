@@ -6,7 +6,7 @@
 
 
 class UStackEntry;
-class UStackSelectionViewModel;
+class UStackSelectionManager;
 
 /*
  * Widget that displays one row from a stack entry.
@@ -16,15 +16,15 @@ class SStackEntry : public SCompoundWidget
 public:
 	SLATE_BEGIN_ARGS(SStackEntry) {}
 		SLATE_ARGUMENT(UStackEntry*, StackEntry)
-		SLATE_ARGUMENT(UStackSelectionViewModel*, SelectionViewModel)
+		SLATE_ARGUMENT(UStackSelectionManager*, SelectionManager)
 	SLATE_END_ARGS()
 
-	void Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionViewModel* InSelectionViewModel);
+	void Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionManager* InSelectionManager);
 
 	virtual TSharedRef<SWidget> BuildRowContent();
 
 protected:
 	UStackEntry* StackEntry;
-	UStackSelectionViewModel* SelectionViewModel;
+	UStackSelectionManager* SelectionManager;
 
 };

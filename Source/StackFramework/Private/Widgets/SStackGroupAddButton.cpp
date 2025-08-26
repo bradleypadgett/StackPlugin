@@ -5,7 +5,7 @@
 #include "Widgets/Images/SImage.h"
 #include "Framework/MultiBox/MultiBoxBuilder.h"
 #include "ViewModels/StackEntry.h"
-#include "Definition/StackGroupAddUtilities.h"
+#include "Utilities/StackGroupAddUtilities.h"
 
 
 

@@ -6,7 +6,7 @@ void UStackScriptGroup::Initialize(
 	FStackEntryContext InEntryContext,
 	FText InDisplayName,
 	FText InToolTip,
-	TSharedRef<FStackScriptViewModel> InScriptViewModel,
+	TSharedRef<FStackScriptManager> InScriptManager,
 	EScriptCompileTarget InScriptCompileTarget,
 	FGuid InGroupID)
 {

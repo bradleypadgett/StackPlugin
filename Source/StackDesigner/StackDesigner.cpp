@@ -6,7 +6,7 @@
 #include "UObject/ReferenceChainSearch.h"
 #include "Engine/Blueprint.h"
 #include "Editor.h"
-#include "StackNodeFactory.h"
+#include "Editor/StackNodeFactory.h"
 
 
 

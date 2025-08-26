@@ -1,7 +1,7 @@
 #include "ViewModels/StackGroup.h"
 //#include "ViewModels/StackGroupFooter.h"
 #include "ViewModels/StackEntry.h"
-#include "Definition/StackCommonTypes.h"
+#include "Utilities/StackCommonTypes.h"
 
 #define LOCTEXT_NAMESPACE "StackGroup"
 

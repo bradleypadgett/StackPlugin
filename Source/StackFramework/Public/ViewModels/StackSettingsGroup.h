@@ -1,5 +1,5 @@
 #pragma once
-#include "Definition/StackGroupAddUtilities.h"
+#include "Utilities/StackGroupAddUtilities.h"
 #include "ViewModels/StackEntry.h"
 #include "ViewModels/StackItem.h"
 #include "ViewModels/StackGroup.h"

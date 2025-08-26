@@ -6,7 +6,7 @@
 
 
 class UStackEntry;
-class UStackSelectionViewModel;
+class UStackSelectionManager;
 
 /*
  * Visual content of a single stack entry row.
@@ -17,11 +17,11 @@ public:
 	SLATE_BEGIN_ARGS(SStackRow) {}
 	SLATE_END_ARGS()
 
-	void Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionViewModel* InSelectionViewModel, const TSharedRef<STableViewBase>& InOwnerTableView);
+	void Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionManager* InSelectionManager, const TSharedRef<STableViewBase>& InOwnerTableView);
 
 private:
 	UStackEntry* StackEntry;
-	UStackSelectionViewModel* SelectionViewModel;
+	UStackSelectionManager* SelectionManager;
 
 	TSharedRef<SWidget> CreateDisplayWidget();
 };

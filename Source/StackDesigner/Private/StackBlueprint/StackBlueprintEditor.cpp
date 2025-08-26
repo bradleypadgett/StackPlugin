@@ -23,7 +23,7 @@ void FStackBlueprintEditor::RegisterApplicationModes(const TArray<UBlueprint*>& 
 	
 	AddApplicationMode("StackBlueprint", MakeShareable(new FStackBlueprintMode(SharedThis(this), "StackBlueprint", GetLocalizedStackBlueprintMode, false)));
 
-	Extension->EnsureStackBlueprintGraph();
+	Extension->Initialize();
 }
 
 void FStackBlueprintEditor::InitalizeExtenders()
@@ -73,7 +73,7 @@ void FStackBlueprintEditor::HandleCurrentMode(FName InMode)
 	}
 }
 
-UStackBlueprintGraph* FStackBlueprintEditor::GetStackBlueprintGraph() { return Extension->GetStackBlueprintGraph(); }
+UEdGraph* FStackBlueprintEditor::GetStackBlueprintGraph() { return Extension->GetStackBlueprintGraph(); }
 
 void FStackBlueprintEditor::OnClose()
 {

@@ -3,15 +3,15 @@
 #include "UObject/Object.h"
 #include "DragAndDrop/DecoratedDragDropOp.h"
 #include "Widgets/Views/STableRow.h"
-#include "Definition/StackCommonTypes.h"
+#include "Utilities/StackCommonTypes.h"
 #include "StackEntry.generated.h"
 
 
 
 class UStackEntry;
-class UStackEntryEditorData;
-class FStackSystemViewModel;
-class FStackViewModel;
+class UStackRootEditorData;
+class FStackSystemManager;
+class FStackManager;
 
 UENUM()
 enum class EIssueSeverity : uint8
@@ -114,20 +114,20 @@ public:
 
 	struct FStackEntryContext
 	{
-		FStackEntryContext(TSharedRef<FStackSystemViewModel> InSystemViewModel, TSharedPtr<FStackViewModel> InStackViewModel, FName InCategoryName, FName InSubcategoryName, UStackEntryEditorData& InStackEntryEditorData)
-			: SystemViewModel(InSystemViewModel)
-			, StackViewModel(InStackViewModel)
+		FStackEntryContext(TSharedRef<FStackSystemManager> InSystemManager, TSharedPtr<FStackManager> InStackManager, FName InCategoryName, FName InSubcategoryName, UStackRootEditorData& InRootEditorData)
+			: SystemManager(InSystemManager)
+			, StackManager(InStackManager)
 			, CategoryName(InCategoryName)
 			, SubcategoryName(InSubcategoryName)
-			, StackEntryEditorData(&InStackEntryEditorData)
+			, RootEditorData(&InRootEditorData)
 		{
 		}
 
-		const TSharedRef<FStackSystemViewModel> SystemViewModel;
-		const TSharedPtr<FStackViewModel> StackViewModel;
+		const TSharedRef<FStackSystemManager> SystemManager;
+		const TSharedPtr<FStackManager> StackManager;
 		const FName CategoryName;
 		const FName SubcategoryName;
-		UStackEntryEditorData* const StackEntryEditorData;
+		UStackRootEditorData* const RootEditorData;
 	};
 
 	struct FStackIssue
@@ -142,7 +142,7 @@ public:
 
 	UStackEntry();
 
-	void Initialize(FStackEntryContext InStackEntryContext, FString InStackEntryEditorDataKey);
+	void Initialize(FStackEntryContext InStackEntryContext, FString InEntryEditorDataKey);
 	//void Finalize();
 	bool IsFinalized() const;
 	
@@ -157,8 +157,8 @@ public:
 	//remove later
 	void SetDisplayName(FText Name) { DisplayName = Name; };
 
-	UStackEntryEditorData& GetStackEntryEditorData() const;
-	FString GetStackEntryEditorDataKey() const;
+	UStackRootEditorData& GetRootEditorData() const;
+	FString GetEntryEditorDataKey() const;
 
 	virtual FText GetTooltipText() const;
 
@@ -239,9 +239,9 @@ public:
 
 	virtual void ChildStructureChangedInternal();
 
-	TSharedRef<FStackSystemViewModel> GetSystemViewModel() const;
-	TSharedPtr<FStackSystemViewModel> GetSystemViewModelPtr() const;
-	TSharedPtr<FStackViewModel> GetStackViewModel() const;
+	TSharedRef<FStackSystemManager> GetSystemManager() const;
+	TSharedPtr<FStackSystemManager> GetSystemManagerPtr() const;
+	TSharedPtr<FStackManager> GetStackManager() const;
 
 
 	virtual TOptional<FDropRequestResponse> CanDrop(const FDropRequest& Request) const
@@ -277,15 +277,15 @@ private:
 	mutable TArray<UStackEntry*> FilteredChildren;
 
 
-	TWeakPtr<FStackSystemViewModel> SystemViewModel;
-	TWeakPtr<FStackViewModel> StackViewModel;
+	TWeakPtr<FStackSystemManager> SystemManager;
+	TWeakPtr<FStackManager> StackManager;
 
 	UPROPERTY()
-	TObjectPtr<UStackEntryEditorData> StackEntryEditorData;
-	FString StackEntryEditorDataKey;
+	TObjectPtr<UStackRootEditorData> RootEditorData;
+	FString EntryEditorDataKey;
+
 
 	FOnExpansionChanged ExpansionChangedDelegate;
-
 	FOnExpansionChanged ExpansionInNodeChangedDelegate;
 
 	mutable TOptional<bool> bIsExpandedCache;

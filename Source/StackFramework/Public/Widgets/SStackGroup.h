@@ -5,7 +5,7 @@
 
 
 class UStackGroup;
-class UStackRootViewModel;
+class UStackRootManager;
 class UStackEntry;
 
 class STACKFRAMEWORK_API SStackGroup : public SStackEntry
@@ -14,7 +14,7 @@ public:
 	SLATE_BEGIN_ARGS(SStackGroup) {}
 	SLATE_END_ARGS();
 
-	void Construct(const FArguments& InArgs, UStackGroup& InGroup, UStackRootViewModel* InStackRootViewModel);
+	void Construct(const FArguments& InArgs, UStackGroup& InGroup, UStackRootManager* InStackRootManager);
 
 private:
 	TSharedRef<SWidget> ConstructAddButton();

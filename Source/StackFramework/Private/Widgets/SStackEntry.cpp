@@ -6,14 +6,14 @@
 
 
 
-void SStackEntry::Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionViewModel* InSelectionViewModel)
+void SStackEntry::Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionManager* InSelectionManager)
 {
 	StackEntry = InStackEntry;
-	SelectionViewModel = InSelectionViewModel;
+	SelectionManager = InSelectionManager;
 	/*
 	ChildSlot
 		[
-			SNew(SStackRow, StackEntry, SelectionViewModel)
+			SNew(SStackRow, StackEntry, SelectionManager)
 		];*/
 }
 

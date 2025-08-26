@@ -1,19 +1,19 @@
 #include "Widgets/SStackList.h"
 #include "ViewModels/StackRoot.h"
-#include "ViewModels/Editor/StackSelectionViewModel.h"
+#include "ViewModels/Editor/StackSelectionManager.h"
 #include "Widgets/SStackEntry.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Views/SListView.h"
-#include "ViewModels/Editor/StackRootViewModel.h"
+#include "ViewModels/Editor/StackRootManager.h"
 
 
 
-void SStackList::Construct(const FArguments& InArgs, UStackRootViewModel* InRootViewModel, UStackRoot* InRoot, UStackSelectionViewModel* InSelection)
+void SStackList::Construct(const FArguments& InArgs, UStackRootManager* InRootManager, UStackRoot* InRoot, UStackSelectionManager* InSelection)
 {
 	Root = InRoot;
-	RootViewModel = InRootViewModel;
-	SelectionViewModel = InSelection;
+	RootManager = InRootManager;
+	SelectionManager = InSelection;
 
 	RefreshEntries();
 
@@ -25,11 +25,11 @@ void SStackList::Construct(const FArguments& InArgs, UStackRootViewModel* InRoot
 				+ SVerticalBox::Slot()
 				.AutoHeight()
 				[
-					SAssignNew(HeaderList, SListView<TSharedRef<UStackRootViewModel::FStackRootContainer>>)
+					SAssignNew(HeaderList, SListView<TSharedRef<UStackRootManager::FStackRootContainer>>)
 						.ListItemsSource(&RootContainers)
-						.OnGenerateRow_Lambda([](TSharedRef<UStackRootViewModel::FStackRootContainer> RootContainer, const TSharedRef<STableViewBase>& OwnerTable)
+						.OnGenerateRow_Lambda([](TSharedRef<UStackRootManager::FStackRootContainer> RootContainer, const TSharedRef<STableViewBase>& OwnerTable)
 							{
-								return SNew(STableRow<TSharedRef<UStackRootViewModel::FStackRootContainer>>, OwnerTable)
+								return SNew(STableRow<TSharedRef<UStackRootManager::FStackRootContainer>>, OwnerTable)
 									[
 										SNew(STextBlock).Text(RootContainer->DisplayName)
 									];
@@ -66,15 +66,15 @@ void SStackList::RefreshEntries()
 	RootContainers.Reset();
 	RootEntries.Reset();
 
-	if (RootViewModel)
+	if (RootManager)
 	{
 		// Add stack root entries
-		RootEntries.Append(RootViewModel->GetRootEntries());
+		RootEntries.Append(RootManager->GetRootEntries());
 
 		// Add top-level stack headers (for pinned tabs, etc.)
-		for (const UStackRootViewModel::FStackRootContainer& RootContainer : RootViewModel->GetRootContainers())
+		for (const UStackRootManager::FStackRootContainer& RootContainer : RootManager->GetRootContainers())
 		{
-			RootContainers.Add(MakeShared<UStackRootViewModel::FStackRootContainer>(RootContainer));
+			RootContainers.Add(MakeShared<UStackRootManager::FStackRootContainer>(RootContainer));
 		}
 	}
 
@@ -92,15 +92,15 @@ TSharedRef<ITableRow> SStackList::OnGenerateRow(UStackEntry* Entry, const TShare
 {
 	return SNew(STableRow<UStackEntry*>, OwnerTable)
 		[
-			SNew(SStackEntry, Entry, SelectionViewModel)
+			SNew(SStackEntry, Entry, SelectionManager)
 		];
 }
 
 void SStackList::OnSelectionChanged(UStackEntry* Entry, ESelectInfo::Type SelectInfo)
 {
-	//if (SelectionViewModel)
+	//if (SelectionManager)
 	//{
-	//	SelectionViewModel->SetSelectedEntry(Entry);
+	//	SelectionManager->SetSelectedEntry(Entry);
 	//}
 }
 

@@ -2,14 +2,14 @@
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/Views/SListView.h"
 #include "ViewModels/StackItem.h"
-#include "Definition/StackCommonTypes.h"
+#include "Utilities/StackCommonTypes.h"
 #include "ViewModels/StackGroup.h"
 
 
 
 class UStackRoot;
-class UStackRootViewModel;
-class UStackSelectionViewModel;
+class UStackRootManager;
+class UStackSelectionManager;
 class UStackEntry;
 class SStackList;
 
@@ -23,7 +23,7 @@ public:
 		SLATE_ARGUMENT(TArray<UClass*>, AllowedClasses)
 	SLATE_END_ARGS();
 
-	void Construct(const FArguments& InArgs, UStackRootViewModel& InStackRootViewModel, UStackSelectionViewModel& InNodeSelectionViewModel);
+	void Construct(const FArguments& InArgs, UStackRootManager& InStackRootManager, UStackSelectionManager& InNodeSelectionManager);
 	virtual ~SStackNodeEntries() override;
 
 	virtual bool SupportsKeyboardFocus() const override;
@@ -49,8 +49,8 @@ private:
 	TSharedRef<ITableRow> OnGenerateRowForEntry(UStackEntry* Entry, const TSharedRef<STableViewBase>& OwnerTable);
 
 private:
-	UStackRootViewModel* StackRootViewModel;
-	UStackSelectionViewModel* SelectionViewModel;
+	UStackRootManager* StackRootManager;
+	UStackSelectionManager* SelectionManager;
 
 	TArray<UStackEntry*> EntryList;
 	TMap<FObjectKey, TArray<UStackEntry*>> EntryToParentChain;

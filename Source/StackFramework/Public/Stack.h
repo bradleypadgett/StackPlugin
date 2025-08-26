@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "Definition/StackSource.h"
+#include "Providers/StackSource.h"
 #include "Stack.generated.h"
 
 
@@ -21,6 +21,8 @@ class STACKFRAMEWORK_API UStack : public UObject, public IStackSource
 public:
 	UStack();
 
+	void Initialize();
+
 	UPROPERTY(EditAnywhere, Instanced, Category="Stack")
 	UStackRoot* RootEntry;
 
@@ -30,8 +32,8 @@ public:
 	UPROPERTY(EditAnywhere, Category="Metadata")
 	FName StackCategory;
 
-	const FString& GetUniqueName();
-	bool SetUniqueName(const FString& InName);
+	const FString& GetUniqueStackName();
+	bool SetUniqueStackName(const FString& InName);
 
 public:
 	// IStackSource implementation
@@ -44,5 +46,5 @@ public:
 
 private:
 	UPROPERTY()
-	FString UniqueName;
+	FString UniqueStackName;
 };

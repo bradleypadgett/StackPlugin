@@ -2,7 +2,7 @@
 #include "Styling/AppStyle.h"
 #include "ViewModels/StackGroup.h"
 #include "Widgets/SStackGroupAddButton.h"
-#include "ViewModels/Editor/StackRootViewModel.h"
+#include "ViewModels/Editor/StackRootManager.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Input/SCheckBox.h"
 #include "Widgets/Images/SImage.h"
@@ -13,7 +13,7 @@
 
 #define LOCTEXT_NAMESPACE "StackGroup"
 
-void SStackGroup::Construct(const FArguments& InArgs, UStackGroup& InGroup, UStackRootViewModel* InStackRootViewModel)
+void SStackGroup::Construct(const FArguments& InArgs, UStackGroup& InGroup, UStackRootManager* InStackRootManager)
 {
 	Group = &InGroup;
 	StackEntry = Group;

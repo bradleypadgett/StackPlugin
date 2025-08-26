@@ -26,7 +26,7 @@ public:
 
 	void AttachStackBlueprintGraph();
 
-	UStackBlueprintGraph* GetStackBlueprintGraph();
+	UEdGraph* GetStackBlueprintGraph(); // TO-DO ~ look more into if this is necessary later. SystemEditorData should be source of truth
 
 	bool bDetailsOpeninDefaultMode;
 

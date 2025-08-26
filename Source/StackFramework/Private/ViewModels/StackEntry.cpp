@@ -1,5 +1,5 @@
 #include "ViewModels/StackEntry.h"
-#include "EditorData/StackEntryEditorData.h"
+#include "EditorData/StackRootEditorData.h"
 
 
 
@@ -14,15 +14,15 @@ UStackEntry::UStackEntry()
 
 }
 
-void UStackEntry::Initialize(FStackEntryContext InStackEntryContext, FString InStackEntryEditorDataKey)
+void UStackEntry::Initialize(FStackEntryContext InStackEntryContext, FString InEntryEditorDataKey)
 {
-	SystemViewModel = InStackEntryContext.SystemViewModel;
-	StackViewModel = InStackEntryContext.StackViewModel;
+	SystemManager = InStackEntryContext.SystemManager;
+	StackManager = InStackEntryContext.StackManager;
 	CategoryName = InStackEntryContext.CategoryName;
 	SubcategoryName = InStackEntryContext.SubcategoryName;
-	StackEntryEditorData = InStackEntryContext.StackEntryEditorData;
+	RootEditorData = InStackEntryContext.RootEditorData;
 
-	StackEntryEditorDataKey = InStackEntryEditorDataKey;
+	EntryEditorDataKey = InEntryEditorDataKey;
 }
 
 
@@ -41,15 +41,15 @@ FText UStackEntry::GetDisplayName() const
 	return !DisplayName.IsEmpty() ? DisplayName : FText::FromString(TEXT("<Unnamed>"));
 }
 
-UStackEntryEditorData& UStackEntry::GetStackEntryEditorData() const
+UStackRootEditorData& UStackEntry::GetRootEditorData() const
 {
-	checkf(StackEntryEditorData, TEXT("StackState is nullptr — check finalized state first"));
-	return *StackEntryEditorData;
+	checkf(RootEditorData, TEXT("StackState is nullptr — check finalized state first"));
+	return *RootEditorData;
 }
 
-FString UStackEntry::GetStackEntryEditorDataKey() const
+FString UStackEntry::GetEntryEditorDataKey() const
 {
-	return StackEntryEditorDataKey;
+	return EntryEditorDataKey;
 }
 
 FText UStackEntry::GetTooltipText() const
@@ -75,18 +75,18 @@ bool UStackEntry::GetCanExpandInNode() const
 
 bool UStackEntry::GetIsExpandedInNode() const
 {
-	if (!bIsExpandedInNodeCache.IsSet() && StackEntryEditorData != nullptr)
+	if (!bIsExpandedInNodeCache.IsSet() && RootEditorData != nullptr)
 	{
-		bIsExpandedInNodeCache = StackEntryEditorData->GetIsExpandedInNode(GetStackEntryEditorDataKey(), false);
+		bIsExpandedInNodeCache = RootEditorData->GetIsExpandedInNode(GetEntryEditorDataKey(), false);
 	}
 	return bIsExpandedInNodeCache.Get(false);
 }
 
 void UStackEntry::SetIsExpandedInNode(bool bInExpanded)
 {
-	if (StackEntryEditorData && GetCanExpandInNode())
+	if (RootEditorData && GetCanExpandInNode())
 	{
-		StackEntryEditorData->SetIsExpandedInNode(GetStackEntryEditorDataKey(), bInExpanded);
+		RootEditorData->SetIsExpandedInNode(GetEntryEditorDataKey(), bInExpanded);
 	}
 	bIsExpandedInNodeCache.Reset();
 	ExpansionInNodeChangedDelegate.Broadcast();
@@ -139,7 +139,7 @@ const TArray<UStackEntry::FStackIssue>& UStackEntry::GetIssues() const
 
 UStackEntry::FStackEntryContext UStackEntry::GetDefaultEntryContext() const
 {
-	return FStackEntryContext(GetSystemViewModel(), GetStackViewModel(), GetCategory(), GetSubcategory(), GetStackEntryEditorData());
+	return FStackEntryContext(GetSystemManager(), GetStackManager(), GetCategory(), GetSubcategory(), GetRootEditorData());
 }
 
 void UStackEntry::RefreshChildrenInternal(const TArray<UStackEntry*>& /*CurrentChildren*/, TArray<UStackEntry*>& /*OutNewChildren*/, TArray<FStackIssue>& NewIssues)
@@ -196,21 +196,21 @@ void UStackEntry::GetFilteredChildrenOfTypes(TArray<UStackEntry*>& OutFilteredCh
 }
 
 
-TSharedRef<FStackSystemViewModel> UStackEntry::GetSystemViewModel() const
+TSharedRef<FStackSystemManager> UStackEntry::GetSystemManager() const
 {
-	TSharedPtr<FStackSystemViewModel> PinnedSystemViewModel = SystemViewModel.Pin();
-	checkf(PinnedSystemViewModel.IsValid(), TEXT("Base stack entry not initialized or system view model was already deleted."));
-	return PinnedSystemViewModel.ToSharedRef();
+	TSharedPtr<FStackSystemManager> PinnedSystemManager = SystemManager.Pin();
+	checkf(PinnedSystemManager.IsValid(), TEXT("Base stack entry not initialized or system view model was already deleted."));
+	return PinnedSystemManager.ToSharedRef();
 }
 
-TSharedPtr<FStackSystemViewModel> UStackEntry::GetSystemViewModelPtr() const
+TSharedPtr<FStackSystemManager> UStackEntry::GetSystemManagerPtr() const
 {
-	return SystemViewModel.Pin();
+	return SystemManager.Pin();
 }
 
-TSharedPtr<FStackViewModel> UStackEntry::GetStackViewModel() const
+TSharedPtr<FStackManager> UStackEntry::GetStackManager() const
 {
-	return StackViewModel.Pin();
+	return StackManager.Pin();
 }
 
 UStackEntry::FOnExpansionChanged& UStackEntry::OnExpansionChanged()

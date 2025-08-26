@@ -4,7 +4,7 @@
 
 
 class UStackEntry;
-class UStackSelectionViewModel;
+class UStackSelectionManager;
 
 /*
  * Core visual item for a stack entry.
@@ -16,11 +16,11 @@ public:
 	SLATE_BEGIN_ARGS(SStackItem) {}
 	SLATE_END_ARGS()
 
-	void Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionViewModel* InSelectionViewModel);
+	void Construct(const FArguments& InArgs, UStackEntry* InStackEntry, UStackSelectionManager* InSelectionManager);
 
 private:
 	UStackEntry* StackEntry;
-	UStackSelectionViewModel* SelectionViewModel;
+	UStackSelectionManager* SelectionManager;
 
 	TSharedRef<SWidget> BuildContent();
 };

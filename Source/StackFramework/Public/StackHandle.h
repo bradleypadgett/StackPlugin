@@ -1,14 +1,13 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "UObject/ObjectMacros.h"
-#include "Definition/StackSource.h"
+#include "Providers/StackSource.h"
 #include "StackHandle.generated.h"
 
 
 
 class UStack;
 
-// Represents a stack's data & behavior from the system's perspective
 USTRUCT()
 struct FStackHandle
 {
@@ -17,12 +16,15 @@ struct FStackHandle
 public:
 	FStackHandle();
 
-	FStackHandle(const TScriptInterface<IStackSource>& InStackSource);
+	//FStackHandle(const TScriptInterface<IStackSource>& InStackSource);
+	FStackHandle(UStack& InStack);
 
 	bool IsValid() const;
 	FGuid GetHandleID() const;
 	FName GetName() const;
 	void SetName(FName NewName);
+
+	TObjectPtr<UStack> GetStack();
 
 	FORCEINLINE bool operator==(const FStackHandle& Other) const
 	{
@@ -41,13 +43,16 @@ public:
 	
 public:
 
-	IStackSource* GetSource() const { return StackSource.GetInterface(); }
-	UStack& GetStack() { return StackSource->GetStack(); }
-	virtual const UStack& GetStack() const { return StackSource->GetStack(); }
+	//IStackSource* GetSource() const { return StackSource.GetInterface(); }
+	//UStack& GetStack() { return StackSource->GetStack(); }
+	//virtual const UStack& GetStack() const { return StackSource->GetStack(); }
 
 private:
+	//UPROPERTY()
+	//TScriptInterface<IStackSource> StackSource;
+
 	UPROPERTY()
-	TScriptInterface<IStackSource> StackSource;
+	TObjectPtr<UStack> Stack;
 
 	UPROPERTY()
 	FGuid ID;

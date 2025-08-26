@@ -5,8 +5,9 @@
 
 class UStackNode;
 class UStackRoot;
-class UStackSelectionViewModel;
-class UStackRootViewModel;
+class UStackSelectionManager;
+class UStackRootManager;
+class FStackHandleManager;
 
 class SStackNodeRoot : public SGraphNode
 {
@@ -29,8 +30,10 @@ protected:
 
 private:
 	UStackNode* Node = nullptr;
-	UStackRootViewModel* RootViewModel = nullptr;
-	UStackSelectionViewModel* SelectionViewModel = nullptr;
+	UStackRootManager* RootManager = nullptr;
+	UStackSelectionManager* SelectionManager = nullptr;
+
+	TWeakPtr<FStackHandleManager> HandleManagerWeak;
 
 	TSharedPtr<SWidget> StackContent;
 };

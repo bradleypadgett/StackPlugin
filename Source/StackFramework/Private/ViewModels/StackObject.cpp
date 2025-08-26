@@ -20,8 +20,8 @@ void UStackObject::Initialize(
 	bool bInHideTopLevelCategories,
 	FString InOwnerEntryEditorDataKey)
 {
-	FString InStackEntryEditorDataKey = FString::Printf(TEXT("%s-%s"), *InOwnerEntryEditorDataKey, *InObject->GetName());
-	Super::Initialize(InEntryContext, InStackEntryEditorDataKey, InOwnerEntryEditorDataKey);
+	FString InEntryEditorDataKey = FString::Printf(TEXT("%s-%s"), *InOwnerEntryEditorDataKey, *InObject->GetName());
+	Super::Initialize(InEntryContext, InEntryEditorDataKey, InOwnerEntryEditorDataKey);
 
 	WeakObject = InObject;
 	bIsTopLevel = bInIsTopLevel;

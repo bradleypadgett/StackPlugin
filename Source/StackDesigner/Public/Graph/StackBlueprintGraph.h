@@ -1,6 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Graph/StackGraph.h"
+#include "Editor/StackGraph.h"
 #include "StackBlueprintGraph.generated.h"
 
 
