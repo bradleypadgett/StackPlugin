@@ -3,7 +3,7 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "Stack",
-	"Description": "Editor for extending Slate into a node-based system for editing panels, i.e. Details Panel",
+	"Description": "A modular Stack-driven ecosystem for UI, logic, and tool authoring.",
 	"Category": "Stack",
 	"CreatedBy": "Bradley Padgett",
 	"CreatedByURL": "https://www.bradleypadgett.com/",
